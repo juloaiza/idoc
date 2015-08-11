@@ -163,7 +163,7 @@ function sites_old() {
 // Creating the event listener. It now has access to the values of
 // i and marker as they were during its creation
                 google.maps.event.addListener(marker, 'click', function() {
-                    kpi = Math.round(10*Math.random())
+                    kpi = Math.round(10*Math.random());
                     var content = '<div class="winfo">' + data.features[i].properties.Site  +'<br/>KPI_1 = ' + data.features[i].properties.KPI_1  +'<br/>KPI_2 = ' + data.features[i].properties.KPI_2 +
                         '<p> LTE drop #: <span class="ltedropLine'+i+'">' + (Math.round(10*Math.random())+1) + ',' + (Math.round(10*Math.random())+4) + ',' + (Math.round(10*Math.random())+4) + ',' + (Math.round(10*Math.random())+7) + ',' + (Math.round(10*Math.random())+5) + ',' + (Math.round(10*Math.random())+9) + ',' + (Math.round(10*Math.random())+10) +'</span> </p>' + '</div>';
                     var infowindow = new google.maps.InfoWindow();//{
@@ -300,8 +300,6 @@ function sites(nkpi) {
     });
 }
 
-
-
 function sectors(market) {
 //alert('php/get_cellinfo.php?market='+market);
 // getJson help me to read json file
@@ -400,7 +398,6 @@ function sectors(market) {
     });
 }
 
-
 //get the legend container, create a legend, add a legend renderer fn, define css on general.css
 function legend(leg_type) {
 
@@ -411,10 +408,6 @@ function legend(leg_type) {
         renderLegend = function(colorValuesArray){
             $legend.empty();
             $.each(colorValuesArray,function(index, val){
-
-
-
-
                 if (leg_type == 'rsrq') {
                     switch(index) {
                         case 0:
@@ -511,13 +504,6 @@ function legend(leg_type) {
                             break;
                     }
                 }
-
-
-
-
-
-
-
 
                 var $div = $('<div style="height:25px;">').append($('<div class="legend-color-box">').css({
                     backgroundColor:val,
@@ -778,18 +764,12 @@ function truecall(maptype) {
     var mapMaxZoom = 19;
     maptiler = new google.maps.ImageMapType({
         getTileUrl: function(coord, zoom) {
-            var proj = map.getProjection();
+
             var z2 = Math.pow(2, zoom);
-            var tileXSize = 256 / z2;
-            var tileYSize = 256 / z2;
-            var tileBounds = new google.maps.LatLngBounds(
-                proj.fromPointToLatLng(new google.maps.Point(coord.x * tileXSize, (coord.y + 1) * tileYSize)),
-                proj.fromPointToLatLng(new google.maps.Point((coord.x + 1) * tileXSize, coord.y * tileYSize))
-            );
             var y = coord.y;
             var x = coord.x >= 0 ? coord.x : z2 + coord.x
 
-            if ((mapMinZoom <= zoom) && (zoom <= mapMaxZoom)) //if (mapBounds.intersects(tileBounds) && (mapMinZoom <= zoom) && (zoom <= mapMaxZoom))
+            if ((mapMinZoom <= zoom) && (zoom <= mapMaxZoom))
                 return "http://serfopt/webcontent/maps/" + mkt.toLowerCase() + "/" + maptype + "/" + zoom + "/" + x + "/" + y + ".png";
             else
                 return "http://www.maptiler.org/img/none.png";

@@ -5,7 +5,7 @@ var EarthRadiusMeters = 6378137.0; // meters
  */
 google.maps.LatLng.prototype.DestinationPoint = function (brng, dist) {
     var R = EarthRadiusMeters; // earth's mean radius in meters
-    var brng = brng.toRad();
+    brng = brng.toRad();
     var lat1 = this.lat().toRad(), lon1 = this.lng().toRad();
     var lat2 = Math.asin( Math.sin(lat1)*Math.cos(dist/R) +
         Math.cos(lat1)*Math.sin(dist/R)*Math.cos(brng) );
@@ -13,7 +13,7 @@ google.maps.LatLng.prototype.DestinationPoint = function (brng, dist) {
             Math.cos(dist/R)-Math.sin(lat1)*Math.sin(lat2));
 
     return new google.maps.LatLng(lat2.toDeg(), lon2.toDeg());
-}
+};
 
 // === A function which returns the bearing between two LatLng in radians ===
 // === If v1 is null, it returns the bearing between the first and last vertex ===
@@ -33,7 +33,7 @@ google.maps.LatLng.prototype.Bearing = function(otherLatLng) {
     if ( angle < 0.0 ) angle  += Math.PI * 2.0;
     if ( angle > Math.PI ) angle -= Math.PI * 2.0;
     return parseFloat(angle.toDeg());
-}
+};
 
 
 /**
@@ -81,7 +81,7 @@ function drawArc(center, initialBearing, finalBearing, radius) {
     var rlat = (radius / EarthRadiusMeters) * r2d;
     var rlng = rlat / Math.cos(center.lat() * d2r);
 
-    var extp = new Array();
+    var extp = [];
 
     if (initialBearing > finalBearing) finalBearing += 360;
     var deltaBearing = finalBearing - initialBearing;
@@ -110,7 +110,7 @@ function drawCircle(point, radius) {
     var rlng = rlat / Math.cos(point.lat() * d2r);
 
 
-    var extp = new Array();
+    var extp = [];
     for (var i=0; i < points+1; i++) // one extra here makes sure we connect the
     {
         var theta = Math.PI * (i / (points/2));
