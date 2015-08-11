@@ -467,32 +467,37 @@ $market = $row['market'];
 <script type="text/javascript" src="js/contextmenu.js"></script>
 <script type="text/javascript" src="js/elevation.js"></script>
 <script type="text/javascript">
-    $('#collapseBottom').on('show.bs.collapse', function () {
-        $('#btnArrow').removeClass();
-        $('#btnArrow').toggleClass("glyphicon glyphicon-chevron-down");
-    })
-    $('#collapseBottom').on('hide.bs.collapse', function () {
-        $('#btnArrow').removeClass();
-        $('#btnArrow').toggleClass("glyphicon glyphicon-chevron-up");
+    var collapseBottom = $('#collapseBottom');
+    var btnArrow =  $('#btnArrow');
+    collapseBottom.on('show.bs.collapse', function () {
+        btnArrow.removeClass();
+        btnArrow.toggleClass("glyphicon glyphicon-chevron-down");
+    });
+    collapseBottom.on('hide.bs.collapse', function () {
+        btnArrow.removeClass();
+        btnArrow.toggleClass("glyphicon glyphicon-chevron-up");
         //   $("#accordion").css("height","2.6%");
-    })
+    });
     $('#btnRight').click(function () {
-        var width = $("#map-canvas").width();
-        var parentWidth = $("#map-canvas").offsetParent().width();
+        var mapCanvas = $("#map-canvas");
+        var width = mapCanvas.width();
+        var parentWidth = mapCanvas.offsetParent().width();
         var widthper = 100*width/parentWidth;
+        var btnArrowLeft = $('#btnArrowLeft');
+        var accordion = $( "#accordion" );
         if (widthper==100) {
-            $( "#map-canvas" ).animate({ "width": "82.6333%" }, "slow" );
-            $( "#accordion" ).animate({ "width": "82.6333%" }, "slow" );
-            $('#btnArrowLeft').removeClass();
-            $('#btnArrowLeft').toggleClass("glyphicon glyphicon-chevron-right");
+            mapCanvas.animate({ "width": "82.6333%" }, "slow" );
+            accordion.animate({ "width": "82.6333%" }, "slow" );
+            btnArrowLeft.removeClass();
+            btnArrowLeft.toggleClass("glyphicon glyphicon-chevron-right");
         } else {
-            $( "#map-canvas" ).animate({ "width": "100%" }, "slow" );
-            $( "#accordion" ).animate({ "width": "100%" }, "slow" );
-            $('#btnArrowLeft').removeClass();
-            $('#btnArrowLeft').toggleClass("glyphicon glyphicon-chevron-left");
+            mapCanvas.animate({ "width": "100%" }, "slow" );
+            accordion.animate({ "width": "100%" }, "slow" );
+            btnArrowLeft.removeClass();
+            btnArrowLeft.toggleClass("glyphicon glyphicon-chevron-left");
         }
         $.sparkline_display_visible();
-    })
+    });
     $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
         var str = $(e.target).html(); // The 'event.target' part is jQuery object, not a string so this way you wrapped.
         var n = str.search("KPI");
@@ -500,10 +505,11 @@ $market = $row['market'];
             // actually render any undrawn sparklines that are now visible in the DOM
             $.sparkline_display_visible();
         }
-    })
+    });
     function blinker() {
-        $('.blink_txt').fadeOut(500);
-        $('.blink_txt').fadeIn(500);
+        var blinkTxt = $('.blink_txt');
+        blinkTxt.fadeOut(500);
+        blinkTxt.fadeIn(500);
     }
     setInterval(blinker, 1000);
     $(document).ready(function(){
