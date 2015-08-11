@@ -34,8 +34,6 @@ google.maps.LatLng.prototype.Bearing = function(otherLatLng) {
     if ( angle > Math.PI ) angle -= Math.PI * 2.0;
     return parseFloat(angle.toDeg());
 };
-
-
 /**
  * Extend the Number object to convert degrees to radians
  *
@@ -78,6 +76,7 @@ function drawArc(center, initialBearing, finalBearing, radius) {
     var points = 32;
 
 // find the raidus in lat/lon
+
     var rlat = (radius / EarthRadiusMeters) * r2d;
     var rlng = rlat / Math.cos(center.lat() * d2r);
 
@@ -93,10 +92,6 @@ function drawArc(center, initialBearing, finalBearing, radius) {
     }
     return extp;
 }
-
-
-
-
 function drawCircle(point, radius) {
     var d2r = Math.PI / 180;   // degrees to radians
     var r2d = 180 / Math.PI;   // radians to degrees
@@ -122,6 +117,3 @@ function drawCircle(point, radius) {
 // alert(extp.length);
     return extp;
 }
-
-
-

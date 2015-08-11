@@ -89,24 +89,30 @@ $market = $row['market'];
                     Cluster <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu" role="menu">
-                    <div class="radio">
-                        <label>
-                            <input type="radio" name="optionsRadios" id="radio1" value="option1" onclick="showFeature(cluster,'KPI_1');" > <!--Please check map.js check Global Scope-->
-                            Leakage (%)
-                        </label>
-                    </div>
-                    <div class="radio">
-                        <label>
-                            <input type="radio" name="optionsRadios" id="radio2" value="option2" onclick="showFeature(cluster,'KPI_2');" >
-                            LTE Drops (#)
-                        </label>
-                    </div>
-                    <div class="radio">
-                        <label>
-                            <input type="radio" name="optionsRadios" id="radio3" value="option3" onclick="clearMap();" >
-                            None
-                        </label>
-                    </div>
+                    <li>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="optionsRadios" id="radio1" value="option1" onclick="showFeature(cluster,'KPI_1');" > <!--Please check map.js check Global Scope-->
+                                Leakage (%)
+                            </label>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="optionsRadios" id="radio2" value="option2" onclick="showFeature(cluster,'KPI_2');" >
+                                LTE Drops (#)
+                            </label>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="optionsRadios" id="radio3" value="option3" onclick="clearMap();" >
+                                None
+                            </label>
+                        </div>
+                    </li>
                 </ul>
             </li>
             <li role="presentation" class="dropdown">
@@ -114,24 +120,30 @@ $market = $row['market'];
                     Subcluster <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu" role="menu">
-                    <div class="radio">
-                        <label>
-                            <input type="radio" name="optionsRadios" id="radio4" value="option4" onclick="showFeature(subcluster,'KPI_1');" >
-                            Leakage (%)
-                        </label>
-                    </div>
-                    <div class="radio">
-                        <label>
-                            <input type="radio" name="optionsRadios" id="radio5" value="option5" onclick="showFeature(subcluster,'KPI_2');">
-                            LTE Drops (#)
-                        </label>
-                    </div>
-                    <div class="radio">
-                        <label>
-                            <input type="radio" name="optionsRadios" id="radio6" value="option6" onclick="clearMap();" >
-                            None
-                        </label>
-                    </div>
+                    <li>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="optionsRadios" id="radio4" value="option4" onclick="showFeature(subcluster,'KPI_1');" >
+                                Leakage (%)
+                            </label>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="optionsRadios" id="radio5" value="option5" onclick="showFeature(subcluster,'KPI_2');">
+                                LTE Drops (#)
+                            </label>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="optionsRadios" id="radio6" value="option6" onclick="clearMap();" >
+                                None
+                            </label>
+                        </div>
+                    </li>
                 </ul>
             </li>
             <li role="presentation" class="dropdown">
@@ -139,24 +151,30 @@ $market = $row['market'];
                     Site <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu" role="menu">
-                    <div class="radio">
-                        <label>
-                            <input type="radio" name="optionsBTS" id="radio1" value="option5" onclick="sites('KPI_1');">
-                            Leakage (%)
-                        </label>
-                    </div>
-                    <div class="radio">
-                        <label>
-                            <input type="radio" name="optionsBTS" id="radio2" value="option6" onclick="sites('KPI_2');">
-                            LTE Drops (#)
-                        </label>
-                    </div>
-                    <div class="radio">
-                        <label>
-                            <input type="radio" name="optionsBTS" id="radio3" value="option7" onclick="sites('No');">
-                            None
-                        </label>
-                    </div>
+                    <li>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="optionsBTS" id="radio1" value="option5" onclick="sites('KPI_1');">
+                                Leakage (%)
+                            </label>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="optionsBTS" id="radio2" value="option6" onclick="sites('KPI_2');">
+                                LTE Drops (#)
+                            </label>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="optionsBTS" id="radio3" value="option7" onclick="sites('No');">
+                                None
+                            </label>
+                        </div>
+                    </li>
                 </ul>
             </li>
             <li role="presentation" class="dropdown">

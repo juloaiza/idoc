@@ -196,7 +196,6 @@ function sites_old() {
     });
 }
 
-
 //Sites Layer
 function sites(nkpi) {
 
@@ -212,7 +211,7 @@ function sites(nkpi) {
             var latLng = new google.maps.LatLng(data.features[i].properties.Lat,data.features[i].properties.Long);
             var kpi = data.features[i].properties.KPI_2;
             var color;
-            z =1
+            var z = 1;
             if (nkpi == 'KPI_2') {
                 if (kpi > 0.9){
                     color = colorValues[4];
@@ -268,11 +267,12 @@ function sites(nkpi) {
                         infowindow.open(map);
 
 //Charts
-                        $.getJSON("php/kpi.php?lncel="+data.features[i].properties.Site,function(datak) {     /*get function with Json result
+                        $.getJSON('php/kpi.php?lncel='+data.features[i].properties.Site,function(datak) {     /*get function with Json result
                          put in variable 'data' inside the callback function*/
                             for (var i = 0; i < 26; i++){
-                                $('#ltekpi'+i).html('<span class="inlinesparkline">Loading...</span>');
-                                $('#ltekpi'+i).html('<span class="inlinesparkline">'+datak.kpi[i+3].value+'</span>');
+                                var ltekpi = $('#ltekpi'+i);
+                                ltekpi.html('<span class="inlinesparkline">Loading...</span>');
+                                ltekpi.html('<span class="inlinesparkline">'+datak.kpi[i+3].value+'</span>');
                             }
 
 //Infocell
@@ -289,14 +289,9 @@ function sites(nkpi) {
                 })(i,siteDot);
 
             } else {
-
                 siteDots[i].setOptions(pointOptions);
-
             }
-
-
         }
-
     });
 }
 
@@ -359,7 +354,6 @@ function sectors(market) {
                         $('#iframe_alarm').html(data);
                     });
 
-
                     $.getJSON("php/kpi.php?lncel="+data.sector[i].lncel_name,function(datak) {     /*get function with Json result
                      put in variable 'data' inside the callback function*/
                         for (var i = 0; i < 26; i++){
@@ -377,18 +371,11 @@ function sectors(market) {
 
                         $('.infoCell').html('<p>'+cellLastsp[cellLastsp.length - 1]+'-'+dateLastsp[dateLastsp.length - 1]+'</p">');
                         $('.infoSite').html('<p>'+cellLastsp[cellLastsp.length - 1]+'</p">');
-
-
 // $('#ltekpi').html(data);
 //  $('.inlinesparkline').sparkline('html',{width: '50px', height: '20px', lineWidth: 1});
                         $('.inlinesparkline').sparkline('html',{width: '100px', height: '20px'});
                     });
-
-
-
 //      }); //avoid click second time
-
-
 // console.log(infowindow.content);
                 });
             })(i,secPoly);
@@ -506,13 +493,13 @@ function legend(leg_type) {
                 }
 
                 var $div = $('<div style="height:25px;">').append($('<div class="legend-color-box">').css({
-                    backgroundColor:val,
+                    backgroundColor:val
                 })).append($("<span>").css("lineHeight","23px").html(lgtext));
 
                 $legend.append($div);
 
             });
-        }
+        };
 
 //make a legend for the first time
 
@@ -548,8 +535,6 @@ function showFeature(layer, nkpi){
 
     });
 
-
-
     if (listenerHandle) {
 // if there is any identifier for this listener, remove it
         google.maps.event.removeListener(listenerHandle);
@@ -579,8 +564,9 @@ function showFeature(layer, nkpi){
         $.getJSON("php/kpi.php?lncel="+event.feature.getProperty("ClusterName"),function(datak) {     /*get function with Json result
          put in variable 'data' inside the callback function*/
             for (var i = 0; i < 26; i++){
-                $('#ltekpi'+i).html('<span class="inlinesparkline">Loading...</span>');
-                $('#ltekpi'+i).html('<span class="inlinesparkline">'+datak.kpi[i+3].value+'</span>');
+                ltekpi = $('#ltekpi'+i);
+                ltekpi.html('<span class="inlinesparkline">Loading...</span>');
+                ltekpi.html('<span class="inlinesparkline">'+datak.kpi[i+3].value+'</span>');
             }
 
 //Infocell
@@ -675,13 +661,11 @@ function setAllMap(map,nkpi) {
     });
 }
 
-
 function navmenu() {
     map.controls[google.maps.ControlPosition.LEFT_TOP].push(document.getElementById("nav-menu"));
     map.controls[google.maps.ControlPosition.RIGHT_TOP].push(document.getElementById("nav-sear"));
     map.controls[google.maps.ControlPosition.RIGHT].push(document.getElementById("btnsl"));
 }
-
 
 function mkt_kpi(mkt) {
 
@@ -711,7 +695,6 @@ function mkt_kpi(mkt) {
 
 }
 
-
 function mkt_center(mkt) {
 
     map.setCenter(new google.maps.LatLng(mkt_loc[mkt][0],mkt_loc[mkt][1]));
@@ -719,7 +702,6 @@ function mkt_center(mkt) {
     $('.market').html(mkt);
 
 }
-
 
 //TrueCall Layer with vector
 function truecall_vector() {
@@ -814,7 +796,7 @@ function srs() {
 // Creating the event listener. It now has access to the values of
 // i and marker as they were during its creation
                     google.maps.event.addListener(marker, 'click', function() {
-                        kpi = Math.round(10*Math.random())
+                        kpi = Math.round(10*Math.random());
                         var content = '<div class="winfo">' + data.srs[i].Technology  +'<br/>SR Created Date = ' + data.srs[i].SR_Created_Date  +'<br/>Issue Type = ' + data.srs[i].Issue_Type  +
                             '<br/>Issue Description = ' + data.srs[i].Issue_Description  +'<br/>Mobile Number = ' + data.srs[i].Mobile_Number  +'</div>';
 
@@ -857,7 +839,7 @@ function showBans() {
     for (var i = 0; i < bans.length; i++) {
         bans[i].setMap(null); // remove icons setMap(null);
     }
-    bans.length = 0
+    bans.length = 0;
 
     var x = document.getElementById("check1").checked;
 
@@ -866,7 +848,7 @@ function showBans() {
         var bounds = map.getBounds();
         var NE = bounds.getNorthEast();
         var SW = bounds.getSouthWest();
-        var zoom=  map.getZoom() ;
+        var zoom =  map.getZoom() ;
 
 //  console.log(bounds+"-"+zoom);
 // Call you server with ajax passing it the bounds
