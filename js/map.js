@@ -23,8 +23,7 @@ var colorPCC = [
     Spokane:[47.658780, -117.426047],
     Phoenix:[33.448377, -112.074037]
  };
-            
-            
+            //made a change
 var cluster = $.getJSON("http://serfopt/webcontent/layers/Cluster.json");  //Add layers with JQUERY and using in options
 var subcluster = $.getJSON("http://serfopt/webcontent/layers/SubCluster.json");  //Add layers and using in options
 var features = null;           
