@@ -1,19 +1,7 @@
-var EarthRadiusMeters = 6378137.0; // meters
 /* Based the on the Latitude/longitude spherical geodesy formulae & scripts
  at http://www.movable-type.co.uk/scripts/latlong.html
  (c) Chris Veness 2002-2010
  */
-google.maps.LatLng.prototype.DestinationPoint = function (brng, dist) {
-    var R = EarthRadiusMeters; // earth's mean radius in meters
-    brng = brng.toRad();
-    var lat1 = this.lat().toRad(), lon1 = this.lng().toRad();
-    var lat2 = Math.asin( Math.sin(lat1)*Math.cos(dist/R) +
-        Math.cos(lat1)*Math.sin(dist/R)*Math.cos(brng) );
-    var lon2 = lon1 + Math.atan2(Math.sin(brng)*Math.sin(dist/R)*Math.cos(lat1),
-            Math.cos(dist/R)-Math.sin(lat1)*Math.sin(lat2));
-
-    return new google.maps.LatLng(lat2.toDeg(), lon2.toDeg());
-};
 
 // === A function which returns the bearing between two LatLng in radians ===
 // === If v1 is null, it returns the bearing between the first and last vertex ===
@@ -69,51 +57,28 @@ var infowindow = new google.maps.InfoWindow(
         size: new google.maps.Size(150,50)
     });
 
-function drawArc(center, initialBearing, finalBearing, radius) {
-    var d2r = Math.PI / 180;   // degrees to radians
-    var r2d = 180 / Math.PI;   // radians to degrees
 
-    var points = 32;
-
-// find the raidus in lat/lon
-
-    var rlat = (radius / EarthRadiusMeters) * r2d;
-    var rlng = rlat / Math.cos(center.lat() * d2r);
-
-    var extp = [];
-
-    if (initialBearing > finalBearing) finalBearing += 360;
-    var deltaBearing = finalBearing - initialBearing;
-    deltaBearing = deltaBearing/points;
-    for (var i=0; (i < points+1); i++)
-    {
-        extp.push(center.DestinationPoint(initialBearing + i*deltaBearing, radius));
-
-    }
-    return extp;
+function drawArc(center, bearing, radius){
+    var triangleCoords = [];
+    var resolution = 36;
+    var lat = center.lat();
+    var lon = center.lng();
+    var angle = (90-parseFloat(bearing))*Math.PI/180;
+    var width = parseFloat(65)*Math.PI/180;
+    var scale = .0004;
+        if(width < 6.2){
+            triangleCoords.push(new google.maps.LatLng(lat,lon));
+            scale = .001;
+        }
+        var m;
+        for (m = 0; m<resolution; m++){
+            var xcomp = scale*(Math.cos(angle-width/2+width*m/(resolution-1)))/Math.cos(lat*Math.PI/180);
+            var ycomp = scale*(Math.sin(angle-width/2+width*m/(resolution-1)));
+            triangleCoords.push(new google.maps.LatLng(lat+ycomp,lon+xcomp));
+        }
+        if(width < 6.2){
+            triangleCoords.push(new google.maps.LatLng(lat,lon));
+        }
+    return triangleCoords;
 }
-function drawCircle(point, radius) {
-    var d2r = Math.PI / 180;   // degrees to radians
-    var r2d = 180 / Math.PI;   // radians to degrees
-    var EarthRadiusMeters = 6378137.0; // meters
-    var earthsradius = 3963; // 3963 is the radius of the earth in miles
 
-    var points = 32;
-
-// find the raidus in lat/lon
-    var rlat = (radius / EarthRadiusMeters) * r2d;
-    var rlng = rlat / Math.cos(point.lat() * d2r);
-
-
-    var extp = [];
-    for (var i=0; i < points+1; i++) // one extra here makes sure we connect the
-    {
-        var theta = Math.PI * (i / (points/2));
-        ey = point.lng() + (rlng * Math.cos(theta)); // center a + radius x * cos(theta)
-        ex = point.lat() + (rlat * Math.sin(theta)); // center b + radius y * sin(theta)
-        extp.push(new google.maps.LatLng(ex, ey));
-
-    }
-// alert(extp.length);
-    return extp;
-}
