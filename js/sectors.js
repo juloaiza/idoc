@@ -8,7 +8,7 @@ function circleMath(center, angle, beamWidth){
     var resolution = 32;
     var lat = center.lat();
     var lon = center.lng();
-    var angle = (90-angle)*Math.PI/180;
+    angle = (90-angle)*Math.PI/180;
     var width = beamWidth*Math.PI/180;
     var scale = .0007;
     triangleCoords.push(new google.maps.LatLng(lat,lon));
