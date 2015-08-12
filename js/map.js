@@ -302,8 +302,8 @@ function sectors(market) {
 
         for (var i in data.sector) {
             var centerPoint = new google.maps.LatLng(data.sector[i].Lat, data.sector[i].Log);
-            //var arcPts = drawArc(centerPoint,data.sector[i].azimuth-65/2, data.sector[i].azimuth+65/2, 75);
-            var arcPts = circleMath(centerPoint,data.sector[i], 75);
+            var arcPts = drawArc(centerPoint,data.sector[i].azimuth-65/2, data.sector[i].azimuth+65/2, 75);
+            //var arcPts = circleMath(centerPoint,data.sector[i], 75);
 // add the start and end lines
             //arcPts.push(centerPoint);
             var secPoly = new google.maps.Polygon({
