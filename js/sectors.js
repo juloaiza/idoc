@@ -98,8 +98,8 @@ function circleMath(center, bearing, radius){
     var resolution = 36;
     var lat = center.lat();
     var lon = center.lng();
-    var angle = (90-parseFloat(bearing))*Math.PI/180;
-    var width = parseFloat(65)*Math.PI/180;
+    var angle = (90-bearing)*Math.PI/180;
+    var width = 65*Math.PI/180;
     var scale = .0004;
         if(width < 6.2){
             triangleCoords.push(new google.maps.LatLng(lat,lon));
