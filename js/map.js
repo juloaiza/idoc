@@ -4,7 +4,6 @@ var maptiler;
 var map;
 var cachedGeoJson;
 var colorValues = ["#0099FF"/*0*/, "green"/*1*/, "yellow"/*2*/, "orange"/*3*/, "red"/*4*/];
-var colorPCC = ["#E20074"/*0*/,"#FF3B9E"/*1*/,"#FF73B9"/*2*/,"#848484"/*3*/,"#CECECE"/*4*/];
 var mkt_loc = {
     Portland:[45.523062, -122.676482],
     Seattle:[47.6097, -122.331],
@@ -302,7 +301,7 @@ function legend(leg_type) {
     var innerHtml = '<div id="legend-container" style="z-index: 0; position: absolute; bottom: 14px; right: 0;"><h3>Legend</h3><div id="legend">';
     var legendTable = [];
     legendTable['rsrq'] = [['green','orange','red'],['0db to -10db','-10db to -16db','-16db to -30db'],'dB'];
-    legendTable['rsrp'] = [['#0099FF','green','yellow','orange','red'],['-45dbm to -91dbm','-91dbm to -97dbm','-97dbm to -114dbm','-114dbm to -120dbm','-120dbm to -130dbm'],'dBm']
+    legendTable['rsrp'] = [['#0099FF','green','yellow','orange','red'],['-45dbm to -91dbm','-91dbm to -97dbm','-97dbm to -114dbm','-114dbm to -120dbm','-120dbm to -130dbm'],'dBm'];
     legendTable['traffic'] = [['#0099FF','orange','red'],['Low','Medium','High'],'None'];
     legendTable['TMo_TechLTE_Map'] = [["#E20074","#FF3B9E","#FF73B9","#848484","#CECECE"],['LTE','WCDMA','UMTS','GSM','Roam'],'None'];
     legendTable['other'] = [['green','orange','red'],['Okay','Warning','Degraded'],'None'];
