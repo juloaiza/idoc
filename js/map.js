@@ -280,8 +280,8 @@ function sectors(market) {
                         var cellLastsp = cellLast.split(",");
                         var dateLastsp = dateLast.split(",");
 
-                        $('.infoCell').html('<p>'+cellLastsp[cellLastsp.length - 1]+'-'+dateLastsp[dateLastsp.length - 1]+'</p">');
-                        $('.infoSite').html('<p>'+cellLastsp[cellLastsp.length - 1]+'</p">');
+                        $('.infoCell').html('<p>'+cellLastsp[cellLastsp.length - 1]+'-'+dateLastsp[dateLastsp.length - 1]+'</p>');
+                        $('.infoSite').html('<p>'+cellLastsp[cellLastsp.length - 1]+'</p>');
 // $('#ltekpi').html(data);
 //  $('.inlinesparkline').sparkline('html',{width: '50px', height: '20px', lineWidth: 1});
                         $('.inlinesparkline').sparkline('html',{width: '100px', height: '20px'});
@@ -295,134 +295,32 @@ function sectors(market) {
         }
     });
 }
-
 //get the legend container, create a legend, add a legend renderer fn, define css on general.css
 
 function legend(leg_type) {
-
-    $('body').append('<div id="legend-container"><h3>Legend</h3></div>');
-
-    var $legendContainer = $('#legend-container'),
-        $legend = $('<div id="legend">').appendTo($legendContainer),
-        renderLegend = function(colorValuesArray){
-            $legend.empty();
-            $.each(colorValuesArray,function(index, val){
-                if (leg_type == 'rsrq') {
-                    switch(index) {
-                        case 0:
-                            return true;
-                            break;
-                        case 1:
-                            lgtext = "0db - -10db";
-                            break;
-                        case 2:
-                            return true;
-                            break;
-                        case 3:
-                            lgtext = "-10db - -16db";
-                            break;
-                        case 4:
-                            lgtext = "-16db - -30db";
-                            break;
-                    }
-
-                } else if (leg_type == 'rsrp') {
-                    switch(index) {
-                        case 0:
-                            lgtext = "-45dbm - -91dbm";
-                            break;
-                        case 1:
-                            lgtext = "-91dbm - -97dbm";
-                            break;
-                        case 2:
-                            lgtext = "-97dbm - -114dbm";
-                            break;
-                        case 3:
-                            lgtext = "-114dbm - -120dbm";
-                            break;
-                        case 4:
-                            lgtext = "-120dbm - -130dbm";
-                            break;
-                    }
-
-                } else if (leg_type == 'traffic') {
-                    switch(index) {
-                        case 0:
-                            lgtext = "Low";
-                            break;
-                        case 1:
-                            return true;
-                            break;
-                        case 2:
-                            return true;
-                            break;
-                        case 3:
-                            lgtext = "Medium";
-                            break;
-                        case 4:
-                            lgtext = "High";
-                            break;
-                    }
-
-                } else if (leg_type == 'TMo_TechLTE_Map') {
-                    switch(index) {
-                        case 0:
-                            lgtext = "4G LTE";
-                            break;
-                        case 1:
-                            lgtext = "4G";
-                            break;
-                        case 2:
-                            lgtext = "3G";
-                            break;
-                        case 3:
-                            lgtext = "2G";
-                            break;
-                        case 4:
-                            lgtext = "Partner";
-                            break;
-                    }
-
-                } else {
-
-                    switch(index) {
-                        case 0:
-                            return true;
-                            break;
-                        case 1:
-                            lgtext = "Okay";
-                            break;
-                        case 2:
-                            return true;
-                            break;
-                        case 3:
-                            lgtext = "Warning";
-                            break;
-                        case 4:
-                            lgtext = "Degraded";
-                            break;
-                    }
-                }
-
-                var $div = $('<div style="height:25px;">').append($('<div class="legend-color-box">').css({
-                    backgroundColor:val
-                })).append($("<span>").css("lineHeight","23px").html(lgtext));
-
-                $legend.append($div);
-
-            });
-        };
-
-//make a legend for the first time
-
-    if (leg_type == 'TMo_TechLTE_Map') {
-        renderLegend(colorPCC);
-
-    }else {
-        renderLegend(colorValues);
+    var centerControlDiv = document.createElement('div');
+    var innerHtml = '<div id="legend-container" style="z-index: 0; position: absolute; bottom: 14px; right: 0;"><h3>Legend</h3><div id="legend">';
+    var legendTable = [];
+    legendTable['rsrq'] = [['green','orange','red'],['0db to -10db','-10db to -16db','-16db to -30db'],'dB'];
+    legendTable['rsrp'] = [['#0099FF','green','yellow','orange','red'],['-45dbm to -91dbm','-91dbm to -97dbm','-97dbm to -114dbm','-114dbm to -120dbm','-120dbm to -130dbm'],'dBm']
+    legendTable['traffic'] = [['#0099FF','orange','red'],['Low','Medium','High'],'None'];
+    legendTable['TMo_TechLTE_Map'] = [["#E20074","#FF3B9E","#FF73B9","#848484","#CECECE"],['LTE','WCDMA','UMTS','GSM','Roam'],'None'];
+    legendTable['other'] = [['green','orange','red'],['Okay','Warning','Degraded'],'None'];
+    if (leg_type=='rsrq'||leg_type=='rsrp'||leg_type=='traffic'||leg_type=='TMo_TechLTE_Map'){
+        for(var j = 0;j<legendTable[leg_type][0].length;j++){
+            innerHtml+='<div style="height:25px;"><div class="legend-color-box" style="background-color:'+legendTable[leg_type][0][j]+';"></div><span style="line-height: 23px;">'+legendTable[leg_type][1][j]+'</span></div>';
+        }
     }
-//add the legend to the map
-    map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push($legendContainer[0]);
+    else{
+        for(var k = 0;k<legendTable['other'][0].length;k++){
+            innerHtml+='<div style="height:25px;"><div class="legend-color-box" style="background-color:'+legendTable['other'][0][k]+';"></div><span style="line-height: 23px;">'+legendTable['other'][1][k]+'</span></div>';
+        }
+    }
+    innerHtml+='</div></div>';
+    centerControlDiv.style.width = '240px';
+    centerControlDiv.innerHTML = innerHtml;
+    centerControlDiv.index = 1;
+    map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(centerControlDiv);
 }
 
 // Remove layer
