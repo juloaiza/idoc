@@ -499,7 +499,7 @@ $market = $row['market'];
     $('#btnRight').click(function () {
         var mapCanvas = $("#map-canvas");
         var width = mapCanvas.width();
-        var parentWidth = mapCanvas.offsetParent().width();
+        var parentWidth = mapCanvas.offsetParent.width();
         var widthper = 100*width/parentWidth;
         var btnArrowLeft = $('#btnArrowLeft');
         var accordion = $( "#accordion" );
