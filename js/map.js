@@ -1,22 +1,9 @@
 /* google maps -----------------------------------------------------*/
 // Define map as global scope
 var maptiler;
-var map,cachedGeoJson,
-    colorValues = [
-        "#0099FF", //0 blue
-        "green", //1
-        "yellow", //2
-        "orange", //3
-        "red" //4
-    ];
-var colorPCC = [
-    "#E20074", //0
-    "#FF3B9E", //1
-    "#FF73B9", //2
-    "#848484", //3
-    "#CECECE" //4
-];
-
+var map;
+var cachedGeoJson;
+var colorValues = ["#0099FF"/*0*/, "green"/*1*/, "yellow"/*2*/, "orange"/*3*/, "red"/*4*/];
 var mkt_loc = {
     Portland:[45.523062, -122.676482],
     Seattle:[47.6097, -122.331],
@@ -33,36 +20,20 @@ var siteDots = [];  // Used to modify polyg on the fly
 var markerCluster; //Required to removed it when is required http://stackoverflow.com/questions/8229827/update-markercluster-after-removing-markers-from-array
 var markerL700;
 var bans = [];
-// Creating the icon. Using sprites Google_Maps_v3 pag 110
-var siteicon =[];
+var siteicon =[]; // Creating the icon. Using sprites Google_Maps_v3 pag 110
+siteicon['antenna'] = doSiteIcon([[32,37],[0,0],[16,18]]);
+siteicon['green'] = doSiteIcon([[18,37],[36,0],[9,18]]);
+siteicon['orange'] = doSiteIcon([[18,37],[58,0],[9,18]]);
+siteicon['red'] = doSiteIcon([[18,37],[80,0],[9,18]]);
 
-siteicon['antenna'] = new google.maps.MarkerImage(
-    'images/sites.png',
-    new google.maps.Size(32, 37), // The Size
-    new google.maps.Point(0, 0), // The origin
-    new google.maps.Point(16, 18) // The anchor
-);
-
-siteicon['green'] = new google.maps.MarkerImage(
-    'images/sites.png',
-    new google.maps.Size(18, 37), // The Size
-    new google.maps.Point(36, 0), // The origin
-    new google.maps.Point(9, 18) // The anchor
-);
-
-siteicon['orange'] = new google.maps.MarkerImage(
-    'images/sites.png',
-    new google.maps.Size(18, 37), // The Size
-    new google.maps.Point(58, 0), // The origin
-    new google.maps.Point(9, 18) // The anchor
-);
-
-siteicon['red'] = new google.maps.MarkerImage(
-    'images/sites.png',
-    new google.maps.Size(18, 37), // The Size
-    new google.maps.Point(80, 0), // The origin
-    new google.maps.Point(9, 18) // The anchor
-);
+function doSiteIcon(pts){
+    new google.maps.MarkerImage(
+        'images/sites.png',
+        new google.maps.Size(pts[0][0], pts[0][1]), // The Size
+        new google.maps.Point(pts[1][0], pts[1][1]), // The origin
+        new google.maps.Point(pts[2][0], pts[2][1])  // The anchor
+    );
+}
 
 function initialize() {
     /* position */
@@ -98,10 +69,9 @@ function initialize() {
 
 // Add map menu
     navmenu();
-
 // Load Sites
     sites();
-
+// Load Sectors
     sectors(mkt);
 
 // create a legend
@@ -137,65 +107,6 @@ google.maps.event.addDomListener(window, 'load', initialize);
 
 /* end google maps -----------------------------------------------------*/
 
-function test(){
-    console.log( "teststet")
-}
-
-//Sites Layer
-function sites_old() {
-    markers.length = 0;
-// getJson help me to read json file
-    $.getJSON('http://serfopt/webcontent/layers/sites.json', function(data) {
-//var markers = [];
-        for (var i in data.features) {
-            var latLng = new google.maps.LatLng(data.features[i].properties.Lat,data.features[i].properties.Long);
-            var marker = new google.maps.Marker({
-                position: latLng,
-                title: data.features[i].properties.Site,
-                icon : siteicon['antenna']
-            });
-            markers.push(marker);
-
-// Wrapping the event listener inside an anonymous function pag92
-// that we immediately invoke and passes the variable i to.
-            (function(i, marker) {
-
-// Creating the event listener. It now has access to the values of
-// i and marker as they were during its creation
-                google.maps.event.addListener(marker, 'click', function() {
-                    kpi = Math.round(10*Math.random());
-                    var content = '<div class="winfo">' + data.features[i].properties.Site  +'<br/>KPI_1 = ' + data.features[i].properties.KPI_1  +'<br/>KPI_2 = ' + data.features[i].properties.KPI_2 +
-                        '<p> LTE drop #: <span class="ltedropLine'+i+'">' + (Math.round(10*Math.random())+1) + ',' + (Math.round(10*Math.random())+4) + ',' + (Math.round(10*Math.random())+4) + ',' + (Math.round(10*Math.random())+7) + ',' + (Math.round(10*Math.random())+5) + ',' + (Math.round(10*Math.random())+9) + ',' + (Math.round(10*Math.random())+10) +'</span> </p>' + '</div>';
-                    var infowindow = new google.maps.InfoWindow();//{
-//  content: content
-//});
-
-// Setting the content of the InfoWindow
-                    infowindow.setContent(content);
-                    infowindow.open(map, marker);
-//Inline sparklines take their values from the contents of the tag
-                    google.maps.event.addListener(infowindow, 'domready', function(event) {  //avoid click second time
-                        $('.ltedropLine'+i).sparkline();
-                    });
-                    console.log(infowindow.content);
-                });
-            })(i, marker);
-        }
-// Adding the markers to the MarkerClusterer
-        var styles = [[{
-            url: 'images/m1.png',
-            height: 50,
-            width: 50,
-            opt_anchor: [8, 0],
-            opt_textColor: '#FF0000'
-        }]];
-//console.log(  styles[0])
-        var mcOptions = {gridSize: 50, maxZoom: 11, styles: styles[0]};
-//var mcOptions = {gridSize: 50, maxZoom: 12};
-        var markerCluster = new MarkerClusterer(map, markers,mcOptions);
-    });
-}
-
 //Sites Layer
 function sites(nkpi) {
 
@@ -206,12 +117,13 @@ function sites(nkpi) {
     }
 // getJson help me to read json file
     $.getJSON('http://serfopt/webcontent/layers/sites.json', function(data) {
-
-        for (var i in data.features) {
+        var i;
+        for (i=0; i<data.features.length;i++) {
             var latLng = new google.maps.LatLng(data.features[i].properties.Lat,data.features[i].properties.Long);
             var kpi = data.features[i].properties.KPI_2;
             var color;
             var z = 1;
+            var rad;
             if (nkpi == 'KPI_2') {
                 if (kpi > 0.9){
                     color = colorValues[4];
@@ -276,8 +188,8 @@ function sites(nkpi) {
                             }
 
 //Infocell
-                            var cellLast = new String(datak.kpi[1].value);
-                            var dateLast = new String(datak.kpi[0].value);
+                            var cellLast = String(datak.kpi[1].value);
+                            var dateLast = String(datak.kpi[0].value);
 
                             var cellLastsp = cellLast.split(",");
                             var dateLastsp = dateLast.split(",");
@@ -318,7 +230,7 @@ function sectors(market) {
             (function(i, secPoly) {
 
                 google.maps.event.addListener(secPoly, 'click', function(e) {
-                    kpi = Math.round(10*Math.random())
+                    kpi = Math.round(10*Math.random());
 
                     if (!infowindow) {  //Show only one infowindows
                         infowindow = new google.maps.InfoWindow();
@@ -355,19 +267,20 @@ function sectors(market) {
                      put in variable 'data' inside the callback function*/
                         for (var i = 0; i < 26; i++){
 // $('#ltekpi'+i).append('<span class="inlinesparkline">'+data+'</span>');
-                            $('#ltekpi'+i).html('<span class="inlinesparkline">Loading...</span>');
-                            $('#ltekpi'+i).html('<span class="inlinesparkline">'+datak.kpi[i+3].value+'</span>');
+                            var ltekpif=$('#ltekpi'+i);
+                            ltekpif.html('<span class="inlinesparkline">Loading...</span>');
+                            ltekpif.html('<span class="inlinesparkline">'+datak.kpi[i+3].value+'</span>');
                         }
 
 //Infocell
-                        var cellLast = new String(datak.kpi[1].value);
-                        var dateLast = new String(datak.kpi[0].value);
+                        var cellLast = String(datak.kpi[1].value);
+                        var dateLast = String(datak.kpi[0].value);
 
                         var cellLastsp = cellLast.split(",");
                         var dateLastsp = dateLast.split(",");
 
-                        $('.infoCell').html('<p>'+cellLastsp[cellLastsp.length - 1]+'-'+dateLastsp[dateLastsp.length - 1]+'</p">');
-                        $('.infoSite').html('<p>'+cellLastsp[cellLastsp.length - 1]+'</p">');
+                        $('.infoCell').html('<p>'+cellLastsp[cellLastsp.length - 1]+'-'+dateLastsp[dateLastsp.length - 1]+'</p>');
+                        $('.infoSite').html('<p>'+cellLastsp[cellLastsp.length - 1]+'</p>');
 // $('#ltekpi').html(data);
 //  $('.inlinesparkline').sparkline('html',{width: '50px', height: '20px', lineWidth: 1});
                         $('.inlinesparkline').sparkline('html',{width: '100px', height: '20px'});
@@ -381,133 +294,32 @@ function sectors(market) {
         }
     });
 }
-
 //get the legend container, create a legend, add a legend renderer fn, define css on general.css
+
 function legend(leg_type) {
-
-    $('body').append('<div id="legend-container"><h3>Legend</h3></div>');
-
-    var $legendContainer = $('#legend-container'),
-        $legend = $('<div id="legend">').appendTo($legendContainer),
-        renderLegend = function(colorValuesArray){
-            $legend.empty();
-            $.each(colorValuesArray,function(index, val){
-                if (leg_type == 'rsrq') {
-                    switch(index) {
-                        case 0:
-                            return true;
-                            break;
-                        case 1:
-                            lgtext = "0db - -10db";
-                            break;
-                        case 2:
-                            return true;
-                            break;
-                        case 3:
-                            lgtext = "-10db - -16db";
-                            break;
-                        case 4:
-                            lgtext = "-16db - -30db";
-                            break;
-                    }
-
-                } else if (leg_type == 'rsrp') {
-                    switch(index) {
-                        case 0:
-                            lgtext = "-45dbm - -91dbm";
-                            break;
-                        case 1:
-                            lgtext = "-91dbm - -97dbm";
-                            break;
-                        case 2:
-                            lgtext = "-97dbm - -114dbm";
-                            break;
-                        case 3:
-                            lgtext = "-114dbm - -120dbm";
-                            break;
-                        case 4:
-                            lgtext = "-120dbm - -130dbm";
-                            break;
-                    }
-
-                } else if (leg_type == 'traffic') {
-                    switch(index) {
-                        case 0:
-                            lgtext = "Low";
-                            break;
-                        case 1:
-                            return true;
-                            break;
-                        case 2:
-                            return true;
-                            break;
-                        case 3:
-                            lgtext = "Medium";
-                            break;
-                        case 4:
-                            lgtext = "High";
-                            break;
-                    }
-
-                } else if (leg_type == 'TMo_TechLTE_Map') {
-                    switch(index) {
-                        case 0:
-                            lgtext = "4G LTE";
-                            break;
-                        case 1:
-                            lgtext = "4G";
-                            break;
-                        case 2:
-                            lgtext = "3G";
-                            break;
-                        case 3:
-                            lgtext = "2G";
-                            break;
-                        case 4:
-                            lgtext = "Partner";
-                            break;
-                    }
-
-                } else {
-
-                    switch(index) {
-                        case 0:
-                            return true;
-                            break;
-                        case 1:
-                            lgtext = "Okay";
-                            break;
-                        case 2:
-                            return true;
-                            break;
-                        case 3:
-                            lgtext = "Warning";
-                            break;
-                        case 4:
-                            lgtext = "Degraded";
-                            break;
-                    }
-                }
-
-                var $div = $('<div style="height:25px;">').append($('<div class="legend-color-box">').css({
-                    backgroundColor:val
-                })).append($("<span>").css("lineHeight","23px").html(lgtext));
-
-                $legend.append($div);
-
-            });
-        };
-
-//make a legend for the first time
-
-    if (leg_type == 'TMo_TechLTE_Map') {
-        renderLegend(colorPCC);
-
-    }else {
-        renderLegend(colorValues);
+    var centerControlDiv = document.createElement('div');
+    var innerHtml = '<div id="legend-container" style="z-index: 0; position: absolute; bottom: 14px; right: 0;"><h3>Legend</h3><div id="legend">';
+    var legendTable = [];
+    legendTable['rsrq'] = [['green','orange','red'],['0db to -10db','-10db to -16db','-16db to -30db'],'dB'];
+    legendTable['rsrp'] = [['#0099FF','green','yellow','orange','red'],['-45dbm to -91dbm','-91dbm to -97dbm','-97dbm to -114dbm','-114dbm to -120dbm','-120dbm to -130dbm'],'dBm'];
+    legendTable['traffic'] = [['#0099FF','orange','red'],['Low','Medium','High'],'None'];
+    legendTable['TMo_TechLTE_Map'] = [["#E20074","#FF3B9E","#FF73B9","#848484","#CECECE"],['LTE','WCDMA','UMTS','GSM','Roam'],'None'];
+    legendTable['other'] = [['green','orange','red'],['Okay','Warning','Degraded'],'None'];
+    if (leg_type=='rsrq'||leg_type=='rsrp'||leg_type=='traffic'||leg_type=='TMo_TechLTE_Map'){
+        for(var j = 0;j<legendTable[leg_type][0].length;j++){
+            innerHtml+='<div style="height:25px;"><div class="legend-color-box" style="background-color:'+legendTable[leg_type][0][j]+';"></div><span style="line-height: 23px;">'+legendTable[leg_type][1][j]+'</span></div>';
+        }
     }
-//add the legend to the map
-    map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push($legendContainer[0]);
+    else{
+        for(var k = 0;k<legendTable['other'][0].length;k++){
+            innerHtml+='<div style="height:25px;"><div class="legend-color-box" style="background-color:'+legendTable['other'][0][k]+';"></div><span style="line-height: 23px;">'+legendTable['other'][1][k]+'</span></div>';
+        }
+    }
+    innerHtml+='</div></div>';
+    centerControlDiv.style.width = '240px';
+    centerControlDiv.innerHTML = innerHtml;
+    centerControlDiv.index = 1;
+    map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(centerControlDiv);
 }
 
 // Remove layer
@@ -567,8 +379,8 @@ function showFeature(layer, nkpi){
             }
 
 //Infocell
-            var cellLast = new String(datak.kpi[1].value);
-            var dateLast = new String(datak.kpi[0].value);
+            var cellLast = String(datak.kpi[1].value);
+            var dateLast = String(datak.kpi[0].value);
 
             var cellLastsp = cellLast.split(",");
             var dateLastsp = dateLast.split(",");
@@ -670,13 +482,14 @@ function mkt_kpi(mkt) {
      put in variable 'data' inside the callback function*/
         for (var i = 0; i < 26; i++){
 // $('#ltekpi'+i).append('<span class="inlinesparkline">'+data+'</span>');
-            $('#ltekpi'+i).html('<span class="inlinesparkline">Loading...</span>');
-            $('#ltekpi'+i).html('<span class="inlinesparkline">'+datak.kpi[i+3].value+'</span>');
+            var ltekpi = $('#ltekpi'+i);
+            ltekpi.html('<span class="inlinesparkline">Loading...</span>');
+            ltekpi.html('<span class="inlinesparkline">'+datak.kpi[i+3].value+'</span>');
         }
 
 //Infocell
-        var cellLast = new String(datak.kpi[1].value);
-        var dateLast = new String(datak.kpi[0].value);
+        var cellLast = String(datak.kpi[1].value);
+        var dateLast = String(datak.kpi[0].value);
 
         var cellLastsp = cellLast.split(",");
         var dateLastsp = dateLast.split(",");
@@ -736,26 +549,12 @@ function truecall(maptype) {
     cleanlayer(); //Clean Layer
     var mkt =$('.market').html();
     if (maptype!='pci') {legend(maptype); }
-    var mapBounds = new google.maps.LatLngBounds(
-        new google.maps.LatLng(46.992480, -125.043640),
-        new google.maps.LatLng(49.336832, -121.527972));
-    var mapMinZoom = 4;
-    var mapMaxZoom = 19;
     maptiler = new google.maps.ImageMapType({
         getTileUrl: function(coord, zoom) {
-
-            var z2 = Math.pow(2, zoom);
-            var y = coord.y;
-            var x = coord.x >= 0 ? coord.x : z2 + coord.x
-
-            if ((mapMinZoom <= zoom) && (zoom <= mapMaxZoom))
-                return "http://serfopt/webcontent/maps/" + mkt.toLowerCase() + "/" + maptype + "/" + zoom + "/" + x + "/" + y + ".png";
-            else
-                return "http://www.maptiler.org/img/none.png";
+            return "http://serfopt/webcontent/maps/" + mkt.toLowerCase() + "/" + maptype + "/" + zoom + "/" + coord.x + "/" + coord.y + ".png";
         },
         tileSize: new google.maps.Size(256, 256),
         isPng: true,
-
         opacity: 0.5
     });
     map.overlayMapTypes.insertAt(0, maptiler);
@@ -804,8 +603,6 @@ function srs() {
 // Setting the content of the InfoWindow
                         infowindow.setContent(content);
                         infowindow.open(map, marker);
-
-                        console.log(infowindow.content);
                     });
                 })(i, marker);
             }
@@ -832,7 +629,6 @@ function srs() {
 
 function showBans() {
 //Remove BANS and reset array
-
     for (var i = 0; i < bans.length; i++) {
         bans[i].setMap(null); // remove icons setMap(null);
     }
@@ -907,35 +703,12 @@ function showBans() {
 function pcc(maptype) {
     cleanlayer(); //Clean Layer
     if (maptype!='pci') {legend(maptype); }
-    var mapBounds = new google.maps.LatLngBounds(
-        new google.maps.LatLng(29.954935, -125.8359432220459),
-        new google.maps.LatLng(49.44336593860135, -109.8398494720459));
-    var mapMinZoom = 4;
-    var mapMaxZoom = 19;
     maptiler = new google.maps.ImageMapType({
         getTileUrl: function(coord, zoom) {
-            var proj = map.getProjection();
-            var z2 = Math.pow(2, zoom);
-            var tileXSize = 256 / z2;
-            var tileYSize = 256 / z2;
-            var tileBounds = new google.maps.LatLngBounds(
-                proj.fromPointToLatLng(new google.maps.Point(coord.x * tileXSize, (coord.y + 1) * tileYSize)),
-                proj.fromPointToLatLng(new google.maps.Point((coord.x + 1) * tileXSize, coord.y * tileYSize))
-            );
-            var y = coord.y;
-            var x = coord.x >= 0 ? coord.x : z2 + coord.x
-
-            if (mapBounds.intersects(tileBounds) && (mapMinZoom <= zoom) && (zoom <= mapMaxZoom))
-                return "http://maps.t-mobile.com/" + maptype + "/" + (zoom+1) + "/" + (x+1) + ":" + (y+1) + "/tile.png";
-
-//   http://maps.t-mobile.com/TMo_Verified_Map/16/5260:11445/tile.png
-
-            else
-                return "http://www.maptiler.org/img/none.png";
+            return "http://maps.t-mobile.com/" + maptype + "/" + (zoom+1) + "/" + (coord.x+1) + ":" + (coord.y+1) + "/tile.png";
         },
         tileSize: new google.maps.Size(256, 256),
         isPng: true,
-
         opacity: 0.8
     });
     map.overlayMapTypes.insertAt(0, maptiler);
@@ -953,7 +726,7 @@ function geolocation(address) {
 // Creating a GeocoderRequest object
     var geocoderRequest = {
         address: address
-    }
+    };
 // Making the Geocode request
     geocoder.geocode(geocoderRequest, function(results, status) {
 // Check if status is OK before proceeding
@@ -986,29 +759,9 @@ function geolocation(address) {
         }
     });
 }
-
 //Search site and move map in its location
-function moveCenter2() {
-
-    var site = document.getElementById('seartxt').value;
-
-    $.getJSON('php/geo.php?site='+site.toUpperCase(), function(data) {
-// iterate over each element in the array
-        console.log( data.site.length);
-        for (var i = 0; i < data.site.length; i++){
-            var newLatLng = new google.maps.LatLng(data.site[i].Lat,data.site[i].Log);
-            map.setCenter(newLatLng);
-            map.setZoom(18);
-            break;
-        }
-        console.log( site);
-    });
-}
-
 function moveCenter() {
-
     var site = document.getElementById('seartxt').value;
-
     $.ajax({   //ajax take the content and put in data after done
         url:'php/geo.php?site='+site.toUpperCase(),
         type: "GET", // Whether this is a POST or GET request
@@ -1021,31 +774,19 @@ function moveCenter() {
         }
     }).done(function(data){
         if (!$.isEmptyObject(data)) {
-            for (var i = 0; i < data.site.length; i++){
-                var newLatLng = new google.maps.LatLng(data.site[i].Lat,data.site[i].Log);
-                map.setCenter(newLatLng);
-                map.setZoom(18);
-                break;
-            }
+            var newLatLng = new google.maps.LatLng(data.site[0].Lat,data.site[0].Log);
+            map.setCenter(newLatLng);map.setZoom(18);
         } else {
-
             geolocation(site);
-
         }
     });
 }
-
 //Sites Layer 700
 function L700() {
-
-    var x = document.getElementById("check2").checked;
     markers.length = 0;
-    if (x == true) {
-
+    if (document.getElementById("check2").checked == true) {
 // getJson help me to read json file
         $.getJSON('php/get_L700.php', function(data) {
-//var markers = [];
-            console.log( data );
             for (var i in data.L700) {
                 var latLng = new google.maps.LatLng(data.L700[i].Lat, data.L700[i].Log);
                 var marker = new google.maps.Marker({
@@ -1054,7 +795,6 @@ function L700() {
                     icon : 'images/L700.png'
                 });
                 markers.push(marker);
-
 // Wrapping the event listener inside an anonymous function pag92
 // that we immediately invoke and passes the variable i to.
                 (function(i, marker) {
@@ -1066,12 +806,9 @@ function L700() {
                         if (!infowindow) {  //Show only one infowindows
                             infowindow = new google.maps.InfoWindow();
                         }
-
 // Setting the content of the InfoWindow
                         infowindow.setContent(content);
                         infowindow.open(map, marker);
-
-                        console.log(infowindow.content);
                     });
                 })(i, marker);
             }
@@ -1093,6 +830,4 @@ function L700() {
 
         markerL700.clearMarkers();
     }
-
 }
-
