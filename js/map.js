@@ -297,6 +297,7 @@ function sectors(market) {
 }
 
 //get the legend container, create a legend, add a legend renderer fn, define css on general.css
+/*
 function legend(leg_type) {
 
     $('body').append('<div id="legend-container"><h3>Legend</h3></div>');
@@ -423,7 +424,7 @@ function legend(leg_type) {
 //add the legend to the map
     map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push($legendContainer[0]);
 }
-
+*/
 // Remove layer
 function clearMap(){
     map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].clear();
