@@ -4,13 +4,7 @@ var maptiler;
 var map;
 var cachedGeoJson;
 var colorValues = ["#0099FF"/*0*/, "green"/*1*/, "yellow"/*2*/, "orange"/*3*/, "red"/*4*/];
-var mkt_loc = {
-    Portland:[45.523062, -122.676482],
-    Seattle:[47.6097, -122.331],
-    Spokane:[47.658780, -117.426047],
-    Phoenix:[33.448377, -112.074037]
-};
-//made a change
+var mkt_loc = {Portland:[45.523062, -122.676482], Seattle:[47.6097, -122.331], Spokane:[47.658780, -117.426047], Phoenix:[33.448377, -112.074037]};
 var cluster = $.getJSON("http://serfopt/webcontent/layers/Cluster.json");  //Add layers with JQUERY and using in options
 var subcluster = $.getJSON("http://serfopt/webcontent/layers/SubCluster.json");  //Add layers and using in options
 var features = null;
@@ -25,7 +19,7 @@ siteicon['antenna'] = doSiteIcon([[32,37],[0,0],[16,18]]);
 siteicon['green'] = doSiteIcon([[18,37],[36,0],[9,18]]);
 siteicon['orange'] = doSiteIcon([[18,37],[58,0],[9,18]]);
 siteicon['red'] = doSiteIcon([[18,37],[80,0],[9,18]]);
-
+//calculates the region for the site color icons.
 function doSiteIcon(pts){
     new google.maps.MarkerImage(
         'images/sites.png',
@@ -34,7 +28,7 @@ function doSiteIcon(pts){
         new google.maps.Point(pts[2][0], pts[2][1])  // The anchor
     );
 }
-
+//Show the map add stuff to the map; all the stuff you'd expect be done on startup.
 function initialize() {
     /* position */
     var mkt = $('.market').html();
@@ -42,8 +36,7 @@ function initialize() {
     var mapOptions = {
         center: latlng,
         scrollWheel: false,
-        zoom: 10, //8
-
+        zoom: 10,
 //Control Options
         disableDefaultUI: true,
         mapTypeControl: true,
@@ -62,48 +55,23 @@ function initialize() {
         },
         streetViewControl: true
     };
-
     map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
     map.setMapTypeId(google.maps.MapTypeId.TERRAIN);
-
-// Add map menu
     navmenu();
-// Load Sites
     sites();
-// Load Sectors
     sectors(mkt);
-
-// create a legend
-//legend();
-//  document.getElementById("put_geojson_string_here").value = cluster;
-
-// Add a listener for the click event
     google.maps.event.addListener(map, "rightclick",function(event){showContextMenu(event.latLng);});
-
-// Create an ElevationService.
     elevator = new google.maps.ElevationService();
-
     google.maps.event.addListener(map, 'idle', showBans);
-
 }
-
-/*It adds a listener to the window object, which as soon as the load event is triggered 
- (i.e. "the page has finished loading") executes the function initialize.
- Another option define  html <body onload="initialize();"> */
-
+//onload event listener
 google.maps.event.addDomListener(window, 'load', initialize);
-
-
-
-/* end google maps -----------------------------------------------------*/
-
 //Sites Layer
 function sites(nkpi) {
     map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].clear();
     if (nkpi == 'KPI_2') {
         legend();
     }
-// getJson help me to read json file
     $.getJSON('http://serfopt/webcontent/layers/sites.json', function(data) {
         var i;
         for (i=0; i<data.features.length;i++) {
@@ -128,61 +96,54 @@ function sites(nkpi) {
                 color = '#0099FF';
                 rad = 10;
             }
-//Circle properties
-            var pointOptions = {
+            var circleOptions = {
                 strokeColor: '#000000',
                 fillOpacity:1,
                 strokeWeight: 1,
-                fillColor: color, //define dot color for kpi
+                fillColor: color,
                 map: map,
                 center: latLng,
                 radius: rad,
                 zIndex: 1
             };
-            if (!nkpi) {   //  ! check null values
-// Add the site dot on the map first time.
-                siteDot = new google.maps.Circle(pointOptions);
+            if (!nkpi) {//if there are no stie dots.
+                siteDot = new google.maps.Circle(circleOptions);
                 siteDots.push(siteDot); //iterate over this list and modify all of them:
-
-// Creating a variable that will hold the InfoWindow object pag 95
-                var infowindow;
-// Wrapping the event listener inside an anonymous function pag92
-                google.maps.event.addListener(siteDot, 'click', infoWindowShowFinally('site',[i,data]));
-
+                google.maps.event.addListener(siteDot, 'click', infoWindowSparklineShow('site',[i,data]));
             } else {
-                siteDots[i].setOptions(pointOptions);
+                siteDots[i].setOptions(circleOptions);
             }
         }
     });
 }
+//populates the sectors onto the map
 function sectors(market) {
-//alert('php/get_cellinfo.php?market='+market);
-// getJson help me to read json file
     $.getJSON('php/get_cellinfo.php?market='+market, function(data) {
         for (var i in data.sector) {
             var centerPoint = new google.maps.LatLng(data.sector[i].Lat, data.sector[i].Log);
             var arcPts = circleMath(centerPoint,data.sector[i].azimuth, 75);
             var secPoly = new google.maps.Polygon({
-                paths: [arcPts],
+                paths: arcPts,
                 strokeColor: "#000000",
                 strokeWeight: 1,
                 fillColor: "#0099FF",
                 fillOpacity:1,
                 map: map
             });
-            google.maps.event.addListener(secPoly, 'click', infoWindowShowFinally('sector',[i,data]));
+            google.maps.event.addListener(secPoly, 'click', infoWindowSparklineShow('sector',[i,data]));
         }
     });
 }
-function infoWindowShowFinally(type,passIn){
+//Shows infowindows for site, sector, and clustor onclicks, then shows KPI sparklines for site, sector, clustor, and market onclicks.
+function infoWindowSparklineShow(type,passIn){
     return function(event) {
         if (!infowindow) {
             infowindow = new google.maps.InfoWindow();
         }
         var jSONURL;
-        var infoSiteString;
+        var content;
         if(type=='site'){
-            var content = '<div class="winfo">' + passIn[1].features[passIn[0]].properties.Site  +'<br/>VoLTE DCR = ' + passIn[1].features[passIn[0]].properties.KPI_2 + '</div>';
+            content = '<div class="winfo">' + passIn[1].features[passIn[0]].properties.Site  +'<br/>VoLTE DCR = ' + passIn[1].features[passIn[0]].properties.KPI_2 + '</div>';
             infowindow.setContent(content);
             infowindow.setPosition(event.latLng);
             infowindow.open(map);
@@ -190,7 +151,7 @@ function infoWindowShowFinally(type,passIn){
         }
         if(type=='sector'){
             $.get("php/phyconf.php?lncel="+passIn[1].sector[passIn[0]].lncel_name,function(phyconf){
-                var content = '<div class="winfo">' + passIn[1].sector[passIn[0]].site_name  +'<br/>Cell: ' + passIn[1].sector[passIn[0]].lncel_name + phyconf +'</div>';
+                content = '<div class="winfo">' + passIn[1].sector[passIn[0]].site_name  +'<br/>Cell: ' + passIn[1].sector[passIn[0]].lncel_name + phyconf +'</div>';
                 infowindow.setContent(content);
             });
             infowindow.setPosition(event.latLng);
@@ -209,13 +170,17 @@ function infoWindowShowFinally(type,passIn){
             jSONURL = "php/kpi.php?lncel="+passIn[1].sector[passIn[0]].lncel_name;
         }
         if (type == 'cluster'){
-            var content = '<div style="line-height:1.35;overflow:hidden;white-space:nowrap;"> Cluster = '+
-                event.feature.getId() +"<br/>Cluster Name = " + event.feature.getProperty("ClusterName") +"<br/>VoLTE DCR = " + event.feature.getProperty("KPI_2") + "</div>"
+            content = '<div style="line-height:1.35;overflow:hidden;white-space:nowrap;"> Cluster = '+
+                event.feature.getId() +"<br/>Cluster Name = " + event.feature.getProperty("ClusterName") +"<br/>VoLTE DCR = " + event.feature.getProperty("KPI_2") + "</div>";
             infowindow.setContent(content);
             var anchor = new google.maps.MVCObject();
             anchor.set("position",event.latLng);
             infowindow.open(map,anchor);
             jSONURL = "php/kpi.php?lncel="+event.feature.getProperty("ClusterName");
+        }
+        if (type == 'market'){
+            jSONURL = "php/kpi.php?lncel="+passIn;
+            mkt_center(passIn);
         }
         $.getJSON(jSONURL,function(datak) {
             for (var g = 0; g < 26; g++){
@@ -259,41 +224,30 @@ function legend(leg_type) {
     legendDiv.index = 1;
     map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(legendDiv);
 }
-
-// Remove layer
+//Removes the bottom right control and any features layer.
 function clearMap(){
     map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].clear();
-
     if (!features)
         return;
     for (var i = 0; i < features.length; i++){
         map.data.remove(features[i]);
     }
 }
-
-//ShowCluster
+//shows the cluster view
 function showFeature(layer, nkpi){
     clearMap();
     legend();
     layer.then(function(data){
         cachedGeoJson = data; //save the geojson in case we want to update its values
         features = map.data.addGeoJson(cachedGeoJson,{idPropertyName:"ClusterID"});  //idPropertyName identify with getId
-
     });
-
     if (listenerHandle) {
-// if there is any identifier for this listener, remove it
         google.maps.event.removeListener(listenerHandle);
     }
-
-//listen for click events
-    listenerHandle =   map.data.addListener('click', infoWindowShowFinally('cluster',''));
-
-//style functions
+    listenerHandle =   map.data.addListener('click', infoWindowSparklineShow('cluster',''));
     var setColorStyleFn = function(feature) {
         var kpi = feature.getProperty(nkpi);
         var color;
-
         if (nkpi == 'KPI_2') {
             if (kpi > 0.6){
                 color = colorValues[4];
@@ -311,209 +265,70 @@ function showFeature(layer, nkpi){
                 color = colorValues[3];
             }
         }
-
         return {
             fillColor: color,
             strokeWeight: 1
         };
     };
-
     map.data.setStyle(setColorStyleFn);
-
 }
-//Site KPI
-function site_kpi(nkpi) {
-    setAllMap(map,nkpi);
-
-}
-
-// Sets the map on all markers in the array. Source: https://developers.google.com/maps/documentation/javascript/examples/marker-remove
-function setAllMap(map,nkpi) {
-// getJson help me to read json file
-    $.getJSON('http://serfopt/webcontent/layers/kpi.json', function(data) {
-
-//  alert(data['LSE01001T'][nkpi]); //http://stackoverflow.com/questions/4968406/javascript-property-access-dot-notation-vs-brackets
-        var kpi = 0;
-
-        for (var i = 0; i < markers.length; i++) {
-// console.log(i+ markers[i].title + kpi);
-            try {
-                kpi = data[markers[i].title][nkpi]; //site name & kpi from json
-            }
-            catch (e) {
-                continue;
-            }
-
-            if (nkpi == 'KPI_2') {
-                if (kpi > 0.6){
-                    markers[i].setIcon(siteicon['red']);
-                } else if (kpi < 0.4){
-                    markers[i].setIcon(siteicon['green']);
-                } else {
-                    markers[i].setIcon(siteicon['orange']);
-                }
-            } else {
-                if (kpi > 20){
-                    markers[i].setIcon(siteicon['red']);
-                } else if (kpi < 11){
-                    markers[i].setIcon(siteicon['green']);
-                } else {
-                    markers[i].setIcon(siteicon['orange']);
-                }
-            }
-
-//  console.log( kpi)
-// markers[i].setMap(map);
-        }
-    });
-}
-
+//Puts the navigation menus, search and right-side tray buttons on the map.
 function navmenu() {
     map.controls[google.maps.ControlPosition.LEFT_TOP].push(document.getElementById("nav-menu"));
     map.controls[google.maps.ControlPosition.RIGHT_TOP].push(document.getElementById("nav-sear"));
     map.controls[google.maps.ControlPosition.RIGHT].push(document.getElementById("btnsl"));
 }
-
-function mkt_kpi(mkt) {
-
-    $.getJSON("php/kpi.php?lncel="+mkt,function(datak) {     /*get function with Json result
-     put in variable 'data' inside the callback function*/
-        for (var i = 0; i < 26; i++){
-// $('#ltekpi'+i).append('<span class="inlinesparkline">'+data+'</span>');
-            var ltekpi = $('#ltekpi'+i);
-            ltekpi.html('<span class="inlinesparkline">Loading...</span>');
-            ltekpi.html('<span class="inlinesparkline">'+datak.kpi[i+3].value+'</span>');
-        }
-
-//Infocell
-        var cellLast = String(datak.kpi[1].value);
-        var dateLast = String(datak.kpi[0].value);
-
-        var cellLastsp = cellLast.split(",");
-        var dateLastsp = dateLast.split(",");
-
-        $('.infoCell').html('<p>'+cellLastsp[cellLastsp.length - 1]+'-'+dateLastsp[dateLastsp.length - 1]+'</p">');
-
-// $('#ltekpi').html(data);
-//  $('.inlinesparkline').sparkline('html',{width: '50px', height: '20px', lineWidth: 1});
-        $('.inlinesparkline').sparkline('html',{width: '100px', height: '20px'});
-    });
-
-    mkt_center(mkt);
-
-}
-
+//Centers the viewport on a market
 function mkt_center(mkt) {
-
     map.setCenter(new google.maps.LatLng(mkt_loc[mkt][0],mkt_loc[mkt][1]));
     map.setZoom(10);
     $('.market').html(mkt);
-
 }
-
-//TrueCall Layer with vector
-function truecall_vector() {
-
-// getJson help me to read json file
-    $.getJSON('http://serfopt/webcontent/layers/truecall.json', function(data) {
-        for (var i in data.point) {
-            var latLng = new google.maps.LatLng( data.point[i].Y, data.point[i].X);
-            var pointOptions = {
-                strokeColor: '#FF0'+data.point[i].PCI,
-                strokeOpacity: 0.8,
-                strokeWeight: 1,
-                fillColor: '#FF0'+data.point[i].PCI,
-                fillOpacity: 1,
-                map: map,
-                center: latLng,
-                radius: 10
-            };
-// Add the circle for this city to the map.
-            pointCircle = new google.maps.Circle(pointOptions);
-        }
-    });
-}
-
+//Cleans a Tile Overlay layer and removes any bottom right control (usually the legend)
 function cleanlayer() {
-
     map.overlayMapTypes.clear();
     map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].clear();
-
 }
-//TrueCall Layer with Layer
-function truecall(maptype) {
+//Add any tiled layer
+function tiledLayer(maptype,url,offset,opacity) {
     cleanlayer(); //Clean Layer
-    var mkt =$('.market').html();
-    if (maptype!='pci') {legend(maptype); }
+    legend(maptype);
     maptiler = new google.maps.ImageMapType({
         getTileUrl: function(coord, zoom) {
-            return "http://serfopt/webcontent/maps/" + mkt.toLowerCase() + "/" + maptype + "/" + zoom + "/" + coord.x + "/" + coord.y + ".png";
+            return url.replace('{x}',coord.x+offset).replace('{y}',coord.y+offset).replace('{z}',zoom+offset)
         },
         tileSize: new google.maps.Size(256, 256),
         isPng: true,
-        opacity: 0.5
+        opacity: opacity
     });
     map.overlayMapTypes.insertAt(0, maptiler);
 }
-
-function clear_kpi() {
-    for (var i = 0; i < markers.length; i++) {
-        markers[i].setMap(null); // remove icons setMap(null);
-    }
-}
-
+//Remove BANS, and adds BANS in the new viewport
 function showBans() {
-//Remove BANS and reset array
+
     for (var i = 0; i < bans.length; i++) {
-        bans[i].setMap(null); // remove icons setMap(null);
+        bans[i].setMap(null);
     }
     bans.length = 0;
-
-    var x = document.getElementById("check1").checked;
-
-    if (x == true) {
-
+    if (document.getElementById("check1").checked == true) {
         var bounds = map.getBounds();
         var NE = bounds.getNorthEast();
         var SW = bounds.getSouthWest();
         var zoom =  map.getZoom() ;
-
-//  console.log(bounds+"-"+zoom);
-// Call you server with ajax passing it the bounds
-
-// In the ajax callback delete the current markers and add new markers
-
         if (zoom > 14) {
-//console.log("php/ban.php?N="+NE.lat()+"&E="+NE.lng()+"&S="+SW.lat()+"&W="+SW.lng());
-
-//More detail way that $.getjson
             $.ajax({   //ajax take the content and put in data after done
                 url:"php/ban.php?N="+NE.lat()+"&E="+NE.lng()+"&S="+SW.lat()+"&W="+SW.lng(),
-
-// Whether this is a POST or GET request
                 type: "GET",
-// The type of data we expect back
                 dataType : "json",
-
-//  success: function () {
-//    alert(" Done ! ");
-//        },
-
-
-// Error!
                 error: function( xhr, status, errorThrown ) {
                     alert( "Sorry, there was a problem!" );
                     console.log( "Error: " + errorThrown );
                     console.log( "Status: " + status );
                     console.dir( xhr );
                 }
-
             }).done(function(data){
-
                 for (var i in data.ban) {
                     var latLng = new google.maps.LatLng(data.ban[i].lat,data.ban[i].lng);
-
-//Circle properties
                     var pointOptions = {
                         strokeColor: '#000000',
                         strokeOpacity: 1,
@@ -532,65 +347,31 @@ function showBans() {
         }
     }
 }
-
-//pcc Layer with Layer
-function pcc(maptype) {
-    cleanlayer(); //Clean Layer
-    if (maptype!='pci') {
-        legend(maptype);
-    }
-    maptiler = new google.maps.ImageMapType({
-        getTileUrl: function(coord, zoom) {
-            return "http://maps.t-mobile.com/" + maptype + "/" + (zoom+1) + "/" + (coord.x+1) + ":" + (coord.y+1) + "/tile.png";
-        },
-        tileSize: new google.maps.Size(256, 256),
-        isPng: true,
-        opacity: 0.8
-    });
-    map.overlayMapTypes.insertAt(0, maptiler);
-}
-
+//Geolocate an Address
 function geolocation(address) {
-// Create a function the will return the coordinates for the address
     var geocoder, marker, infowindow;
-// var address = document.getElementById('seartxt').value;
-
-// Check to see if we already have a geocoded object. If not we create one
     if(!geocoder) {
         geocoder = new google.maps.Geocoder();
     }
-// Creating a GeocoderRequest object
     var geocoderRequest = {
         address: address
     };
-// Making the Geocode request
     geocoder.geocode(geocoderRequest, function(results, status) {
-// Check if status is OK before proceeding
         if (status == google.maps.GeocoderStatus.OK) {
-// Center the map on the returned location
             map.setCenter(results[0].geometry.location);
-// Check to see if we've already got a Marker object
             if (!marker) {
-// Creating a new marker and adding it to the map
                 marker = new google.maps.Marker({
                     map: map
                 });
             }
-// Setting the position of the marker to the returned location
             marker.setPosition(results[0].geometry.location);
-// Check to see if we've already got an InfoWindow object
             if (!infowindow) {
-// Creating a new InfoWindow
                 infowindow = new google.maps.InfoWindow();
             }
-// Creating the content of the InfoWindow to the address
-// and the returned position
             var content = '<strong>' + results[0].formatted_address + '</strong><br />';
             content += 'Lat: ' + results[0].geometry.location.lat() + '<br />';
             content += 'Lng: ' + results[0].geometry.location.lng();
-// Adding the content to the InfoWindow
             infowindow.setContent(content);
-// Opening the InfoWindow
             infowindow.open(map, marker);
         }
     });
@@ -657,6 +438,7 @@ function lowBandAndSR(type){
         });
     }
 }
+//Generates the infowindow for the 700 sites and SRs
 function LowBandAndSRGetInfoWindow(i,marker,content) {
     return function(){
         if (!infowindow) {

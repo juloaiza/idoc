@@ -78,10 +78,10 @@ $market = $row['market'];
                     Market <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
-                    <li onclick="mkt_kpi('Seattle')"><a href="#">Seattle</a></li>
-                    <li onclick="mkt_kpi('Spokane')"><a href="#">Spokane</a></li>
-                    <li onclick="mkt_kpi('Portland')"><a href="#">Portland</a></li>
-                    <li onclick="mkt_kpi('Phoenix')"><a href="#">Phoenix</a></li>
+                    <li onclick="infoWindowSparklineShow('market','Seattle');"><a href="#">Seattle</a></li>
+                    <li onclick="infoWindowSparklineShow('market','Seattle');"><a href="#">Spokane</a></li>
+                    <li onclick="infoWindowSparklineShow('market','Seattle');"><a href="#">Portland</a></li>
+                    <li onclick="infoWindowSparklineShow('market','Seattle');"><a href="#">Phoenix</a></li>
                 </ul>
             </li>
             <li role="presentation" class="dropdown">
@@ -185,7 +185,7 @@ $market = $row['market'];
                     <li>
                         <div class="radio">
                             <label>
-                                <input type="radio" name="optionsMaps" id="radio1" value="option1" onclick="truecall('rsrp');" >
+                                <input type="radio" name="optionsMaps" id="radio1" value="option1" onclick="tiledLayer('rsrp','http://serfopt/webcontent/maps/'+$('.market').html().toLowerCase()+'/rsrp/{z}/{x}/{y}.png',0,0.5);" >
                                 RSRP (TrueCall)
                             </label>
                         </div>
@@ -193,7 +193,7 @@ $market = $row['market'];
                     <li>
                         <div class="radio">
                             <label>
-                                <input type="radio" name="optionsMaps" id="radio2" value="option2" onclick="truecall('rsrq');">
+                                <input type="radio" name="optionsMaps" id="radio2" value="option2" onclick="tiledLayer('rsrq','http://serfopt/webcontent/maps/'+$('.market').html().toLowerCase()+'/rsrq/{z}/{x}/{y}.png',0,0.5);">
                                 RSRQ (TrueCall)
                             </label>
                         </div>
@@ -201,7 +201,7 @@ $market = $row['market'];
                     <li>
                         <div class="radio">
                             <label>
-                                <input type="radio" name="optionsMaps" id="radio3" value="option3" onclick="truecall('pci');">
+                                <input type="radio" name="optionsMaps" id="radio3" value="option3" onclick="tiledLayer('pci','http://serfopt/webcontent/maps/'+$('.market').html().toLowerCase()+'/pci/{z}/{x}/{y}.png',0,0.5);">
                                 PCI (TrueCall)
                             </label>
                         </div>
@@ -209,7 +209,7 @@ $market = $row['market'];
                     <li>
                         <div class="radio">
                             <label>
-                                <input type="radio" name="optionsMaps" id="radio4" value="option4" onclick="truecall('traffic');">
+                                <input type="radio" name="optionsMaps" id="radio4" value="option4" onclick="tiledLayer('traffic','http://serfopt/webcontent/maps/'+$('.market').html().toLowerCase()+'/traffic/{z}/{x}/{y}.png',0,0.5);">
                                 Traffic (TrueCall)
                             </label>
                         </div>
@@ -217,7 +217,7 @@ $market = $row['market'];
                     <li>
                         <div class="radio">
                             <label>
-                                <input type="radio" name="optionsMaps" id="radio5" value="option5" onclick="pcc('TMo_TechLTE_Map');">
+                                <input type="radio" name="optionsMaps" id="radio5" value="option5" onclick="tiledLayer('TMo_TechLTE_Map','http://maps.t-mobile.com/TMo_TechLTE_Map/{z}/{x}:{y}/tile.png',1,0.8);">
                                 PCC
                             </label>
                         </div>
@@ -225,7 +225,7 @@ $market = $row['market'];
                     <li>
                         <div class="radio">
                             <label>
-                                <input type="radio" name="optionsMaps" id="radio6" value="option6" onclick="pcc('TMo_Verified_Map');">
+                                <input type="radio" name="optionsMaps" id="radio6" value="option6" onclick="tiledLayer('TMo_Verified_Map','http://maps.t-mobile.com/TMo_Verified_Map/{z}/{x}:{y}/tile.png',1,0.8);">
                                 Verified coverage
                             </label>
                         </div>
