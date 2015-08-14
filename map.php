@@ -79,9 +79,9 @@ $market = $row['market'];
                 </a>
                 <ul class="dropdown-menu">
                     <li onclick="infoWindowSparklineShow('market','Seattle');"><a href="#">Seattle</a></li>
-                    <li onclick="infoWindowSparklineShow('market','Seattle');"><a href="#">Spokane</a></li>
-                    <li onclick="infoWindowSparklineShow('market','Seattle');"><a href="#">Portland</a></li>
-                    <li onclick="infoWindowSparklineShow('market','Seattle');"><a href="#">Phoenix</a></li>
+                    <li onclick="infoWindowSparklineShow('market','Spokane');"><a href="#">Spokane</a></li>
+                    <li onclick="infoWindowSparklineShow('market','Portland');"><a href="#">Portland</a></li>
+                    <li onclick="infoWindowSparklineShow('market','Phoenix');"><a href="#">Phoenix</a></li>
                 </ul>
             </li>
             <li role="presentation" class="dropdown">
