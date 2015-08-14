@@ -305,7 +305,6 @@ function tiledLayer(maptype,url,offset,opacity) {
 }
 //Remove BANS, and adds BANS in the new viewport
 function showBans() {
-
     for (var i = 0; i < bans.length; i++) {
         bans[i].setMap(null);
     }
