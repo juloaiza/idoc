@@ -110,7 +110,7 @@ require_once("php/login.php");
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#"><strong>IdocTool</strong></a>
+            <a class="navbar-brand" href="#"><img alt="Brand" src="images/iDocIcon.png" style="height:20px;margin-top:-4px;">&nbsp;<strong>IdocTool</strong></a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <form class="navbar-form navbar-right" method="POST">

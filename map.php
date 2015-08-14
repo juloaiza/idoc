@@ -35,7 +35,7 @@ $market = $row['market'];
 <body>
 <!-- begin template -->
 <div class="navbar navbar-custom navbar-fixed-top">
-    <div class="navbar-header"><a class="navbar-brand" href="#"><strong>IdocTool</strong></a>
+    <div class="navbar-header"><a class="navbar-brand" href="#"><img alt="Brand" src="images/iDocIcon.png" style="height:20px;margin-top:-4px;">&nbsp;<strong>IdocTool</strong></a>
         <a class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
