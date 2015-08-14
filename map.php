@@ -242,7 +242,7 @@ $market = $row['market'];
                     <li>
                         <div class="checkbox">
                             <label>
-                                <input type="checkbox" name="checkMaps" id="check0" value="" onclick="srs();" >
+                                <input type="checkbox" name="checkMaps" id="check0" value="" onclick="lowBandAndSR('srs');" >
                                 SRs
                             </label>
                         </div>
@@ -258,7 +258,7 @@ $market = $row['market'];
                     <li>
                         <div class="checkbox">
                             <label>
-                                <input type="checkbox" name="checkMaps2" id="check2" value="" onclick="L700();" >
+                                <input type="checkbox" name="checkMaps2" id="check2" value="" onclick="lowBandAndSR('L700');" >
                                 L700
                             </label>
                         </div>
