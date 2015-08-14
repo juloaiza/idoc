@@ -484,7 +484,7 @@ $market = $row['market'];
 <script type="text/javascript" src="js/sectors.js"></script>
 <script type="text/javascript" src="js/contextmenu.js"></script>
 <script type="text/javascript" src="js/elevation.js"></script>
-<script type="text/javascript">
+<script type="text/javascript">//Local JS
     var collapseBottom = $('#collapseBottom');
     var btnArrow =  $('#btnArrow');
     collapseBottom.on('show.bs.collapse', function () {
