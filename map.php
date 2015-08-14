@@ -78,10 +78,10 @@ $market = $row['market'];
                     Market <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
-                    <li onclick="infoWindowSparklineShow('market','Seattle');"><a href="#">Seattle</a></li>
-                    <li onclick="infoWindowSparklineShow('market','Spokane');"><a href="#">Spokane</a></li>
-                    <li onclick="infoWindowSparklineShow('market','Portland');"><a href="#">Portland</a></li>
-                    <li onclick="infoWindowSparklineShow('market','Phoenix');"><a href="#">Phoenix</a></li>
+                    <li><a href="#" id="mktSea">Seattle</a></li>
+                    <li><a href="#" id="mktSpo">Spokane</a></li>
+                    <li><a href="#" id="mktPdx">Portland</a></li>
+                    <li><a href="#" id="mktPhx">Phoenix</a></li>
                 </ul>
             </li>
             <li role="presentation" class="dropdown">

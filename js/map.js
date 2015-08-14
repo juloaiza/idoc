@@ -63,6 +63,10 @@ function initialize() {
     google.maps.event.addListener(map, "rightclick",function(event){showContextMenu(event.latLng);});
     elevator = new google.maps.ElevationService();
     google.maps.event.addListener(map, 'idle', showBans);
+    document.getElementById("mktSea").addEventListener("click", infoWindowSparklineShow('market','Seattle'));
+    document.getElementById("mktPdx").addEventListener("click", infoWindowSparklineShow('market','Portland'));
+    document.getElementById("mktSpo").addEventListener("click", infoWindowSparklineShow('market','Spokane'));
+    document.getElementById("mktPhx").addEventListener("click", infoWindowSparklineShow('market','Phoenix'));
 }
 //onload event listener
 google.maps.event.addDomListener(window, 'load', initialize);
@@ -181,6 +185,7 @@ function infoWindowSparklineShow(type,passIn){
         if (type == 'market'){
             jSONURL = "php/kpi.php?lncel="+passIn;
             mkt_center(passIn);
+            alert('yello');
         }
         $.getJSON(jSONURL,function(datak) {
             for (var g = 0; g < 26; g++){
