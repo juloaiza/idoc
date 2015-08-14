@@ -119,7 +119,7 @@ function sites(nkpi) {
 //populates the sectors onto the map
 function sectors(market) {
     $.getJSON('php/get_cellinfo.php?market='+market, function(data) {
-        for (var i in data.sector) {
+        for (var i=0; i< data.sector.length; i++) {
             var centerPoint = new google.maps.LatLng(data.sector[i].Lat, data.sector[i].Log);
             var arcPts = circleMath(centerPoint,data.sector[i].azimuth, 75);
             var secPoly = new google.maps.Polygon({
@@ -327,7 +327,8 @@ function showBans() {
                     console.dir( xhr );
                 }
             }).done(function(data){
-                for (var i in data.ban) {
+
+                for (var i=0; i< data.ban.length;i++) {
                     var latLng = new google.maps.LatLng(data.ban[i].lat,data.ban[i].lng);
                     var pointOptions = {
                         strokeColor: '#000000',
@@ -411,7 +412,7 @@ function lowBandAndSR(type){
     if (document.getElementById("check0").checked == false&&type=='srs') {markerCluster.clearMarkers();}
     if (typeInfo.length!=0){
         $.getJSON('php/get_'+typeInfo[1]+'.php', function(data) {
-            for (var i in data[typeInfo[1]]) {
+            for (var i=0; i< data[typeInfo[1]].length;i++) {
                 var content ='';
                 if(typeInfo[1]=='L700'){content = '<div class="winfo">' + data[typeInfo[1]][i][typeInfo[3]]  +'<br/>' + data[typeInfo[1]][i][typeInfo[4]]  +'</div>';}
                 if(typeInfo[1]=='srs'){content = '<div class="winfo">' + data[typeInfo[1]][i][typeInfo[4]]  +'<br/>SR Created Date = ' + data[typeInfo[1]][i][typeInfo[5]] +'<br/>Issue Type = ' + data[typeInfo[1]][i][typeInfo[3]]  + '<br/>Issue Description = ' + data[typeInfo[1]][i][typeInfo[6]]  +'<br/>Mobile Number = ' + data[typeInfo[1]][i][typeInfo[7]]  +'</div>';}
@@ -421,7 +422,7 @@ function lowBandAndSR(type){
                     title: data[typeInfo[1]][i][typeInfo[3]],
                     icon : 'images/'+typeInfo[1]+'.png'
                 });
-                google.maps.event.addListener(marker, 'click', LowBandAndSRGetInfoWindow(i,marker,content));
+                google.maps.event.addListener(marker, 'click', LowBandAndSRGetInfoWindow(marker,content));
                 markers.push(marker);
 
             }
@@ -439,7 +440,7 @@ function lowBandAndSR(type){
     }
 }
 //Generates the infowindow for the 700 sites and SRs
-function LowBandAndSRGetInfoWindow(i,marker,content) {
+function LowBandAndSRGetInfoWindow(marker,content) {
     return function(){
         if (!infowindow) {
             infowindow = new google.maps.InfoWindow();
