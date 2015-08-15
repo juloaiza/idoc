@@ -35,7 +35,7 @@ $market = $row['market'];
 <body>
 <!-- begin template -->
 <div class="navbar navbar-custom navbar-fixed-top">
-    <div class="navbar-header"><a class="navbar-brand" href="#"><strong>IdocTool</strong></a>
+    <div class="navbar-header"><a class="navbar-brand" href="#"><img alt="Brand" src="images/iDocIcon.png" style="height:20px;margin-top:-4px;">&nbsp;<strong>IdocTool</strong></a>
         <a class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
@@ -78,10 +78,10 @@ $market = $row['market'];
                     Market <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
-                    <li onclick="mkt_kpi('Seattle')"><a href="#">Seattle</a></li>
-                    <li onclick="mkt_kpi('Spokane')"><a href="#">Spokane</a></li>
-                    <li onclick="mkt_kpi('Portland')"><a href="#">Portland</a></li>
-                    <li onclick="mkt_kpi('Phoenix')"><a href="#">Phoenix</a></li>
+                    <li><a href="#" id="mktSea">Seattle</a></li>
+                    <li><a href="#" id="mktSpo">Spokane</a></li>
+                    <li><a href="#" id="mktPdx">Portland</a></li>
+                    <li><a href="#" id="mktPhx">Phoenix</a></li>
                 </ul>
             </li>
             <li role="presentation" class="dropdown">
@@ -185,7 +185,7 @@ $market = $row['market'];
                     <li>
                         <div class="radio">
                             <label>
-                                <input type="radio" name="optionsMaps" id="radio1" value="option1" onclick="truecall('rsrp');" >
+                                <input type="radio" name="optionsMaps" id="radio1" value="option1" onclick="tiledLayer('rsrp','http://serfopt/webcontent/maps/'+$('.market').html().toLowerCase()+'/rsrp/{z}/{x}/{y}.png',0,0.5);" >
                                 RSRP (TrueCall)
                             </label>
                         </div>
@@ -193,7 +193,7 @@ $market = $row['market'];
                     <li>
                         <div class="radio">
                             <label>
-                                <input type="radio" name="optionsMaps" id="radio2" value="option2" onclick="truecall('rsrq');">
+                                <input type="radio" name="optionsMaps" id="radio2" value="option2" onclick="tiledLayer('rsrq','http://serfopt/webcontent/maps/'+$('.market').html().toLowerCase()+'/rsrq/{z}/{x}/{y}.png',0,0.5);">
                                 RSRQ (TrueCall)
                             </label>
                         </div>
@@ -201,7 +201,7 @@ $market = $row['market'];
                     <li>
                         <div class="radio">
                             <label>
-                                <input type="radio" name="optionsMaps" id="radio3" value="option3" onclick="truecall('pci');">
+                                <input type="radio" name="optionsMaps" id="radio3" value="option3" onclick="tiledLayer('pci','http://serfopt/webcontent/maps/'+$('.market').html().toLowerCase()+'/pci/{z}/{x}/{y}.png',0,0.5);">
                                 PCI (TrueCall)
                             </label>
                         </div>
@@ -209,7 +209,7 @@ $market = $row['market'];
                     <li>
                         <div class="radio">
                             <label>
-                                <input type="radio" name="optionsMaps" id="radio4" value="option4" onclick="truecall('traffic');">
+                                <input type="radio" name="optionsMaps" id="radio4" value="option4" onclick="tiledLayer('traffic','http://serfopt/webcontent/maps/'+$('.market').html().toLowerCase()+'/traffic/{z}/{x}/{y}.png',0,0.5);">
                                 Traffic (TrueCall)
                             </label>
                         </div>
@@ -217,7 +217,7 @@ $market = $row['market'];
                     <li>
                         <div class="radio">
                             <label>
-                                <input type="radio" name="optionsMaps" id="radio5" value="option5" onclick="pcc('TMo_TechLTE_Map');">
+                                <input type="radio" name="optionsMaps" id="radio5" value="option5" onclick="tiledLayer('TMo_TechLTE_Map','http://maps.t-mobile.com/TMo_TechLTE_Map/{z}/{x}:{y}/tile.png',1,0.8);">
                                 PCC
                             </label>
                         </div>
@@ -225,7 +225,7 @@ $market = $row['market'];
                     <li>
                         <div class="radio">
                             <label>
-                                <input type="radio" name="optionsMaps" id="radio6" value="option6" onclick="pcc('TMo_Verified_Map');">
+                                <input type="radio" name="optionsMaps" id="radio6" value="option6" onclick="tiledLayer('TMo_Verified_Map','http://maps.t-mobile.com/TMo_Verified_Map/{z}/{x}:{y}/tile.png',1,0.8);">
                                 Verified coverage
                             </label>
                         </div>
@@ -242,7 +242,7 @@ $market = $row['market'];
                     <li>
                         <div class="checkbox">
                             <label>
-                                <input type="checkbox" name="checkMaps" id="check0" value="" onclick="srs();" >
+                                <input type="checkbox" name="checkMaps" id="check0" value="" onclick="lowBandAndSR('srs');" >
                                 SRs
                             </label>
                         </div>
@@ -258,7 +258,7 @@ $market = $row['market'];
                     <li>
                         <div class="checkbox">
                             <label>
-                                <input type="checkbox" name="checkMaps2" id="check2" value="" onclick="L700();" >
+                                <input type="checkbox" name="checkMaps2" id="check2" value="" onclick="lowBandAndSR('L700');" >
                                 L700
                             </label>
                         </div>
@@ -484,7 +484,7 @@ $market = $row['market'];
 <script type="text/javascript" src="js/sectors.js"></script>
 <script type="text/javascript" src="js/contextmenu.js"></script>
 <script type="text/javascript" src="js/elevation.js"></script>
-<script type="text/javascript">
+<script type="text/javascript">//Local JS
     var collapseBottom = $('#collapseBottom');
     var btnArrow =  $('#btnArrow');
     collapseBottom.on('show.bs.collapse', function () {
