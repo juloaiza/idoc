@@ -19,7 +19,6 @@ siteicon['antenna'] = doSiteIcon([[32,37],[0,0],[16,18]]);
 siteicon['green'] = doSiteIcon([[18,37],[36,0],[9,18]]);
 siteicon['orange'] = doSiteIcon([[18,37],[58,0],[9,18]]);
 siteicon['red'] = doSiteIcon([[18,37],[80,0],[9,18]]);
-//calculates the region for the site color icons.
 function doSiteIcon(pts){
     new google.maps.MarkerImage(
         'images/sites.png',
@@ -30,6 +29,7 @@ function doSiteIcon(pts){
 }
 //Show the map add stuff to the map; all the stuff you'd expect be done on startup.
 function initialize() {
+    console.log('initializing');
     /* position */
     var mkt = $('.market').html();
     var latlng = new google.maps.LatLng(mkt_loc[mkt][0],mkt_loc[mkt][1]);
@@ -63,6 +63,7 @@ function initialize() {
     google.maps.event.addListener(map, "rightclick",function(event){showContextMenu(event.latLng);});
     elevator = new google.maps.ElevationService();
     google.maps.event.addListener(map, 'idle', showBans);
+    google.maps.event.addListener(map, 'tilesloaded',function(){document.getElementById('thingCover').style.visibility='hidden';});
     document.getElementById("mktSea").addEventListener("click", infoWindowSparklineShow('market','Seattle'));
     document.getElementById("mktPdx").addEventListener("click", infoWindowSparklineShow('market','Portland'));
     document.getElementById("mktSpo").addEventListener("click", infoWindowSparklineShow('market','Spokane'));
@@ -185,7 +186,6 @@ function infoWindowSparklineShow(type,passIn){
         if (type == 'market'){
             jSONURL = "php/kpi.php?lncel="+passIn;
             mkt_center(passIn);
-            alert('yello');
         }
         $.getJSON(jSONURL,function(datak) {
             for (var g = 0; g < 26; g++){
@@ -407,13 +407,19 @@ function moveCenter() {
 function lowBandAndSR(type){
     var typeInfo = [];
     if (document.getElementById("check2").checked == true&&type=='L700') {
-        typeInfo = ['add700','L700','12','SiteID','SiteName']
+        typeInfo = ['add700','L700','12','SiteID','SiteName'];
     }
     if (document.getElementById("check0").checked == true&&type=='srs') {
-        typeInfo = ['addsrs','srs','11','Issue_Type','Technology','SR_Created_Date','Issue_Description','Mobile_Number']
+        typeInfo = ['addsrs','srs','11','Issue_Type','Technology','SR_Created_Date','Issue_Description','Mobile_Number'];
     }
-    if (document.getElementById("check2").checked == false&&type=='L700') {markerL700.clearMarkers();}
-    if (document.getElementById("check0").checked == false&&type=='srs') {markerCluster.clearMarkers();}
+    if (document.getElementById("check2").checked == false&&type=='L700') {
+        markerL700.clearMarkers();
+        markers=[];
+    }
+    if (document.getElementById("check0").checked == false&&type=='srs') {
+        markerCluster.clearMarkers();
+        markers=[];
+    }
     if (typeInfo.length!=0){
         $.getJSON('php/get_'+typeInfo[1]+'.php', function(data) {
             for (var i=0; i< data[typeInfo[1]].length;i++) {
@@ -444,7 +450,7 @@ function lowBandAndSR(type){
     }
 }
 //Generates the infowindow for the 700 sites and SRs
-function LowBandAndSRGetInfoWindow(marker,content) {
+function LowBandAndSRGetInfoWindow(marker,content){
     return function(){
         if (!infowindow) {
             infowindow = new google.maps.InfoWindow();
