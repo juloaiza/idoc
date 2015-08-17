@@ -27,12 +27,44 @@ $market = $row['market'];
     <link href="css/general.css" rel="stylesheet">
     <!-- context-menu -->
     <link  href="css/contextmenu.css" rel="stylesheet">
-    
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCDjB5G0Fod2mUs0u9a-B4cF3xyqQa5uAs&sensor=false"></script>
     <script type="text/javascript" src="js/markerclusterer.js"></script>
     <script src="https://www.google.com/jsapi"></script>
+    <style type="text/css">
+        .thingCoverer{
+            position:absolute;
+            visibility: visible;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            right: 0;
+            z-index: 200;
+            background-color: white;
+        }
+        .overlayTitle{
+            text-align: center;
+            margin-top: 250px
+        }
+        .progressThing{
+            position:fixed;
+            bottom:0;
+            width: 100%;
+        }
+    </style>
 </head>
 <body>
+<div class="thingCoverer" id="thingCover">
+    <div class="overlayTitle">
+        <h1>IDocTool</h1>
+    </div>
+    <div class="progressThing">
+        <div align="center">
+            <h3 id="loadingText">Loading...</h3>
+            <!--<img src="images/preloader.gif">-->
+        </div>
+        <div style="height: 64px;"></div>
+    </div>
+</div>
 <!-- begin template -->
 <div class="navbar navbar-custom navbar-fixed-top">
     <div class="navbar-header"><a class="navbar-brand" href="#"><img alt="Brand" src="images/iDocIcon.png" style="height:20px;margin-top:-4px;">&nbsp;<strong>IdocTool</strong></a>
