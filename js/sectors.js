@@ -2,7 +2,6 @@ var infowindow = new google.maps.InfoWindow(
     {
         size: new google.maps.Size(150,50)
     });
-//Returns an array of Google Maps points for a tower with radius r a
 function circleMath(center, angle, beamWidth){
     var triangleCoords = [];
     var resolution = 32;
@@ -19,4 +18,21 @@ function circleMath(center, angle, beamWidth){
     }
     triangleCoords.push(new google.maps.LatLng(lat,lon));
     return triangleCoords;
+}
+function cellMidpoint(lat,lon,angle,type){
+    var scale = .0007;
+    angle = (90-angle)*Math.PI/180;
+    if (type=='lon') {
+        return lon + scale * (Math.cos(angle)) / Math.cos(lat * Math.PI / 180);
+    }
+    else{
+        return lat + scale*(Math.sin(angle));
+    }
+
+}
+function changeSectorFormat(i,strokeWidth,strokeColor){
+    sectorPolygons[i][0].setOptions({
+        strokeColor: strokeColor,
+        strokeWeight: strokeWidth
+    });
 }
