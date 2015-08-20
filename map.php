@@ -31,6 +31,13 @@ $market = $row['market'];
     <script type="text/javascript" src="js/markerclusterer.js"></script>
     <script src="https://www.google.com/jsapi"></script>
     <style type="text/css">
+        html{
+            min-height:100%;
+            position:relative
+        }
+        body{
+            height:100%
+        }
         .thingCoverer{
             position:absolute;
             visibility: visible;
@@ -50,19 +57,42 @@ $market = $row['market'];
             bottom:0;
             width: 100%;
         }
+        .textPlot{
+            display:block;
+            width: 80%;
+            margin-left: auto;
+            margin-right: auto;
+            min-height:300px;
+        }
+
     </style>
 </head>
 <body>
 <div class="thingCoverer" id="thingCover">
     <div class="overlayTitle">
-        <h1>IDocTool</h1>
+        <h1 id="loadingText">Loading...</h1>
     </div>
     <div class="progressThing">
         <div align="center">
-            <h3 id="loadingText">Loading...</h3>
-            <!--<img src="images/preloader.gif">-->
+             <h3>Loading...</h3>
+             <!--<img src="images/preloader.gif">-->
         </div>
         <div style="height: 64px;"></div>
+    </div>
+</div>
+<div class="thingCoverer" id="textPlotCover" style="visibility: hidden;">
+    <div style="margin-top:75px;margin-left:10px;">
+        <h1>Custom Plot:</h1>
+        <p>Paste Tab Delimited text with first row headers:</p>
+        <p>"latitude" and "longitude" for coords (required)</p>
+        <p>"color", "dimension", or "date" for manual or automatic coloring (optional, date in US format)</p>
+        <p>"info" for popup window info (optional)</p>
+    </div>
+    <label for="textToPlot"></label><textarea id="textToPlot" class="textPlot"></textarea>
+    <div align="right" style="margin-right: 10%; margin-top: 10px;">
+        <button type="button" class="btn btn-default btn-lg" onclick="plotCSV()">
+            Plot
+        </button>
     </div>
 </div>
 <!-- begin template -->
@@ -516,6 +546,10 @@ $market = $row['market'];
 <script type="text/javascript" src="js/sectors.js"></script>
 <script type="text/javascript" src="js/contextmenu.js"></script>
 <script type="text/javascript" src="js/elevation.js"></script>
+<script type="text/javascript" src="js/neighbors.js"></script>
+<script type="text/javascript" src="js/temporaryStorage.js"></script>
+<script type="text/javascript" src="js/colors.js"></script>
+<script type="text/javascript" src="js/CSVPlotter.js"></script>
 <script type="text/javascript">//Local JS
     var collapseBottom = $('#collapseBottom');
     var btnArrow =  $('#btnArrow');
