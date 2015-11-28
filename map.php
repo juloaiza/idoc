@@ -27,6 +27,8 @@ $market = $row['market'];
     <link href="css/general.css" rel="stylesheet">
     <!-- context-menu -->
     <link  href="css/contextmenu.css" rel="stylesheet">
+    
+        <link rel="icon" href="favicon.ico" />
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCDjB5G0Fod2mUs0u9a-B4cF3xyqQa5uAs&sensor=false"></script>
     <script type="text/javascript" src="js/markerclusterer.js"></script>
     <script src="https://www.google.com/jsapi"></script>
@@ -550,6 +552,10 @@ $market = $row['market'];
 <script type="text/javascript" src="js/temporaryStorage.js"></script>
 <script type="text/javascript" src="js/colors.js"></script>
 <script type="text/javascript" src="js/CSVPlotter.js"></script>
+<script type="text/javascript" src="js/CanvasLayer.js"></script>
+<script type="text/javascript" src="js/ShaderProgram.js"></script>
+<script type="text/javascript" src="js/libtess.cat.js"></script>
+<script type="text/javascript" src="js/WebGLLayer.js"></script>
 <script type="text/javascript">//Local JS
     var collapseBottom = $('#collapseBottom');
     var btnArrow =  $('#btnArrow');
