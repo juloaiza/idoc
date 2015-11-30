@@ -391,7 +391,7 @@ $market = $row['market'];
                             <table class="table table-condensed">
                                 <tr>
                                     <td style="text-align:right;font-weight: bold">UE Pwr Hdrm</td>
-                                    <td id="ltekpi6" style="text-align:left"></td>
+                                    <td id="ltekpi3" style="text-align:left"></td>
                                 </tr>
                                 <tr>
                                     <td style="text-align:right;font-weight: bold">Usage MIMO</td>
@@ -414,15 +414,15 @@ $market = $row['market'];
                             <table class="table table-condensed">
                                 <tr>
                                     <td style="text-align:right;font-weight: bold">Ave PDCP DL</td>
-                                    <td id="ltekpi12" style="text-align:left"></td>
+                                    <td id="ltekpi6" style="text-align:left"></td>
                                 </tr>
                                 <tr>
                                     <td style="text-align:right;font-weight: bold">Max PDCP DL</td>
-                                    <td id="ltekpi13" style="text-align:left"></td>
+                                    <td id="ltekpi7" style="text-align:left"></td>
                                 </tr>
                                 <tr>
                                     <td style="text-align:right;font-weight: bold">Ave DL Latency</td>
-                                    <td id="ltekpi14" style="text-align:left"></td>
+                                    <td id="ltekpi9" style="text-align:left"></td>
                                 </tr>
                             </table>
                         </div>
@@ -437,15 +437,15 @@ $market = $row['market'];
                             <table class="table table-condensed">
                                 <tr>
                                     <td style="text-align:right;font-weight: bold">DL Vol(MB)</td>
-                                    <td id="ltekpi7" style="text-align:left"></td>
+                                    <td id="ltekpi10" style="text-align:left"></td>
                                 </tr>
                                 <tr>
                                     <td style="text-align:right;font-weight: bold">Ave Act UE</td>
-                                    <td id="ltekpi9" style="text-align:left"></td>
+                                    <td id="ltekpi11" style="text-align:left"></td>
                                 </tr>
                                 <tr>
                                     <td style="text-align:right;font-weight: bold">Max Act UE</td>
-                                    <td id="ltekpi10" style="text-align:left"></td>
+                                    <td id="ltekpi12" style="text-align:left"></td>
                                 </tr>
                             </table>
                         </div>
@@ -460,15 +460,15 @@ $market = $row['market'];
                             <table class="table table-condensed">
                                 <tr>
                                     <td style="text-align:right;font-weight: bold">VoLTE Calls</td>
-                                    <td id="ltekpi15" style="text-align:left"></td>
+                                    <td id="ltekpi13" style="text-align:left"></td>
                                 </tr>
                                 <tr>
                                     <td style="text-align:right;font-weight: bold">VoLTE Afr</td>
-                                    <td id="ltekpi17" style="text-align:left"></td>
+                                    <td id="ltekpi14" style="text-align:left"></td>
                                 </tr>
                                 <tr>
                                     <td style="text-align:right;font-weight: bold">VoLTE Dcr</td>
-                                    <td id="ltekpi18" style="text-align:left"></td>
+                                    <td id="ltekpi15" style="text-align:left"></td>
                                 </tr>
                             </table>
                         </div>
@@ -483,15 +483,15 @@ $market = $row['market'];
                             <table class="table table-condensed">
                                 <tr>
                                     <td style="text-align:right;font-weight: bold">SRVCC Att</td>
-                                    <td id="ltekpi20" style="text-align:left"></td>
+                                    <td id="ltekpi16" style="text-align:left"></td>
                                 </tr>
                                 <tr>
                                     <td style="text-align:right;font-weight: bold">VoLTE Drops</td>
-                                    <td id="ltekpi19" style="text-align:left"></td>
+                                    <td id="ltekpi17" style="text-align:left"></td>
                                 </tr>
                                 <tr>
                                     <td style="text-align:right;font-weight: bold">Rach/RRC Att</td>
-                                    <td id="ltekpi22" style="text-align:left"></td>
+                                    <td id="ltekpi18" style="text-align:left"></td>
                                 </tr>
                             </table>
                         </div>
@@ -552,10 +552,11 @@ $market = $row['market'];
 <script type="text/javascript" src="js/temporaryStorage.js"></script>
 <script type="text/javascript" src="js/colors.js"></script>
 <script type="text/javascript" src="js/CSVPlotter.js"></script>
-<script type="text/javascript" src="js/CanvasLayer.js"></script>
+<script type="text/javascript" src="js/moment.min.js"></script>
+<!--<script type="text/javascript" src="js/CanvasLayer.js"></script>
 <script type="text/javascript" src="js/ShaderProgram.js"></script>
 <script type="text/javascript" src="js/libtess.cat.js"></script>
-<script type="text/javascript" src="js/WebGLLayer.js"></script>
+<script type="text/javascript" src="js/WebGLLayer.js"></script>-->
 <script type="text/javascript">//Local JS
     var collapseBottom = $('#collapseBottom');
     var btnArrow =  $('#btnArrow');

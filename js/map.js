@@ -28,6 +28,7 @@ siteicon['green'] = doSiteIcon([[18,37],[36,0],[9,18]]);
 siteicon['orange'] = doSiteIcon([[18,37],[58,0],[9,18]]);
 siteicon['red'] = doSiteIcon([[18,37],[80,0],[9,18]]);
 var secSQL = [];
+var colorPalette = ["green"/*0*/, "YellowGreen"/*1*/, "yellow"/*2*/, "orange"/*3*/, "red"/*4*/, "Wheat"/*5*/, "Violet"/*6*/, "Turquoise"/*7*/, "#FF6347"/*8*/, "#4682B4"/*9*/, "#708090"/*10*/, "#C0C0C0"/*11*/, "#A0522D"/*12*/, "#F4A460"/*13*/, "#FA8072"/*14*/, "#BC8F8F"/*15*/];
 //Humorous Loading Text
 loadingText();
 var loadTime = 0;
@@ -183,7 +184,7 @@ function infoWindowSparklineShow(type,passIn){
              put in variable 'data' inside the callback function*/
                 $('#iframe_alarm').html(data);
             });
-            jSONURL = "php/kpi.php?lncel="+passIn[1]['sector'][passIn[0]]['lncel_name'];
+            jSONURL = "php/kpi_.php?lncel="+passIn[1]['sector'][passIn[0]]['lncel_name'];
             addShowNeighborsButton(passIn);
             for(var k=0;k<sectorPolygons.length;k++){
               //  changeSectorFormat(k,1.5,'#FFFFFF')
@@ -209,18 +210,56 @@ function infoWindowSparklineShow(type,passIn){
             mkt_center(passIn);
         }
         $.getJSON(jSONURL,function(datak) {
-            for (var g = 0; g < 26; g++){
-                var ltekpif=$('#ltekpi'+g);
-                ltekpif.html('<span class="inlinesparkline">Loading...</span>');
-                ltekpif.html('<span class="inlinesparkline">'+datak['kpi'][g+3].value+'</span>');
+            g=0;
+            j=0;
+            for (var prop in datak[0]){
+                if (j > 1) {
+                    var ltekpif=$('#ltekpi'+g);
+                    ltekpif.html('<div class="inlinesparkline">Loading...</div> <div class="info_spk"></div>');
+                    //ltekpif.html('<div class="info_spk"></div>');
+                    field_ = '#ltekpi'+g+' '+'.inlinesparkline'
+                    field2_ = '#ltekpi'+g+' '+'.info_spk'
+                    $(field_)
+                        .sparkline(
+                            $.map(datak,function(kpi) { return kpi[prop]; }),
+                            {width: '100px', height: '20px', disableTooltips: true}
+                        );
+                        
+                        //Closures (check variable scope)
+                        (function(field__,field2__,prop_){
+                            $(field__).on("sparklineRegionChange", function(ev){
+                                var idx = ev.sparklines[0].getCurrentRegionFields().offset;
+                                if (idx) {
+                                    $(field2__).html(
+                                        "<h6> Date:" + moment(datak[idx].date).format('MM/DD')
+                                        + "&nbsp;&nbsp;&nbsp; "
+                                        + "KPI: " + datak[idx][prop_] + "</h6>");
+                                }
+                            });
+                            $(field__).on("mouseout", function() {
+                                $(field2__).html("&nbsp;");
+                            });  
+                        })(field_,field2_,prop);
+                        
+
+
+                        
+                    g++;
+                }
+                j++;
+                //console.log(datak[0][prop]);
             }
-            var cellLast = String(datak['kpi'][1].value);
-            var dateLast = String(datak['kpi'][0].value);
+            
+            
+            
+            console.log(datak[0].CellName);
+            var cellLast = String(datak[1].value);
+            var dateLast = String(datak[0].value);
             var cellLastsp = cellLast.split(",");
             var dateLastsp = dateLast.split(",");
             $('.infoCell').html('<p>'+cellLastsp[cellLastsp.length - 1]+'-'+dateLastsp[dateLastsp.length - 1]+'</p>');
             if(type == 'sector'){$('.infoSite').html('<p>'+cellLastsp[cellLastsp.length - 1]+'</p>');}
-            $('.inlinesparkline').sparkline('html',{width: '100px', height: '20px'});
+            //$('.inlinesparkline').sparkline('html',{width: '100px', height: '20px'});
         });
     }
 }
@@ -605,57 +644,6 @@ function secDrawWebGL () {
             [
               -122.31028676033021,
               47.60613410935067
-            ]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {},
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              -122.31133818626404,
-              47.608600719536426
-            ],
-            [
-              -122.31038331985474,
-              47.608991315759305
-            ],
-            [
-              -122.31016874313354,
-              47.60867305239036
-            ],
-            [
-              -122.31031894683836,
-              47.60848498676203
-            ],
-            [
-              -122.31040477752687,
-              47.60842712027881
-            ],
-            [
-              -122.31057643890381,
-              47.608333087107034
-            ],
-            [
-              -122.31100559234618,
-              47.60831862045022
-            ],
-            [
-              -122.31123089790344,
-              47.60842712027881
-            ],
-            [
-              -122.3113489151001,
-              47.60849222006795
-            ],
-            [
-              -122.31133818626404,
-              47.608600719536426
             ]
           ]
         ]

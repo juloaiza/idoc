@@ -53,8 +53,8 @@ function changeSectorStyle(sec,sectorObj,styleColor){
     }).done(function(data){
         for(var j=0;j<sectorPolygons.length;j++){
             sectorPolygons[j][0].setOptions({
-                fillColor: colorValues[data[sectorPolygons[j][1]]],
-                fillOpacity: 0.6,
+                fillColor: colorPalette[data[sectorPolygons[j][1]]],
+                fillOpacity: (typeof data[sectorPolygons[j][1]] === 'undefined' ? 0:1),
                 strokeOpacity:1
             });
         }   
