@@ -350,7 +350,7 @@ $market = $row['market'];
 </div>
 <div class="container-fluid" id="main">
     <div class="row">
-        <div class="col-xs-10"><!--map-canvas will be postioned here--></div>
+        <div class="col-xs-10"><!--map-canvas will be positioned here--></div>
         <div class="col-xs-2" id="rightside">
             <h3>KPI</h3>
             <hr>
@@ -367,15 +367,15 @@ $market = $row['market'];
                             </div>
                             <table class="table table-condensed">
                                 <tr>
-                                    <td style="text-align:right;font-weight: bold">Bad CQI</td>
+                                    
                                     <td id="ltekpi0" style="text-align:left"></td>
                                 </tr>
                                 <tr>
-                                    <td style="text-align:right;font-weight: bold">SINR Pusch</td>
+
                                     <td id="ltekpi1" style="text-align:left"></td>
                                 </tr>
                                 <tr>
-                                    <td style="text-align:right;font-weight: bold">Ave CQI</td>
+
                                     <td id="ltekpi2" style="text-align:left"></td>
                                 </tr>
                             </table>
@@ -390,15 +390,15 @@ $market = $row['market'];
                             </div>
                             <table class="table table-condensed">
                                 <tr>
-                                    <td style="text-align:right;font-weight: bold">UE Pwr Hdrm</td>
+
                                     <td id="ltekpi3" style="text-align:left"></td>
                                 </tr>
                                 <tr>
-                                    <td style="text-align:right;font-weight: bold">Usage MIMO</td>
+
                                     <td id="ltekpi4" style="text-align:left"></td>
                                 </tr>
                                 <tr>
-                                    <td style="text-align:right;font-weight: bold">Usage AGG2</td>
+
                                     <td id="ltekpi5" style="text-align:left"></td>
                                 </tr>
                             </table>
@@ -413,15 +413,15 @@ $market = $row['market'];
                             </div>
                             <table class="table table-condensed">
                                 <tr>
-                                    <td style="text-align:right;font-weight: bold">Ave PDCP DL</td>
+
                                     <td id="ltekpi6" style="text-align:left"></td>
                                 </tr>
                                 <tr>
-                                    <td style="text-align:right;font-weight: bold">Max PDCP DL</td>
+
                                     <td id="ltekpi7" style="text-align:left"></td>
                                 </tr>
                                 <tr>
-                                    <td style="text-align:right;font-weight: bold">Ave DL Latency</td>
+
                                     <td id="ltekpi9" style="text-align:left"></td>
                                 </tr>
                             </table>
@@ -436,62 +436,16 @@ $market = $row['market'];
                             </div>
                             <table class="table table-condensed">
                                 <tr>
-                                    <td style="text-align:right;font-weight: bold">DL Vol(MB)</td>
+
                                     <td id="ltekpi10" style="text-align:left"></td>
                                 </tr>
                                 <tr>
-                                    <td style="text-align:right;font-weight: bold">Ave Act UE</td>
+
                                     <td id="ltekpi11" style="text-align:left"></td>
                                 </tr>
                                 <tr>
-                                    <td style="text-align:right;font-weight: bold">Max Act UE</td>
+
                                     <td id="ltekpi12" style="text-align:left"></td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="panel panel-primary">
-                            <div class="panel-heading">
-                                <h3 class="panel-title">VoLTE 1</h3>
-                            </div>
-                            <table class="table table-condensed">
-                                <tr>
-                                    <td style="text-align:right;font-weight: bold">VoLTE Calls</td>
-                                    <td id="ltekpi13" style="text-align:left"></td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align:right;font-weight: bold">VoLTE Afr</td>
-                                    <td id="ltekpi14" style="text-align:left"></td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align:right;font-weight: bold">VoLTE Dcr</td>
-                                    <td id="ltekpi15" style="text-align:left"></td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="panel panel-primary">
-                            <div class="panel-heading">
-                                <h3 class="panel-title">VoLTE 2</h3>
-                            </div>
-                            <table class="table table-condensed">
-                                <tr>
-                                    <td style="text-align:right;font-weight: bold">SRVCC Att</td>
-                                    <td id="ltekpi16" style="text-align:left"></td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align:right;font-weight: bold">VoLTE Drops</td>
-                                    <td id="ltekpi17" style="text-align:left"></td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align:right;font-weight: bold">Rach/RRC Att</td>
-                                    <td id="ltekpi18" style="text-align:left"></td>
                                 </tr>
                             </table>
                         </div>

@@ -215,51 +215,38 @@ function infoWindowSparklineShow(type,passIn){
             for (var prop in datak[0]){
                 if (j > 1) {
                     var ltekpif=$('#ltekpi'+g);
-                    ltekpif.html('<div class="inlinesparkline">Loading...</div> <div class="info_spk"></div>');
+                    ltekpif.html('<strong>'+prop.toLowerCase()+'</strong><div style="text-align:center" class="inlinesparkline">Loading...</div> <div style="text-align:center" class="info_spk">&nbsp;</div>');
                     //ltekpif.html('<div class="info_spk"></div>');
                     field_ = '#ltekpi'+g+' '+'.inlinesparkline'
                     field2_ = '#ltekpi'+g+' '+'.info_spk'
                     $(field_)
                         .sparkline(
                             $.map(datak,function(kpi) { return kpi[prop]; }),
-                            {width: '100px', height: '20px', disableTooltips: true}
+                            {width: '100px', height: '30px', disableTooltips: true}
                         );
-                        
-                        //Closures (check variable scope)
-                        (function(field__,field2__,prop_){
-                            $(field__).on("sparklineRegionChange", function(ev){
-                                var idx = ev.sparklines[0].getCurrentRegionFields().offset;
-                                if (idx) {
-                                    $(field2__).html(
-                                        "<h6> Date:" + moment(datak[idx].date).format('MM/DD')
-                                        + "&nbsp;&nbsp;&nbsp; "
-                                        + "KPI: " + datak[idx][prop_] + "</h6>");
-                                }
-                            });
-                            $(field__).on("mouseout", function() {
-                                $(field2__).html("&nbsp;");
-                            });  
-                        })(field_,field2_,prop);
-                        
-
-
-                        
+                    //Closures (check variable scope)
+                    (function(field__,field2__,prop_){
+                        $(field__).on("sparklineRegionChange", function(ev){
+                            var idx = ev.sparklines[0].getCurrentRegionFields().offset;
+                            if (idx) {
+                                $(field2__).html(
+                                    "<span> Date:" + moment(datak[idx].date).format('MM/DD')
+                                    + "&nbsp;&nbsp;&nbsp; "
+                                    + "Kpi: " + datak[idx][prop_] + "</span>");
+                            }
+                        });
+                        $(field__).on("mouseout", function() {
+                            $(field2__).html("&nbsp;");
+                        });  
+                    })(field_,field2_,prop);
                     g++;
                 }
                 j++;
-                //console.log(datak[0][prop]);
             }
-            
-            
-            
-            console.log(datak[0].CellName);
-            var cellLast = String(datak[1].value);
-            var dateLast = String(datak[0].value);
-            var cellLastsp = cellLast.split(",");
-            var dateLastsp = dateLast.split(",");
-            $('.infoCell').html('<p>'+cellLastsp[cellLastsp.length - 1]+'-'+dateLastsp[dateLastsp.length - 1]+'</p>');
-            if(type == 'sector'){$('.infoSite').html('<p>'+cellLastsp[cellLastsp.length - 1]+'</p>');}
-            //$('.inlinesparkline').sparkline('html',{width: '100px', height: '20px'});
+            var cellLastsp = datak[0].CellName;
+            var dateLastsp = moment(datak[datak.length-1].date).format('MM/DD');
+            $('.infoCell').html('<p>'+cellLastsp+'-'+dateLastsp+'</p>');
+            if(type == 'sector'){$('.infoSite').html('<p>'+cellLastsp.substr(0,cellLastsp.length - 2)+'</p>');}
         });
     }
 }

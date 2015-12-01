@@ -53,6 +53,7 @@ body{
 #rightside {
 	height:calc(100% - 0);
     background-color:#F5F5F5;
+    /*width:1225px;
    /* display: none; */
 
 
@@ -141,12 +142,7 @@ body{
 
 }
 
-.jqstooltip { /* Sparlines tooltip style overrides as loose styling */
-  -webkit-box-sizing: content-box;
-  -moz-box-sizing: content-box;
-  box-sizing: content-box;
 
-}
 
 .infoCell {
     margin:-60px 0px 0px 0px;
