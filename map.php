@@ -241,6 +241,10 @@ $market = $row['market'];
                     </li>
                 </ul>
             </li>
+
+
+
+                
             <li role="presentation" class="dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">
                     Maps <span class="caret"></span>
@@ -363,7 +367,7 @@ $market = $row['market'];
                     <div class="col-lg-12">
                         <div class="panel panel-primary">
                             <div class="panel-heading">
-                                <h3 class="panel-title">Quality</h3>
+                                <h3 class="panel-title">Voices</h3>
                             </div>
                             <table class="table table-condensed">
                                 <tr>
@@ -378,6 +382,10 @@ $market = $row['market'];
 
                                     <td id="ltekpi2" style="text-align:left"></td>
                                 </tr>
+                                <tr>
+
+                                    <td id="ltekpi3" style="text-align:left"></td>
+                                </tr>                                
                             </table>
                         </div>
                     </div>
@@ -386,13 +394,9 @@ $market = $row['market'];
                     <div class="col-lg-12">
                         <div class="panel panel-primary">
                             <div class="panel-heading">
-                                <h3 class="panel-title">Coverage</h3>
+                                <h3 class="panel-title">Data</h3>
                             </div>
                             <table class="table table-condensed">
-                                <tr>
-
-                                    <td id="ltekpi3" style="text-align:left"></td>
-                                </tr>
                                 <tr>
 
                                     <td id="ltekpi4" style="text-align:left"></td>
@@ -401,6 +405,14 @@ $market = $row['market'];
 
                                     <td id="ltekpi5" style="text-align:left"></td>
                                 </tr>
+                                <tr>
+
+                                    <td id="ltekpi6" style="text-align:left"></td>
+                                </tr>
+                                <tr>
+
+                                    <td id="ltekpi7" style="text-align:left"></td>
+                                </tr>                                
                             </table>
                         </div>
                     </div>
@@ -409,32 +421,19 @@ $market = $row['market'];
                     <div class="col-lg-12">
                         <div class="panel panel-primary">
                             <div class="panel-heading">
-                                <h3 class="panel-title">Throughput</h3>
+                                <h3 class="panel-title">Extra</h3>
                             </div>
                             <table class="table table-condensed">
+
                                 <tr>
 
-                                    <td id="ltekpi6" style="text-align:left"></td>
+                                    <td id="ltekpi8" style="text-align:left"></td>
                                 </tr>
-                                <tr>
 
-                                    <td id="ltekpi7" style="text-align:left"></td>
-                                </tr>
                                 <tr>
 
                                     <td id="ltekpi9" style="text-align:left"></td>
                                 </tr>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="panel panel-primary">
-                            <div class="panel-heading">
-                                <h3 class="panel-title">Capacity</h3>
-                            </div>
-                            <table class="table table-condensed">
                                 <tr>
 
                                     <td id="ltekpi10" style="text-align:left"></td>
@@ -442,15 +441,15 @@ $market = $row['market'];
                                 <tr>
 
                                     <td id="ltekpi11" style="text-align:left"></td>
-                                </tr>
-                                <tr>
-
-                                    <td id="ltekpi12" style="text-align:left"></td>
-                                </tr>
+                                </tr>                                
+                                
+                                
+                                
                             </table>
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
         <div class="row"> <!--Nesting accordion to look below map-->
