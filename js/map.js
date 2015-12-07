@@ -5,8 +5,8 @@ var map;
 var cachedGeoJson;
 var colorValues = ["#0099FF"/*0*/, "green"/*1*/, "yellow"/*2*/, "orange"/*3*/, "red"/*4*/];
 var mkt_loc = {Portland:[45.523062, -122.676482], Seattle:[47.6097, -122.331], Spokane:[47.658780, -117.426047], Phoenix:[33.448377, -112.074037]};
-var cluster = $.getJSON("http://serfopt/webcontent/layers/Cluster.json");  //Add layers with JQUERY and using in options
-var subcluster = $.getJSON("http://serfopt/webcontent/layers/SubCluster.json");  //Add layers and using in options
+var cluster = $.getJSON("/webcontent/layers/Cluster.json");  //Add layers with JQUERY and using in options
+var subcluster = $.getJSON("/webcontent/layers/SubCluster.json");  //Add layers and using in options
 var features = null;
 var listenerHandle; //Returns an identifier for this listener that can be used with google.maps.event.removeListener
 var markers = []; // Used to group clusters check MarkerClusterer  also used to change icons markers.push(marker);
@@ -30,8 +30,9 @@ siteicon['red'] = doSiteIcon([[18,37],[80,0],[9,18]]);
 var secSQL = [];
 var colorPalette = ["green"/*0*/, "YellowGreen"/*1*/, "yellow"/*2*/, "orange"/*3*/, "red"/*4*/, "Wheat"/*5*/, "Violet"/*6*/, "Turquoise"/*7*/, "#FF6347"/*8*/, "#4682B4"/*9*/, "#708090"/*10*/, "#C0C0C0"/*11*/, "#A0522D"/*12*/, "#F4A460"/*13*/, "#FA8072"/*14*/, "#BC8F8F"/*15*/];
 var umtsfdbk = ['Okay','Poor EcNo','Poor RTWP','Poor EcNo|Poor RTWP','High TX power usage','Poor EcNo|High TX power usage','Poor RTWP|High TX power usage','Poor EcNo|Poor RTWP |High TX power usage','Soft HO fail','Poor EcNo|Soft HO fail','Poor RTWP|Soft HO fail','Poor EcNo|Poor RTWP|Soft HO fail','High TX power usage|Soft HO fail','Poor EcNo|High TX power usage|Soft HO fail','Poor RTWP|High TX power usage|Soft HO fail','Poor EcNo|Poor RTWP|High TX power usage|Soft HO fail'];
-
-
+var days_= -1;
+var old_day = moment().format('YYYY-MM-DD');//.add(-1, 'days');
+var CurrentDate = moment().add(-1, 'days').format('YYYY-MM-DD');
 //Humorous Loading Text
 loadingText();
 var loadTime = 0;
@@ -64,13 +65,13 @@ function initialize() {
     var mapOptions = {
         center: latlng,
         scrollWheel: false,
-        zoom: 10,
+        zoom: 11,
 //Control Options
         disableDefaultUI: true,
         mapTypeControl: true,
         mapTypeControlOptions: {
             style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
-            position: google.maps.ControlPosition.BOTTOM,
+            position: google.maps.ControlPosition.TOP_CENTER,
             mapTypeIds: [
                 google.maps.MapTypeId.TERRAIN,
                 google.maps.MapTypeId.HYBRID
@@ -79,7 +80,7 @@ function initialize() {
         zoomControl: true,
         zoomControlOptions: {
             style: google.maps.ZoomControlStyle.SMALL,
-            position: google.maps.ControlPosition.BOTTOM_LEFT
+            position: google.maps.ControlPosition.LEFT_BOTTOM
         },
         streetViewControl: true
     };
@@ -99,6 +100,7 @@ function initialize() {
     document.getElementById("mktPdx").addEventListener("click", infoWindowSparklineShow('market','Portland'));
     document.getElementById("mktSpo").addEventListener("click", infoWindowSparklineShow('market','Spokane'));
     document.getElementById("mktPhx").addEventListener("click", infoWindowSparklineShow('market','Phoenix'));
+    legend('DC_sev');
 }
 //onload event listener
 google.maps.event.addDomListener(window, 'load', initialize);
@@ -108,7 +110,7 @@ function sites(nkpi) {
     if (nkpi == 'KPI_2') {
         legend();
     }
-    $.getJSON('http://serfopt/webcontent/layers/sites.json', function(data) {
+    $.getJSON('/webcontent/layers/sites.json', function(data) {
         var i;
         for (i=0; i<data['features'].length;i++) {
             var latLng = new google.maps.LatLng(data['features'][i].properties['Lat'],data['features'][i].properties['Long']);
@@ -221,8 +223,8 @@ function infoWindowSparklineShow(type,passIn){
                     ltekpif.html('<strong>'+prop.toLowerCase()+'</strong><div style="text-align:center" class="inlinesparkline">Loading...</div> <div style="text-align:center" class="info_spk">&nbsp;</div>');
                     field_ = '#ltekpi'+g+' '+'.inlinesparkline'
                     field2_ = '#ltekpi'+g+' '+'.info_spk'
-                    if (prop == 'FEEDBACK'){
-                        ltekpif.append('<div id="fdbk" class="well">'+ feedback_(umtsfdbk[datak[datak.length-1].FEEDBACK]) +'</div>');
+                    if (prop == 'DIAGNOSTIC'){
+                        ltekpif.append('<div id="fdbk" class="well">'+ feedback_(umtsfdbk[datak[datak.length-1].DIAGNOSTIC]) +'</div>');
                     }
                     $(field_)
                         .sparkline(
@@ -238,7 +240,7 @@ function infoWindowSparklineShow(type,passIn){
                                     "<span> Date:" + moment(datak[idx].date).format('MM/DD')
                                     + "&nbsp;&nbsp;&nbsp; "
                                     + "Value: " + datak[idx][prop_] + "</span>");
-                                if (prop_ == 'FEEDBACK'){$('#fdbk').html(feedback_(umtsfdbk[datak[idx][prop_]]));}
+                                if (prop_ == 'DIAGNOSTIC'){$('#fdbk').html(feedback_(umtsfdbk[datak[idx][prop_]]));}
                             }
                         });
                         $(field__).on("mouseout", function() {
@@ -251,12 +253,12 @@ function infoWindowSparklineShow(type,passIn){
             }
             var cellLastsp = datak[0].CellName;
             var dateLastsp = moment(datak[datak.length-1].date).format('MM/DD');
-            $('.infoCell').html('<p>'+cellLastsp+'-'+dateLastsp+'</p>');
+            $('.infoCell').html('<p>&nbsp;<span style="float: left">'+cellLastsp+'</span><span style="float: right">Upd:'+dateLastsp+'</span></p>');
             if(type == 'sector'){$('.infoSite').html('<p>'+cellLastsp.substr(0,cellLastsp.length - 2)+'</p>');}
         });
     }
 }
-//FeedBack
+//Diagnostic
 function feedback_(str_){
     var res = '<ul>'
     var strSp = str_.split('|')
@@ -276,17 +278,30 @@ function legend(leg_type) {
     legendTable['rsrp'] = [['#0099FF','green','yellow','orange','red'],['-45dbm to -91dbm','-91dbm to -97dbm','-97dbm to -114dbm','-114dbm to -120dbm','-120dbm to -130dbm'],'dBm'];
     legendTable['traffic'] = [['#0099FF','orange','red'],['Low','Medium','High'],'None'];
     legendTable['TMo_TechLTE_Map'] = [["#E20074","#FF3B9E","#FF73B9","#848484","#CECECE"],['LTE','WCDMA','UMTS','GSM','Roam'],'None'];
-    legendTable['other'] = [['green','orange','red'],['Okay','Warning','Degraded'],'None'];
-    if (leg_type=='rsrq'||leg_type=='rsrp'||leg_type=='traffic'||leg_type=='TMo_TechLTE_Map'){
+    legendTable['other'] = [['green','orange','red'],['Okay','Warning','Degraded'],'None']; //blank leg_type
+    
+    legendTable['DC_sev'] = [["green", "YellowGreen", "yellow", "orange", "red"],['DC Sev 0', 'DC Sev 1', 'DC Sev 2', 'DC Sev 3','DC Sev 4'],'None'];
+
+    if (!leg_type){
+        for(var k = 0;k<legendTable['other'][0].length;k++){
+            innerHtml+='<div style="height:25px;"><div class="legend-color-box" style="background-color:'+legendTable['other'][0][k]+';"></div><span style="line-height: 23px;">'+legendTable['other'][1][k]+'</span></div>';
+        }        
+        
+    }
+    else{
         for(var j = 0;j<legendTable[leg_type][0].length;j++){
             innerHtml+='<div style="height:25px;"><div class="legend-color-box" style="background-color:'+legendTable[leg_type][0][j]+';"></div><span style="line-height: 23px;">'+legendTable[leg_type][1][j]+'</span></div>';
         }
-    }
-    else{
-        for(var k = 0;k<legendTable['other'][0].length;k++){
-            innerHtml+='<div style="height:25px;"><div class="legend-color-box" style="background-color:'+legendTable['other'][0][k]+';"></div><span style="line-height: 23px;">'+legendTable['other'][1][k]+'</span></div>';
-        }
-    }
+    }    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     innerHtml+='</div></div>';
     legendDiv.style.width = '240px';
     legendDiv.innerHTML = innerHtml;
@@ -343,14 +358,16 @@ function showFeature(layer, nkpi){
 }
 //Puts the navigation menus, search and right-side tray buttons on the map.
 function navmenu() {
-    map.controls[google.maps.ControlPosition.LEFT_TOP].push(document.getElementById("nav-menu"));
-    map.controls[google.maps.ControlPosition.RIGHT_TOP].push(document.getElementById("nav-sear"));
-    map.controls[google.maps.ControlPosition.RIGHT].push(document.getElementById("btnsl"));
+    map.controls[google.maps.ControlPosition.TOP_LEFT].push(document.getElementById("nav-menu"));
+    map.controls[google.maps.ControlPosition.TOP_RIGHT].push(document.getElementById("nav-sear")); 
+    map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(document.getElementById("nav-dpicker"));
+    map.controls[google.maps.ControlPosition.RIGHT_CENTER].push(document.getElementById("btnsl"));
+  // Problem with TOP_CENTER so all TOP_LEFT
 }
 //Centers the viewport on a market
 function mkt_center(mkt) {
     map.setCenter(new google.maps.LatLng(mkt_loc[mkt][0],mkt_loc[mkt][1]));
-    map.setZoom(10);
+    map.setZoom(11);
     $('.market').html(mkt);
 }
 //Cleans a Tile Overlay layer and removes any bottom right control (usually the legend)
@@ -614,8 +631,8 @@ function secDraw() {
                 google.maps.event.addListener(secPoly, 'click', infoWindowSparklineShow('sector',[i,data]));
             }
             //Verify style
-            style_ = 0
-            changeSectorStyle(secSQL.toString(),sectorPolygons,style_)
+            style_ = 'VOICE_DROPS_RAW_SEV'
+            changeSectorStyle(secSQL.toString(),sectorPolygons,style_,CurrentDate)
         });
         
     }
@@ -661,3 +678,24 @@ function secDrawWebGL () {
     myLayer.start(); 
 
 }
+
+function btnpicker(step_) {
+    if (step_=='d'){
+        --days_;
+    } else {
+        if (days_ < -1)  {
+            ++days_;
+        }
+    }
+    $('#dpicker').data("DateTimePicker").date(moment().add(days_, 'days'));
+    //console.log($('#dpicker').data("DateTimePicker").date().format('MM/DD/YY'));
+    //$('#dpicker').attr("value", moment().add(days_, 'days').format('MM/DD/YY'));
+    //$('#dpicker').data("DateTimePicker").date('2012-08-08');
+}
+
+
+
+
+
+
+

@@ -241,10 +241,37 @@ $market = $row['market'];
                     </li>
                 </ul>
             </li>
-
-
-
-                
+            <li role="presentation" class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">
+                    Sector <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a href="#" id="def_">Default</a></li>
+                    <li class ="divider"></li>
+                    <li class="dropdown-submenu">
+                        <a tabindex="-1" href="#">Parameter</a>
+                        <ul class="dropdown-menu message-dropdown">
+                            <li><a href="#">Submenu 1-1</a></li>
+                            <li><a href="#">Submenu 1-2</a></li>
+                            <li><a href="#">Submenu 1-3</a></li>
+                            <li><a href="#">Submenu 1-1</a></li>
+                            <li><a href="#">Submenu 1-2</a></li>
+                        </ul>
+                    </li>                    
+                    <li class ="divider"></li>
+                    <li class="dropdown-submenu">
+                        <a tabindex="-1" href="#">Kpi</a>
+                        <ul class="dropdown-menu message-dropdown">
+                            <li><a href="#">Submenu 1-1</a></li>
+                            <li><a href="#">Submenu 1-2</a></li>
+                            <li><a href="#">Submenu 1-3</a></li>
+                            <li><a href="#">Submenu 1-1</a></li>
+                        </ul>
+                    </li>
+                 
+                    
+                </ul>
+            </li>            
             <li role="presentation" class="dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">
                     Maps <span class="caret"></span>
@@ -335,6 +362,7 @@ $market = $row['market'];
             </li>
         </ul>
     </div>
+    
     <div id="nav-sear">
         <div class="input-group">
             <input class="form-control" placeholder="Site, Address, Zip" type="text" id="seartxt" >
@@ -345,6 +373,23 @@ $market = $row['market'];
                     </button></span>
         </div>
     </div>
+
+    <div id="nav-dpicker">
+        <div class="input-group">
+            <span class="input-group-btn">
+                <button class="btn btn-default" type="button" onclick="btnpicker('d')">  <span class="glyphicon glyphicon-step-backward" aria-hidden="true"></span></button>
+            </span>
+                        
+                <input type='text' class="form-control" id='dpicker' >
+
+            <span class="input-group-btn">
+                <button class="btn btn-default" type="button" onclick="btnpicker('u')">  <span class="glyphicon glyphicon-step-forward" aria-hidden="true"></span></button>
+            </span>                   
+                        
+        </div>
+    </div>    
+    
+    
     <!--  <div id="legend-container"><h3>Legend</h3></div> -->
     <div id="btnsl">
         <button class="btn btn-primary" type="button" id="btnRight" >
@@ -356,15 +401,26 @@ $market = $row['market'];
     <div class="row">
         <div class="col-xs-10"><!--map-canvas will be positioned here--></div>
         <div class="col-xs-2" id="rightside">
-            <h3>KPI</h3>
-            <hr>
-            <div class="infoCell">
-                <p><!--LSE01001T - 04/15/15--></p>
-            </div>
+            <h2 style="text-align:center"> <strong>KPIs</strong></h2>
             <div id="kpi">
                 <!-- Div pending to add -->
                 <div class="row">
-                    <div class="col-lg-12">
+                    <div class="col-sm-12">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <h4 class="panel-title"> <div class="infoCell"></div></h4>
+                            </div>
+                            <table class="table table-condensed">
+                                <tr>
+
+                                    <td id="ltekpi11" style="text-align:left"></td>
+                                </tr>                              
+                            </table>
+                        </div>
+                    </div>
+                </div>                
+                <div class="row">
+                    <div class="col-sm-12">
                         <div class="panel panel-primary">
                             <div class="panel-heading">
                                 <h3 class="panel-title">Voices</h3>
@@ -391,7 +447,7 @@ $market = $row['market'];
                     </div>
                 </div>
                <div class="row">
-                    <div class="col-lg-12">
+                    <div class="col-sm-12">
                         <div class="panel panel-primary">
                             <div class="panel-heading">
                                 <h3 class="panel-title">Data</h3>
@@ -418,7 +474,7 @@ $market = $row['market'];
                     </div>
                </div>
                 <div class="row">
-                    <div class="col-lg-12">
+                    <div class="col-sm-12">
                         <div class="panel panel-primary">
                             <div class="panel-heading">
                                 <h3 class="panel-title">Extra</h3>
@@ -438,18 +494,10 @@ $market = $row['market'];
 
                                     <td id="ltekpi10" style="text-align:left"></td>
                                 </tr>
-                                <tr>
-
-                                    <td id="ltekpi11" style="text-align:left"></td>
-                                </tr>                                
-                                
-                                
-                                
                             </table>
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
         <div class="row"> <!--Nesting accordion to look below map-->
@@ -480,6 +528,8 @@ $market = $row['market'];
                                     </div>
                                     <div role="tabpanel" class="tab-pane" id="elevation">
                                         <div class="iframe" id="elevation_chart"></div>
+                                            <!-- DatePicker-->                    
+
                                     </div>
                                 </div>
                             </div>
@@ -496,6 +546,8 @@ $market = $row['market'];
 <script type="text/javascript" src="js/jquery.sparkline.js"></script>
 <script type="text/javascript" src="js/bootstrap.js"></script>
 <script type="text/javascript" src="js/GeoJSON.js"></script>
+<script type="text/javascript" src="js/moment.min.js"></script>
+<script type="text/javascript" src="js/bootstrap-datetimepicker.js"></script>
 <script type="text/javascript" src="js/map.js"></script>
 <script type="text/javascript" src="js/v3_epoly.js"></script>
 <script type="text/javascript" src="js/sectors.js"></script>
@@ -505,12 +557,25 @@ $market = $row['market'];
 <script type="text/javascript" src="js/temporaryStorage.js"></script>
 <script type="text/javascript" src="js/colors.js"></script>
 <script type="text/javascript" src="js/CSVPlotter.js"></script>
-<script type="text/javascript" src="js/moment.min.js"></script>
 <!--<script type="text/javascript" src="js/CanvasLayer.js"></script>
 <script type="text/javascript" src="js/ShaderProgram.js"></script>
 <script type="text/javascript" src="js/libtess.cat.js"></script>
 <script type="text/javascript" src="js/WebGLLayer.js"></script>-->
 <script type="text/javascript">//Local JS
+    $('#dpicker').datetimepicker({
+                    defaultDate: moment().add(-1, 'days'),
+                    format: 'MM/DD/YY',
+                    maxDate: moment()
+                });   
+    $("#dpicker").on("dp.change", function (e) {
+        var new_day = moment($('#dpicker').data("DateTimePicker").date().format('YYYY-MM-DD'));
+        days_ = new_day.diff(old_day,'days');
+        CurrentDate = $('#dpicker').data("DateTimePicker").date().format('YYYY-MM-DD');
+        //Verify style
+        style_ = 'VOICE_DROPS_RAW_SEV'
+        changeSectorStyle(secSQL.toString(),sectorPolygons,style_,CurrentDate)    
+    });                
+                
     var collapseBottom = $('#collapseBottom');
     var btnArrow =  $('#btnArrow');
     collapseBottom.on('show.bs.collapse', function () {
@@ -529,9 +594,10 @@ $market = $row['market'];
         var widthper = 100*width/parentWidth;
         var btnArrowLeft = $('#btnArrowLeft');
         var accordion = $( "#accordion" );
+        
         if (widthper==100) {
-            mapCanvas.animate({ "width": "82.6333%" }, "slow" );
-            accordion.animate({ "width": "82.6333%" }, "slow" );
+            mapCanvas.animate({ "width": (width - 325)+"px" }, "slow" );
+            accordion.animate({ "width": (width - 325)+"px" }, "slow" );
             btnArrowLeft.removeClass();
             btnArrowLeft.toggleClass("glyphicon glyphicon-chevron-right");
         } else {
