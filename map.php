@@ -27,6 +27,8 @@ $market = $row['market'];
     <link href="css/general.css" rel="stylesheet">
     <!-- context-menu -->
     <link  href="css/contextmenu.css" rel="stylesheet">
+    
+        <link rel="icon" href="favicon.ico" />
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCDjB5G0Fod2mUs0u9a-B4cF3xyqQa5uAs&sensor=false"></script>
     <script type="text/javascript" src="js/markerclusterer.js"></script>
     <script src="https://www.google.com/jsapi"></script>
@@ -241,6 +243,36 @@ $market = $row['market'];
             </li>
             <li role="presentation" class="dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">
+                    Sector <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a href="#" id="def_">Default</a></li>
+                    <li class ="divider"></li>
+                    <li class="dropdown-submenu">
+                        <a tabindex="-1" href="#">Parameter</a>
+                        <ul class="dropdown-menu message-dropdown">
+                            <li><a href="#" id="Par_0">PtxPrimaryCPICH</a></li>
+                            <li><a href="#" id="Par_1">PriScrCode</a></li>
+                            <li><a href="#" id="Par_2">RtFmcsIdentifier</a></li>
+                            <li><a href="#" id="Par_3">LAC</a></li>
+                        </ul>
+                    </li>                    
+                    <li class ="divider"></li>
+                    <li class="dropdown-submenu">
+                        <a tabindex="-1" href="#">Kpi</a>
+                        <ul class="dropdown-menu message-dropdown">
+                            <li><a href="#" id="MKPI_0">FeedBack</a></li>
+                            <li><a href="#" id="MKPI_1">Voice Drops Raw Severity</a></li>
+                            <li><a href="#" id="MKPI_2">Poor EcNo Severity</a></li>
+                            <li><a href="#" id="MKPI_3">High TX Power Usage Severity</a></li>
+                        </ul>
+                    </li>
+                 
+                    
+                </ul>
+            </li>            
+            <li role="presentation" class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">
                     Maps <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu" role="menu">
@@ -329,6 +361,7 @@ $market = $row['market'];
             </li>
         </ul>
     </div>
+    
     <div id="nav-sear">
         <div class="input-group">
             <input class="form-control" placeholder="Site, Address, Zip" type="text" id="seartxt" >
@@ -339,6 +372,23 @@ $market = $row['market'];
                     </button></span>
         </div>
     </div>
+
+    <div id="nav-dpicker">
+        <div class="input-group">
+            <span class="input-group-btn">
+                <button class="btn btn-default" type="button" onclick="btnpicker('d')">  <span class="glyphicon glyphicon-step-backward" aria-hidden="true"></span></button>
+            </span>
+                        
+                <input type='text' class="form-control" id='dpicker' >
+
+            <span class="input-group-btn">
+                <button class="btn btn-default" type="button" onclick="btnpicker('u')">  <span class="glyphicon glyphicon-step-forward" aria-hidden="true"></span></button>
+            </span>                   
+                        
+        </div>
+    </div>    
+    
+    
     <!--  <div id="legend-container"><h3>Legend</h3></div> -->
     <div id="btnsl">
         <button class="btn btn-primary" type="button" id="btnRight" >
@@ -348,148 +398,100 @@ $market = $row['market'];
 </div>
 <div class="container-fluid" id="main">
     <div class="row">
-        <div class="col-xs-10"><!--map-canvas will be postioned here--></div>
+        <div class="col-xs-10"><!--map-canvas will be positioned here--></div>
         <div class="col-xs-2" id="rightside">
-            <h3>KPI</h3>
-            <hr>
-            <div class="infoCell">
-                <p><!--LSE01001T - 04/15/15--></p>
-            </div>
+            <h2 style="text-align:center"> <strong>KPIs</strong></h2>
             <div id="kpi">
                 <!-- Div pending to add -->
                 <div class="row">
-                    <div class="col-lg-12">
+                    <div class="col-sm-12">
                         <div class="panel panel-primary">
                             <div class="panel-heading">
-                                <h3 class="panel-title">Quality</h3>
+                                <h4 class="panel-title"> <div class="infoCell"></div></h4>
                             </div>
                             <table class="table table-condensed">
                                 <tr>
-                                    <td style="text-align:right;font-weight: bold">Bad CQI</td>
+
+                                    <td id="ltekpi11" style="text-align:left"></td>
+                                </tr>                              
+                            </table>
+                        </div>
+                    </div>
+                </div>                
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Voices</h3>
+                            </div>
+                            <table class="table table-condensed">
+                                <tr>
+                                    
                                     <td id="ltekpi0" style="text-align:left"></td>
                                 </tr>
                                 <tr>
-                                    <td style="text-align:right;font-weight: bold">SINR Pusch</td>
+
                                     <td id="ltekpi1" style="text-align:left"></td>
                                 </tr>
                                 <tr>
-                                    <td style="text-align:right;font-weight: bold">Ave CQI</td>
+
                                     <td id="ltekpi2" style="text-align:left"></td>
                                 </tr>
+                                <tr>
+
+                                    <td id="ltekpi3" style="text-align:left"></td>
+                                </tr>                                
                             </table>
                         </div>
                     </div>
                 </div>
                <div class="row">
-                    <div class="col-lg-12">
+                    <div class="col-sm-12">
                         <div class="panel panel-primary">
                             <div class="panel-heading">
-                                <h3 class="panel-title">Coverage</h3>
+                                <h3 class="panel-title">Data</h3>
                             </div>
                             <table class="table table-condensed">
                                 <tr>
-                                    <td style="text-align:right;font-weight: bold">UE Pwr Hdrm</td>
-                                    <td id="ltekpi6" style="text-align:left"></td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align:right;font-weight: bold">Usage MIMO</td>
+
                                     <td id="ltekpi4" style="text-align:left"></td>
                                 </tr>
                                 <tr>
-                                    <td style="text-align:right;font-weight: bold">Usage AGG2</td>
+
                                     <td id="ltekpi5" style="text-align:left"></td>
                                 </tr>
+                                <tr>
+
+                                    <td id="ltekpi6" style="text-align:left"></td>
+                                </tr>
+                                <tr>
+
+                                    <td id="ltekpi7" style="text-align:left"></td>
+                                </tr>                                
                             </table>
                         </div>
                     </div>
                </div>
                 <div class="row">
-                    <div class="col-lg-12">
+                    <div class="col-sm-12">
                         <div class="panel panel-primary">
                             <div class="panel-heading">
-                                <h3 class="panel-title">Throughput</h3>
+                                <h3 class="panel-title">Extra</h3>
                             </div>
                             <table class="table table-condensed">
+
                                 <tr>
-                                    <td style="text-align:right;font-weight: bold">Ave PDCP DL</td>
-                                    <td id="ltekpi12" style="text-align:left"></td>
+
+                                    <td id="ltekpi8" style="text-align:left"></td>
                                 </tr>
+
                                 <tr>
-                                    <td style="text-align:right;font-weight: bold">Max PDCP DL</td>
-                                    <td id="ltekpi13" style="text-align:left"></td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align:right;font-weight: bold">Ave DL Latency</td>
-                                    <td id="ltekpi14" style="text-align:left"></td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="panel panel-primary">
-                            <div class="panel-heading">
-                                <h3 class="panel-title">Capacity</h3>
-                            </div>
-                            <table class="table table-condensed">
-                                <tr>
-                                    <td style="text-align:right;font-weight: bold">DL Vol(MB)</td>
-                                    <td id="ltekpi7" style="text-align:left"></td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align:right;font-weight: bold">Ave Act UE</td>
+
                                     <td id="ltekpi9" style="text-align:left"></td>
                                 </tr>
                                 <tr>
-                                    <td style="text-align:right;font-weight: bold">Max Act UE</td>
+
                                     <td id="ltekpi10" style="text-align:left"></td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="panel panel-primary">
-                            <div class="panel-heading">
-                                <h3 class="panel-title">VoLTE 1</h3>
-                            </div>
-                            <table class="table table-condensed">
-                                <tr>
-                                    <td style="text-align:right;font-weight: bold">VoLTE Calls</td>
-                                    <td id="ltekpi15" style="text-align:left"></td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align:right;font-weight: bold">VoLTE Afr</td>
-                                    <td id="ltekpi17" style="text-align:left"></td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align:right;font-weight: bold">VoLTE Dcr</td>
-                                    <td id="ltekpi18" style="text-align:left"></td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="panel panel-primary">
-                            <div class="panel-heading">
-                                <h3 class="panel-title">VoLTE 2</h3>
-                            </div>
-                            <table class="table table-condensed">
-                                <tr>
-                                    <td style="text-align:right;font-weight: bold">SRVCC Att</td>
-                                    <td id="ltekpi20" style="text-align:left"></td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align:right;font-weight: bold">VoLTE Drops</td>
-                                    <td id="ltekpi19" style="text-align:left"></td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align:right;font-weight: bold">Rach/RRC Att</td>
-                                    <td id="ltekpi22" style="text-align:left"></td>
                                 </tr>
                             </table>
                         </div>
@@ -525,6 +527,8 @@ $market = $row['market'];
                                     </div>
                                     <div role="tabpanel" class="tab-pane" id="elevation">
                                         <div class="iframe" id="elevation_chart"></div>
+                                            <!-- DatePicker-->                    
+
                                     </div>
                                 </div>
                             </div>
@@ -541,6 +545,8 @@ $market = $row['market'];
 <script type="text/javascript" src="js/jquery.sparkline.js"></script>
 <script type="text/javascript" src="js/bootstrap.js"></script>
 <script type="text/javascript" src="js/GeoJSON.js"></script>
+<script type="text/javascript" src="js/moment.min.js"></script>
+<script type="text/javascript" src="js/bootstrap-datetimepicker.js"></script>
 <script type="text/javascript" src="js/map.js"></script>
 <script type="text/javascript" src="js/v3_epoly.js"></script>
 <script type="text/javascript" src="js/sectors.js"></script>
@@ -550,7 +556,24 @@ $market = $row['market'];
 <script type="text/javascript" src="js/temporaryStorage.js"></script>
 <script type="text/javascript" src="js/colors.js"></script>
 <script type="text/javascript" src="js/CSVPlotter.js"></script>
+<!--<script type="text/javascript" src="js/CanvasLayer.js"></script>
+<script type="text/javascript" src="js/ShaderProgram.js"></script>
+<script type="text/javascript" src="js/libtess.cat.js"></script>
+<script type="text/javascript" src="js/WebGLLayer.js"></script>-->
 <script type="text/javascript">//Local JS
+    $('#dpicker').datetimepicker({
+                    defaultDate: moment().add(-1, 'days'),
+                    format: 'MM/DD/YY',
+                    maxDate: moment()
+                });   
+    $("#dpicker").on("dp.change", function (e) {
+        var new_day = moment($('#dpicker').data("DateTimePicker").date().format('YYYY-MM-DD'));
+        days_ = new_day.diff(old_day,'days');
+        CurrentDate = $('#dpicker').data("DateTimePicker").date().format('YYYY-MM-DD');
+        //Verify style
+        changeSectorStyle(secSQL.toString(),sectorPolygons,style_,CurrentDate,query_)    
+    });                
+                
     var collapseBottom = $('#collapseBottom');
     var btnArrow =  $('#btnArrow');
     collapseBottom.on('show.bs.collapse', function () {
@@ -569,9 +592,10 @@ $market = $row['market'];
         var widthper = 100*width/parentWidth;
         var btnArrowLeft = $('#btnArrowLeft');
         var accordion = $( "#accordion" );
+        
         if (widthper==100) {
-            mapCanvas.animate({ "width": "82.6333%" }, "slow" );
-            accordion.animate({ "width": "82.6333%" }, "slow" );
+            mapCanvas.animate({ "width": (width - 325)+"px" }, "slow" );
+            accordion.animate({ "width": (width - 325)+"px" }, "slow" );
             btnArrowLeft.removeClass();
             btnArrowLeft.toggleClass("glyphicon glyphicon-chevron-right");
         } else {
