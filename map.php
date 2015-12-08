@@ -251,21 +251,20 @@ $market = $row['market'];
                     <li class="dropdown-submenu">
                         <a tabindex="-1" href="#">Parameter</a>
                         <ul class="dropdown-menu message-dropdown">
-                            <li><a href="#">Submenu 1-1</a></li>
-                            <li><a href="#">Submenu 1-2</a></li>
-                            <li><a href="#">Submenu 1-3</a></li>
-                            <li><a href="#">Submenu 1-1</a></li>
-                            <li><a href="#">Submenu 1-2</a></li>
+                            <li><a href="#" id="Par_0">PtxPrimaryCPICH</a></li>
+                            <li><a href="#" id="Par_1">PriScrCode</a></li>
+                            <li><a href="#" id="Par_2">RtFmcsIdentifier</a></li>
+                            <li><a href="#" id="Par_3">LAC</a></li>
                         </ul>
                     </li>                    
                     <li class ="divider"></li>
                     <li class="dropdown-submenu">
                         <a tabindex="-1" href="#">Kpi</a>
                         <ul class="dropdown-menu message-dropdown">
-                            <li><a href="#">Submenu 1-1</a></li>
-                            <li><a href="#">Submenu 1-2</a></li>
-                            <li><a href="#">Submenu 1-3</a></li>
-                            <li><a href="#">Submenu 1-1</a></li>
+                            <li><a href="#" id="MKPI_0">FeedBack</a></li>
+                            <li><a href="#" id="MKPI_1">Voice Drops Raw Severity</a></li>
+                            <li><a href="#" id="MKPI_2">Poor EcNo Severity</a></li>
+                            <li><a href="#" id="MKPI_3">High TX Power Usage Severity</a></li>
                         </ul>
                     </li>
                  
@@ -572,8 +571,7 @@ $market = $row['market'];
         days_ = new_day.diff(old_day,'days');
         CurrentDate = $('#dpicker').data("DateTimePicker").date().format('YYYY-MM-DD');
         //Verify style
-        style_ = 'VOICE_DROPS_RAW_SEV'
-        changeSectorStyle(secSQL.toString(),sectorPolygons,style_,CurrentDate)    
+        changeSectorStyle(secSQL.toString(),sectorPolygons,style_,CurrentDate,query_)    
     });                
                 
     var collapseBottom = $('#collapseBottom');

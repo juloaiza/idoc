@@ -33,6 +33,9 @@ var umtsfdbk = ['Okay','Poor EcNo','Poor RTWP','Poor EcNo|Poor RTWP','High TX po
 var days_= -1;
 var old_day = moment().format('YYYY-MM-DD');//.add(-1, 'days');
 var CurrentDate = moment().add(-1, 'days').format('YYYY-MM-DD');
+var style_ = 'VOICE_DROPS_RAW_SEV';
+var query_ = 0;
+var Arrkpi = ['FEEDBACK','VOICE_DROPS_RAW_SEV','POOR_ECNO_SEV','HIGH_TX_PWR_USAGE_SEV'];
 //Humorous Loading Text
 loadingText();
 var loadTime = 0;
@@ -100,6 +103,30 @@ function initialize() {
     document.getElementById("mktPdx").addEventListener("click", infoWindowSparklineShow('market','Portland'));
     document.getElementById("mktSpo").addEventListener("click", infoWindowSparklineShow('market','Spokane'));
     document.getElementById("mktPhx").addEventListener("click", infoWindowSparklineShow('market','Phoenix'));
+    
+    for (i=0;i<4;i++){
+        document.getElementById("MKPI_"+i).addEventListener("click", (function(k){
+            return function() {
+            style_=Arrkpi[k];
+            query_ = 0;
+            changeSectorStyle(secSQL.toString(),sectorPolygons,style_,CurrentDate,query_)
+            };
+        })(i)); 
+    }
+    
+    for (i=0;i<4;i++){
+        document.getElementById("Par_"+i).addEventListener("click", (function(k){
+            return function() {
+            style_=$("#Par_"+k).html();
+            console.log(style_);
+            query_ = 1;
+            changeSectorStyle(secSQL.toString(),sectorPolygons,style_,CurrentDate,query_)
+            };
+        })(i)); 
+    }    
+    
+    
+    
     legend('DC_sev');
 }
 //onload event listener
@@ -631,8 +658,8 @@ function secDraw() {
                 google.maps.event.addListener(secPoly, 'click', infoWindowSparklineShow('sector',[i,data]));
             }
             //Verify style
-            style_ = 'VOICE_DROPS_RAW_SEV'
-            changeSectorStyle(secSQL.toString(),sectorPolygons,style_,CurrentDate)
+            //style_ = 'VOICE_DROPS_RAW_SEV'
+            changeSectorStyle(secSQL.toString(),sectorPolygons,style_,CurrentDate,query_)
         });
         
     }

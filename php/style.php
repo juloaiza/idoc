@@ -3,9 +3,21 @@
     $secSQL=$_POST['secSQL'];
     $style=$_POST['style'];   //kpi,parameter,value 
     $date=$_POST['date'];
+    $i = $_POST['query'];
     include("connection.php");  //get db connection
-    //$query = "SELECT `CellName`, `existingelectilt` as style FROM `physical_info_all` WHERE `CellName` in (".$secSQL.")"; //replace emp_info with your table name
-    $query = "SELECT `WCEL_NAME` as CellName, `".$style."` AS style FROM `umts_raw_kpi` WHERE `period_start_time` = '".$date."' AND `WCEL_NAME` in (".$secSQL.")";
+
+    switch ($i) {
+        case 0:
+            $query = "SELECT `WCEL_NAME` as CellName, `".$style."` AS style FROM `umts_raw_kpi` WHERE `period_start_time` = '".$date."' AND `WCEL_NAME` in (".$secSQL.")";
+            break;
+        case 1:
+            $query = "SELECT CellName, `".$style."` AS style FROM `Nokia_WCEL` WHERE `CellName` in (".$secSQL.")";
+            break;
+        case 2:
+            $query = "SELECT `CellName`, `existingelectilt` as style FROM `physical_info_all` WHERE `CellName` in (".$secSQL.")"; //replace emp_info with your table name
+            break;
+    }    
+    
    //echo $query;
     $result = mysqli_query($link, $query);
     $json = array();

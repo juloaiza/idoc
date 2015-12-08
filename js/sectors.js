@@ -38,12 +38,12 @@ function changeSectorFormat(i,strokeWidth,strokeColor){
 }
 
 
-function changeSectorStyle(sec,sectorObj,styleColor, date_){
+function changeSectorStyle(sec,sectorObj,styleColor, date_, queryT_){
     $.ajax({   //ajax take the content and put in data after done
         url:'php/style.php',
         type: "POST", // Using POST to avoid error 414 with GET
         dataType : "json",  // The type of data we expect back
-        data: { secSQL: sec, style: styleColor, date: date_}, //Passing data. Use serialize when use Form
+        data: { secSQL: sec, style: styleColor, date: date_, query: queryT_}, //Passing data. Use serialize when use Form
         error: function( xhr, status, errorThrown ) {
             alert( "Sorry, there was a problem!" );
             console.log( "Error: " + errorThrown );
