@@ -436,7 +436,7 @@ function moveCenter() {
         }
     }).done(function(data){
         if (!$.isEmptyObject(data)) {
-            var newLatLng = new google.maps.LatLng(data['Site'][0]['Lat'],data['Site'][0]['Log']);
+            var newLatLng = new google.maps.LatLng(data.site[0].Lat,data.site[0].Log);
             map.setCenter(newLatLng);map.setZoom(18);
         } else {
             geolocation(site);
