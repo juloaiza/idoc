@@ -118,7 +118,6 @@ function initialize() {
         document.getElementById("Par_"+i).addEventListener("click", (function(k){
             return function() {
             style_=$("#Par_"+k).html();
-            console.log(style_);
             query_ = 1;
             changeSectorStyle(secSQL.toString(),sectorPolygons,style_,CurrentDate,query_)
             };

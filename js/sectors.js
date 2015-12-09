@@ -53,7 +53,8 @@ function changeSectorStyle(sec,sectorObj,styleColor, date_, queryT_){
     }).done(function(data){
         for(var j=0;j<sectorPolygons.length;j++){
             sectorPolygons[j][0].setOptions({
-                fillColor: colorPalette[data[sectorPolygons[j][1]]],
+                fillColor: (queryT_ === 0 ? colorPalette[data[sectorPolygons[j][1]]]:'#' + Math.floor(Chance(data[sectorPolygons[j][1]]).random()*16777215).toString(16)),
+                //fillColor: colorPalette[data[sectorPolygons[j][1]]],
                 fillOpacity: (typeof data[sectorPolygons[j][1]] === 'undefined' ? 0:1),
                 strokeOpacity:1
             });
