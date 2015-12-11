@@ -58,7 +58,23 @@ function changeSectorStyle(sec,sectorObj,styleColor, date_, queryT_){
                 fillOpacity: (typeof data[sectorPolygons[j][1]] === 'undefined' ? 0:1),
                 strokeOpacity:1
             });
-        }   
+            //Adding label                
+            (function(j,value_) {
+                google.maps.event.addListener(sectorPolygons[j][0],'mouseover',function(e){
+                    var mapLabel = new MapLabel({
+                        text: value_.toString(),
+                        position:  e.latLng,
+                        map: map,
+                        fontSize: 14,
+                        align: 'center'
+                    });
+                    //Removing label 
+                    google.maps.event.addListenerOnce(sectorPolygons[j][0],'mouseout', function(){
+                        mapLabel.setMap(null);
+                    });
+                });
+            })(j,data[sectorPolygons[j][1]]);            
+        }
     });    
 }
 
