@@ -36,6 +36,9 @@ var CurrentDate = moment().add(-1, 'days').format('YYYY-MM-DD');
 var style_ = 'VOICE_DROPS_RAW_SEV';
 var query_ = 0;
 var Arrkpi = ['FEEDBACK','VOICE_DROPS_RAW_SEV','POOR_ECNO_SEV','HIGH_TX_PWR_USAGE_SEV'];
+var mapLabelTemp = [];
+
+
 //Humorous Loading Text
 loadingText();
 var loadTime = 0;
@@ -601,8 +604,9 @@ function secDraw() {
     if (!$.isEmptyObject(secPolyTemp)) {
         for (i=0; i<secPolyTemp.length; i++) 
         {                           
-          secPolyTemp[i].setMap(null); //or line[i].setVisible(false);
+            secPolyTemp[i].setMap(null); //or line[i].setVisible(false);
          // google.maps.event.removeListener(listener[i]);
+          //  mapLabelTemp[i].setMap(null);
         }
         secPolyTemp = [];
         sectorPolygons = [];
@@ -650,11 +654,11 @@ function secDraw() {
                     zIndex: stack_, //stack order
                     map: map
                 });
-                secPolyTemp.push(secPoly)
+                secPolyTemp.push(secPoly);
                 sectorPolygons.push([secPoly, cellname]);
                 secSQL.push("'"+cellname+"'");
                 //console.log(Object.keys(sectorPolygons[i]));
-                google.maps.event.addListener(secPoly, 'click', infoWindowSparklineShow('sector',[i,data]));
+                google.maps.event.addListener(secPoly, 'click', infoWindowSparklineShow('sector',[i,data]));                
             }
             //Verify style
             //style_ = 'VOICE_DROPS_RAW_SEV'

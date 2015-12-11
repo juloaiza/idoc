@@ -30,7 +30,8 @@ $market = $row['market'];
     
         <link rel="icon" href="favicon.ico" />
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCDjB5G0Fod2mUs0u9a-B4cF3xyqQa5uAs&sensor=false"></script>
-    <script type="text/javascript" src="js/markerclusterer.js"></script>
+    <script type="text/javascript" src="js/markerclusterer.min.js"></script>
+    <script type="text/javascript" src="js/maplabel.js"></script>
     <script src="https://www.google.com/jsapi"></script>
     <style type="text/css">
         html{
