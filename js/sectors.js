@@ -54,9 +54,10 @@ function changeSectorStyle(sec,sectorObj,styleColor, date_, queryT_){
         for(var j=0;j<sectorPolygons.length;j++){
             sectorPolygons[j][0].setOptions({
                 fillColor: (queryT_ === 0 ? colorPalette[data[sectorPolygons[j][1]]]:'#' + Math.floor(Chance(data[sectorPolygons[j][1]]).random()*16777215).toString(16)),
-                //fillColor: colorPalette[data[sectorPolygons[j][1]]],
-                fillOpacity: (typeof data[sectorPolygons[j][1]] === 'undefined' ? 0:1),
-                strokeOpacity:1
+                fillOpacity: (typeof data[sectorPolygons[j][1]] === 'undefined' ? 0:(colorPalette[data[sectorPolygons[j][1]]] === 'green' ? 0:1)),
+                strokeColor:(queryT_ === 0 ? colorPalette[data[sectorPolygons[j][1]]]:'#585555'),
+                strokeOpacity:(typeof data[sectorPolygons[j][1]] === 'undefined' ? 0.2:1),
+                strokeWeight: (colorPalette[data[sectorPolygons[j][1]]] === 'green' ? 0.2:0.6)
             });
             //Adding label                
             (function(j,value_) {
