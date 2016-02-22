@@ -266,6 +266,7 @@ $market = $row['market'];
                             <li><a href="#" id="MKPI_1">Voice Drops Raw Severity</a></li>
                             <li><a href="#" id="MKPI_2">Poor EcNo Severity</a></li>
                             <li><a href="#" id="MKPI_3">High TX Power Usage Severity</a></li>
+                            <li><a href="#" id="MKPI_4">Poor RTWP Severity</a></li>
                         </ul>
                     </li>
                  

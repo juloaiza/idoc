@@ -35,7 +35,7 @@ var old_day = moment().format('YYYY-MM-DD');//.add(-1, 'days');
 var CurrentDate = moment().add(-1, 'days').format('YYYY-MM-DD');
 var style_ = 'VOICE_DROPS_RAW_SEV';
 var query_ = 0;
-var Arrkpi = ['FEEDBACK','VOICE_DROPS_RAW_SEV','POOR_ECNO_SEV','HIGH_TX_PWR_USAGE_SEV'];
+var Arrkpi = ['FEEDBACK','VOICE_DROPS_RAW_SEV','POOR_ECNO_SEV','HIGH_TX_PWR_USAGE_SEV','POOR_RTWP_SEV'];
 var mapLabelTemp = [];
 
 
@@ -107,7 +107,7 @@ function initialize() {
     document.getElementById("mktSpo").addEventListener("click", infoWindowSparklineShow('market','Spokane'));
     document.getElementById("mktPhx").addEventListener("click", infoWindowSparklineShow('market','Phoenix'));
     
-    for (i=0;i<4;i++){
+    for (i=0;i<5;i++){
         document.getElementById("MKPI_"+i).addEventListener("click", (function(k){
             return function() {
             style_=Arrkpi[k];

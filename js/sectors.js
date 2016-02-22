@@ -51,9 +51,17 @@ function changeSectorStyle(sec,sectorObj,styleColor, date_, queryT_){
             console.dir( xhr );
         }
     }).done(function(data){
+        off = 0
+        if (styleColor == 'VOICE_DROPS_RAW_SEV' || styleColor == 'FEEDBACK') {
+            off = 0;
+        }
+        else{
+            off = 3
+        }        
+        
         for(var j=0;j<sectorPolygons.length;j++){
             sectorPolygons[j][0].setOptions({
-                fillColor: (queryT_ === 0 ? colorPalette[data[sectorPolygons[j][1]]]:'#' + Math.floor(Chance(data[sectorPolygons[j][1]]).random()*16777215).toString(16)),
+                fillColor: (queryT_ === 0 ? colorPalette[data[sectorPolygons[j][1]] + off]:'#' + Math.floor(Chance(data[sectorPolygons[j][1]]).random()*16777215).toString(16)),
                 fillOpacity: (typeof data[sectorPolygons[j][1]] === 'undefined' ? 0:(colorPalette[data[sectorPolygons[j][1]]] === 'green' ? 0:1)),
                 strokeColor:(queryT_ === 0 ? colorPalette[data[sectorPolygons[j][1]]]:'#585555'),
                 strokeOpacity:(typeof data[sectorPolygons[j][1]] === 'undefined' ? 0.2:1),
