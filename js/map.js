@@ -127,9 +127,9 @@ function initialize() {
         })(i)); 
     }    
     
-    
-    
     legend('DC_sev');
+    
+    
 }
 //onload event listener
 google.maps.event.addDomListener(window, 'load', initialize);
@@ -308,6 +308,7 @@ function legend(leg_type) {
     legendTable['traffic'] = [['#0099FF','orange','red'],['Low','Medium','High'],'None'];
     legendTable['TMo_TechLTE_Map'] = [["#E20074","#FF3B9E","#FF73B9","#848484","#CECECE"],['LTE','WCDMA','UMTS','GSM','Roam'],'None'];
     legendTable['other'] = [['green','orange','red'],['Okay','Warning','Degraded'],'None']; //blank leg_type
+    legendTable['RootMetrics_Map'] = [['#BAE294','#F4B765','#F38871','#888888','#FFFFFF'],['Good','Fair','Poor','Bad','Untested'],'None']; //blank leg_type
     
     legendTable['DC_sev'] = [["green", "YellowGreen", "yellow", "orange", "red"],['DC Sev 0', 'DC Sev 1', 'DC Sev 2', 'DC Sev 3','DC Sev 4'],'None'];
 
@@ -419,6 +420,64 @@ function tiledLayer(maptype,url,offset,opacity) {
     });
     map.overlayMapTypes.insertAt(0, maptiler);
 }
+
+
+
+//Add any Geoserver layer
+function geosrv(maptype){
+    cleanlayer(); //Clean Layer
+    legend(maptype);
+    //Define custom WMS layer for census output areas in WGS84
+    var geoserverLayer =
+     new google.maps.ImageMapType(
+     {
+       getTileUrl:
+      function (coord, zoom) {
+        // Compose URL for overlay tile
+ 
+        var s = Math.pow(2, zoom);  
+        var twidth = 256;
+        var theight = 256;
+ 
+        //latlng bounds of the 4 corners of the google tile
+        //Note the coord passed in represents the top left hand (NW) corner of the tile.
+        var gBl = map.getProjection().fromPointToLatLng(
+          new google.maps.Point(coord.x * twidth / s, (coord.y + 1) * theight / s)); // bottom left / SW
+        var gTr = map.getProjection().fromPointToLatLng(
+          new google.maps.Point((coord.x + 1) * twidth / s, coord.y * theight / s)); // top right / NE
+ 
+        // Bounding box coords for tile in WMS pre-1.3 format (x,y)
+        var bbox = gBl.lng() + "," + gBl.lat() + "," + gTr.lng() + "," + gTr.lat();
+ 
+        //base WMS URL
+        var url = "http://10.2.4.212:8080/geoserver/truecall/wms?";
+ 
+        url += "&service=WMS";           //WMS service
+        url += "&version=1.1.0";         //WMS version 
+        url += "&request=GetMap";        //WMS operation
+        url += "&layers=truecall:seattle"; //WMS layers to draw
+        url += "&styles=truecall:" + maptype;   //use default style
+        url += "&format=image/png";      //image format
+        url += "&TRANSPARENT=TRUE";      //only draw areas where we have data
+        url += "&srs=EPSG:4326";         //projection WGS84
+        url += "&bbox=" + bbox;          //set bounding box for tile
+        url += "&width=256";             //tile size used by google
+        url += "&height=256";
+        //url += "&tiled=true";
+ 
+        return url;                 //return WMS URL for the tile  
+      }, //getTileURL
+ 
+      tileSize: new google.maps.Size(256, 256),
+      opacity: 0.85,
+      isPng: true
+     });
+ 
+    // add WMS layer to map
+    // google maps will end up calling the getTileURL for each tile in the map view
+    map.overlayMapTypes.push(geoserverLayer);  
+}
+
 //Remove BANS, and adds BANS in the new viewport
 function showBans() {
     for (var i = 0; i < bans.length; i++) {
