@@ -626,6 +626,9 @@ $market = $row['market'];
 <script type="text/javascript" src="js/GeoJSON.js"></script>
 <script type="text/javascript" src="js/moment.min.js"></script>
 <script type="text/javascript" src="js/bootstrap-datetimepicker.js"></script>
+<script type="text/javascript" src="js/goog.long.js"></script>
+<script type="text/javascript" src="js/require.js"></script>
+<script type="text/javascript" src="js/proj.js"></script>
 <script type="text/javascript" src="js/map.js"></script>
 <script type="text/javascript" src="js/v3_epoly.js"></script>
 <script type="text/javascript" src="js/sectors.js"></script>

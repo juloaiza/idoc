@@ -37,7 +37,8 @@ var style_ = 'VOICE_DROPS_RAW_SEV';
 var query_ = 0;
 var Arrkpi = ['FEEDBACK','VOICE_DROPS_RAW_SEV','POOR_ECNO_SEV','HIGH_TX_PWR_USAGE_SEV','POOR_RTWP_SEV'];
 var mapLabelTemp = [];
-
+var GISListener;
+var RootMetricListener;
 
 //Humorous Loading Text
 loadingText();
@@ -128,8 +129,23 @@ function initialize() {
     }    
     
     legend('DC_sev');
-    
-    
+    //////////////////////////////
+  var goldStar = {
+    path: 'M-90,100 A10,10,0,0,1,-100,110 L-100,100 A0,0,0,0,0,-100,100 z',
+    fillColor: 'purple',
+    fillOpacity: 1,
+    scale: 1,
+    strokeColor: 'red',
+    strokeWeight: 1
+  };
+
+  var marker = new google.maps.Marker({
+    position: latlng,
+    icon: goldStar,
+    map: map
+  });
+
+  /////////////////
 }
 //onload event listener
 google.maps.event.addDomListener(window, 'load', initialize);
@@ -310,6 +326,8 @@ function legend(leg_type) {
     legendTable['other'] = [['green','orange','red'],['Okay','Warning','Degraded'],'None']; //blank leg_type
     legendTable['RootMetrics_Map'] = [['#BAE294','#F4B765','#F38871','#888888','#FFFFFF'],['Good','Fair','Poor','Bad','Untested'],'None']; //blank leg_type
     
+    legendTable['TMo_Verified_Map'] = [["#FFFFFF"],['Coverage'],'None'];
+    
     legendTable['DC_sev'] = [["green", "YellowGreen", "yellow", "orange", "red"],['DC Sev 0', 'DC Sev 1', 'DC Sev 2', 'DC Sev 3','DC Sev 4'],'None'];
 
     if (!leg_type){
@@ -323,15 +341,6 @@ function legend(leg_type) {
             innerHtml+='<div style="height:25px;"><div class="legend-color-box" style="background-color:'+legendTable[leg_type][0][j]+';"></div><span style="line-height: 23px;">'+legendTable[leg_type][1][j]+'</span></div>';
         }
     }    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     innerHtml+='</div></div>';
     legendDiv.style.width = '240px';
     legendDiv.innerHTML = innerHtml;
@@ -404,6 +413,9 @@ function mkt_center(mkt) {
 function cleanlayer() {
     map.overlayMapTypes.clear();
     map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].clear();
+    if (GISListener) { GISListener.remove(); }
+    if (RootMetricListener) {RootMetricListener.remove(); }
+
 }
 //Add any tiled layer
 function tiledLayer(maptype,url,offset,opacity) {
@@ -419,6 +431,129 @@ function tiledLayer(maptype,url,offset,opacity) {
         opacity: opacity
     });
     map.overlayMapTypes.insertAt(0, maptiler);
+    
+    if (maptype == 'RootMetrics_Map'){
+        // RootMetric info
+        RootMetricListener = map.addListener('click', function(e) {
+
+            require( ["rm.projections"], function( rmProjections ) {
+                // convert point.latLng to hexId
+                var hexId = rmProjections.helpers.googLatLngToHexId(e.latLng);
+                console.log('hexId: ' + hexId);
+                           
+              // console.log('hexId:22 ' + hexId); //only load when is required (http://requirejs.org/)
+                var ajaxUrl = "http://stats.tilesgridv2.rootmetrics.com/tilesgrid/api/v2/hex" + "/perf/" + hexId + "/stats";
+                //Using Callback
+                $.ajax({
+                    url: ajaxUrl,
+                    type: "GET",
+                    dataType : "json",
+                    error: function( xhr, status, errorThrown ) {
+                        alert( "Sorry, there was a problem!" );
+                        console.log( "Error: " + errorThrown );
+                        console.log( "Status: " + status );
+                        console.dir( xhr );
+                    },
+                    success:  function (data) {
+                        //loop and get key/value pair for JSON array
+                        //console.log(data.carriers);
+
+                        i=0;
+                        var ObjRow = {1:['&nbsp', '&nbsp', '&nbsp'],2:['&nbsp', '&nbsp', '&nbsp'],3:['&nbsp', '&nbsp', '&nbsp'],4:['&nbsp', '&nbsp', '&nbsp']};    
+                        for (var prop in data.carriers) {
+                            if (prop <= 4 ) {
+                                
+                                console.log(prop + " is " + data.carriers[prop]['name']);
+                            
+                                if ('data' in data.carriers[prop]) {
+                                    if ('LTE' in data.carriers[prop]['data']) {
+                                        console.log('LTE' + " is " + data.carriers[prop]['data']['LTE']['recv_max_kbps']+' kbps');
+                                        ObjRow[prop][1] += Math.round(100*data.carriers[prop]['data']['LTE']['recv_max_kbps']/1024)/100 +'(LTE) <br>';
+                                    }                           
+         
+                                    if ('3G+' in data.carriers[prop]['data']) {
+                                        console.log('3G+' + " is " + data.carriers[prop]['data']['3G+']['recv_max_kbps']+' kbps');
+                                        ObjRow[prop][1] += Math.round(100*data.carriers[prop]['data']['3G+']['recv_max_kbps']/1024)/100 +'(3G+) <br>';                                        
+                                    }         
+
+                                    if ('2G/3G' in data.carriers[prop]['data']) {
+                                        console.log('2G/3G' + " is " + data.carriers[prop]['data']['2G/3G']['recv_max_kbps']+' kbps');
+                                        ObjRow[prop][1] += Math.round(100*data.carriers[prop]['data']['2G/3G']['recv_max_kbps']/1024)/100 +'(2G/3G) <br>';
+                                    }                                     
+                                }
+                                
+                                if ('sig' in data.carriers[prop]) {
+                                    if ('sig' in data.carriers[prop]['sig']) {
+                                        console.log('Signal Level' + " is " + data.carriers[prop]['sig']['sig']['avg']+' dBm');
+                                        ObjRow[prop][0] = data.carriers[prop]['sig']['sig']['avg'];
+                                    }
+         
+                                    if ('best_tech' in data.carriers[prop]['sig']) {
+                                        console.log('Best Tech Avaliable' + " is " + data.carriers[prop]['sig']['best_tech']);
+                                        ObjRow[prop][2] = data.carriers[prop]['sig']['best_tech'];
+                                    }
+                                    
+                                }  
+                            }
+                        }
+                        
+                        
+                       console.log(ObjRow);
+
+                        var strpan ='<table class="table table-hover"> \
+                                        <thead> \
+                                            <tr> \
+                                                <th></th> \
+                                                <th class="text-center"><img src="images/att.png" alt="AT&T" width=32 height=32></th> \
+                                                <th class="text-center"><img src="images/sprint.png" alt="Sprint" width=32 height=32</th> \
+                                                <th class="text-center"><img src="images/tmobile.png" alt="T-Mobile" width=42 height=22</th> \
+                                                <th class="text-center"><img src="images/verizon.png" alt="Verizon" width=42 height=22</th> \
+                                            </tr> \
+                                        </thead> \
+                                        <tbody> \
+                                            <tr> \
+                                                <th scope="row">Ave Signal (dBm)</th> \
+                                                <td class="text-center">'+ObjRow[1][0]+'</td> \
+                                                <td class="text-center">'+ObjRow[2][0]+'</td> \
+                                                <td class="text-center">'+ObjRow[3][0]+'</td> \
+                                                <td class="text-center">'+ObjRow[4][0]+'</td> \
+                                            </tr> \
+                                            <tr> \
+                                                <th scope="row">Tested Max Throughput (Mbps)</th> \
+                                                <td class="text-center">'+ObjRow[1][1]+'</td> \
+                                                <td class="text-center">'+ObjRow[2][1]+'</td> \
+                                                <td class="text-center">'+ObjRow[3][1]+'</td> \
+                                                <td class="text-center">'+ObjRow[4][1]+'</td> \
+                                            </tr> \
+                                            <tr> \
+                                                <th scope="row">Best Tech Available</th> \
+                                                <td class="text-center">'+ObjRow[1][2]+'</td> \
+                                                <td class="text-center">'+ObjRow[2][2]+'</td> \
+                                                <td class="text-center">'+ObjRow[3][2]+'</td> \
+                                                <td class="text-center">'+ObjRow[4][2]+'</td> \
+                                            </tr> \
+                                        </tbody> \
+                                    </table>';
+                        infowindow.setContent(strpan);
+                        infowindow.setPosition(e.latLng);
+                        infowindow.open(map);
+                        
+                        
+                        
+                        
+
+                    }
+                });   
+                
+            });
+
+        });    
+    
+    
+    }
+    
+    
+    
 }
 
 
@@ -476,8 +611,87 @@ function geosrv(maptype){
     // add WMS layer to map
     // google maps will end up calling the getTileURL for each tile in the map view
     map.overlayMapTypes.push(geoserverLayer);  
-}
+    
+    // GIS info
+       GISListener = map.addListener('click', function(e) {
+       
+        var ajaxUrl = "http://10.2.4.212:8080/geoserver/truecall/wms?";
+        ajaxUrl += "&service=WMS";           //WMS service
+        ajaxUrl += "&version=1.1.0";         //WMS version 
+        ajaxUrl += "&request=GetFeatureInfo";        //WMS operation
+        ajaxUrl += "&layers=truecall:seattle"; //WMS layers to draw
+        ajaxUrl += "&styles=truecall:" + maptype;   //use default style
+        ajaxUrl += "&srs=EPSG:4326";         //projection WGS84
+        ajaxUrl += "&bbox=" + (e.latLng.lng()-1/100000) + "," + (e.latLng.lat()-1/100000) + "," + e.latLng.lng() + "," + e.latLng.lat();         //set bounding box for tile
+        ajaxUrl += "&width=256";             //tile size used by google
+        ajaxUrl += "&height=256";       
+        ajaxUrl += "&query_layers=truecall:seattle";   
+        ajaxUrl += "&X=50&Y=50";
+        ajaxUrl += "&info_format=text/javascript"; 
+        ajaxUrl += "&format_options=callback:processJSON"; 
 
+       // console.log(ajaxUrl);
+        
+        //Using Callback
+        $.ajax({
+            url: ajaxUrl,
+            type: "GET",
+            dataType : "jsonp",
+            error: function( xhr, status, errorThrown ) {
+                alert( "Sorry, there was a problem!" );
+                console.log( "Error: " + errorThrown );
+                console.log( "Status: " + status );
+                console.dir( xhr );
+            },
+            jsonpCallback: 'processJSON',
+            success: handleJson
+        });
+
+        function handleJson(data) {
+            //loop and get key/value pair for JSON array  
+            var str = ['&nbsp', '&nbsp', '&nbsp']; // new Array(3);
+            i=0;
+            for (var prop in data.features[0].properties) {
+               // console.log(prop + " is " + data.features[0].properties[prop]);
+                if (prop!=='WKT') {
+                    if (i <= 12) {
+                        str[0] += '<tr><td>'+ prop + '</td><td>'+ data.features[0].properties[prop] + '</td></tr>';
+                    } else if (i > 12 && i <= 24 ) {
+                        str[1] += '<tr><td>'+ prop + '</td><td>'+ data.features[0].properties[prop] + '</td></tr>';
+                    } else if (i > 24 && i <= 36 )  {
+                        str[2] += '<tr><td>'+ prop + '</td><td>'+ data.features[0].properties[prop] + '</td></tr>';
+                    }                    
+                }
+                if (i === 36) { break; }
+                i++;
+            }        
+           for (j=0; j < 3; j++) {
+                str[j] = '<table class="table table-condensed">' + str[j] + '</table>';
+            }
+            strpan = '        <div class="TrueCallinfo"> <div role="tabpanel"> \
+                                <!-- Nav tabs --> \
+                                <ul class="nav nav-tabs" role="tablist">\
+                                    <li role="presentation" class="active"><a href="#1" aria-controls="1" role="tab" data-toggle="tab">1</a></li>\
+                                    <li role="presentation"><a href="#2" aria-controls="2" role="tab" data-toggle="tab">2</a></li>\
+                                    <li role="presentation"><a href="#3" aria-controls="3" role="tab" data-toggle="tab">3</a></li>\
+                                </ul>\
+                                <!-- Tab panes -->\
+                                <div class="tab-content">\
+                                    <div role="tabpanel" class="tab-pane active" id="1">'+str[0]+'\
+                                    </div>\
+                                    <div role="tabpanel" class="tab-pane" id="2">'+str[1]+'\
+                                    </div>\
+                                    <div role="tabpanel" class="tab-pane" id="3">'+str[2]+'\
+                                    </div>\
+                                </div>\
+                            </div></div>';
+            infowindow.setContent(strpan);
+            infowindow.setPosition(e.latLng);
+            infowindow.open(map);
+        }  
+    });
+    
+}
 //Remove BANS, and adds BANS in the new viewport
 function showBans() {
     for (var i = 0; i < bans.length; i++) {
