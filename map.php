@@ -480,101 +480,25 @@ $market = $row['market'];
         <div class="col-xs-2" id="rightside">
             <h2 style="text-align:center"> <strong>KPIs</strong></h2>
             <div id="kpi">
+                <h4> <div class="infoCell"></div></h4>
                 <!-- Div pending to add -->
                 <div class="row">
-                    <div class="col-sm-12">
-                        <div class="panel panel-primary">
-                            <div class="panel-heading">
-                                <h4 class="panel-title"> <div class="infoCell"></div></h4>
-                            </div>
-                            <table class="table table-condensed">
-                                <tr>
-
-                                    <td id="ltekpi11" style="text-align:left"></td>
-                                </tr>                              
-                            </table>
-                        </div>
+                    <div class="col-sm-12">    
+                        <p> <div id="ltekpi11" style="text-align:left"></div> </p>                    
+                        <p> <div id="ltekpi0" style="text-align:left"></div> </p>
+                        <p> <div id="ltekpi1" style="text-align:left"></div> </p>
+                        <p> <div id="ltekpi2" style="text-align:left"></div> </p>
+                        <p> <div id="ltekpi3" style="text-align:left"></div> </p>
+                        <p> <div id="ltekpi4" style="text-align:left"></div> </p>
+                        <p> <div id="ltekpi5" style="text-align:left"></div> </p>
+                        <p> <div id="ltekpi6" style="text-align:left"></div> </p>
+                        <p> <div id="ltekpi7" style="text-align:left"></div> </p>
+                        <p> <div id="ltekpi8" style="text-align:left"></div> </p>
+                        <p> <div id="ltekpi9" style="text-align:left"></div> </p>                        
+                        <p> <div id="ltekpi10" style="text-align:left"></div> </p>                           
+                        
                     </div>
                 </div>                
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="panel panel-primary">
-                            <div class="panel-heading">
-                                <h3 class="panel-title">Voices</h3>
-                            </div>
-                            <table class="table table-condensed">
-                                <tr>
-                                    
-                                    <td id="ltekpi0" style="text-align:left"></td>
-                                </tr>
-                                <tr>
-
-                                    <td id="ltekpi1" style="text-align:left"></td>
-                                </tr>
-                                <tr>
-
-                                    <td id="ltekpi2" style="text-align:left"></td>
-                                </tr>
-                                <tr>
-
-                                    <td id="ltekpi3" style="text-align:left"></td>
-                                </tr>                                
-                            </table>
-                        </div>
-                    </div>
-                </div>
-               <div class="row">
-                    <div class="col-sm-12">
-                        <div class="panel panel-primary">
-                            <div class="panel-heading">
-                                <h3 class="panel-title">Data</h3>
-                            </div>
-                            <table class="table table-condensed">
-                                <tr>
-
-                                    <td id="ltekpi4" style="text-align:left"></td>
-                                </tr>
-                                <tr>
-
-                                    <td id="ltekpi5" style="text-align:left"></td>
-                                </tr>
-                                <tr>
-
-                                    <td id="ltekpi6" style="text-align:left"></td>
-                                </tr>
-                                <tr>
-
-                                    <td id="ltekpi7" style="text-align:left"></td>
-                                </tr>                                
-                            </table>
-                        </div>
-                    </div>
-               </div>
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="panel panel-primary">
-                            <div class="panel-heading">
-                                <h3 class="panel-title">Extra</h3>
-                            </div>
-                            <table class="table table-condensed">
-
-                                <tr>
-
-                                    <td id="ltekpi8" style="text-align:left"></td>
-                                </tr>
-
-                                <tr>
-
-                                    <td id="ltekpi9" style="text-align:left"></td>
-                                </tr>
-                                <tr>
-
-                                    <td id="ltekpi10" style="text-align:left"></td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
         <div class="row"> <!--Nesting accordion to look below map-->

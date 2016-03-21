@@ -74,9 +74,10 @@ body{
     background: #fff;
     padding: 10px;
     margin: 10px;
-    border: 1px solid #000;
+    /*border: 1px solid #000; */
+    border-radius: 10px;
   
-    opacity: 0.8;
+    opacity: 1;
     filter: alpha(opacity=80);  
     
     

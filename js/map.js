@@ -39,6 +39,19 @@ var Arrkpi = ['FEEDBACK','VOICE_DROPS_RAW_SEV','POOR_ECNO_SEV','HIGH_TX_PWR_USAG
 var mapLabelTemp = [];
 var GISListener;
 var RootMetricListener;
+var kpiname = {'diagnostic':'Diagnostic',
+            'voice_traffic':'Voice Traffic (Erl)',
+            'voice_acc_fail_rate':'Voice Access Fail Rate (%)', 
+            'voice_drop_rate':'Voice Drop Rate (%)',
+            'voice_drops': 'Voice Drops (#)',
+            'dlr99datatraffic': 'DL R99 Data Traffic (MB)',
+            'hsdpatrafficvolume': 'HSDPA Traffic (MB)',
+            'ps_acc_fail_rate': 'PS Access Fail Rate (%)',
+            'ps_drop_rate': 'PS Drop Rate (%)',
+            'soft_handover_failure_rate': 'Soft HO Fail Rate (%)',
+            'voice_traffic_sev': 'High Voice Traffic (#)',
+            'voice_drops_raw_sev': 'Voice Drops Severity (#)',
+            }
 
 //Humorous Loading Text
 loadingText();
@@ -129,7 +142,7 @@ function initialize() {
     }    
     
     legend('DC_sev');
-    //////////////////////////////
+    /*/////////////////////////////
   var goldStar = {
     path: 'M-90,100 A10,10,0,0,1,-100,110 L-100,100 A0,0,0,0,0,-100,100 z',
     fillColor: 'purple',
@@ -145,7 +158,7 @@ function initialize() {
     map: map
   });
 
-  /////////////////
+  ////////////////*/
 }
 //onload event listener
 google.maps.event.addDomListener(window, 'load', initialize);
@@ -265,7 +278,7 @@ function infoWindowSparklineShow(type,passIn){
             for (var prop in datak[0]){
                 if (j > 1) {
                     var ltekpif=$('#ltekpi'+g);
-                    ltekpif.html('<strong>'+prop.toLowerCase()+'</strong><div style="text-align:center" class="inlinesparkline">Loading...</div> <div style="text-align:center" class="info_spk">&nbsp;</div>');
+                    ltekpif.html('<strong>'+kpiname[prop.toLowerCase()]+'</strong><div style="text-align:center" class="inlinesparkline">Loading...</div> <div style="text-align:center" class="info_spk">&nbsp;</div>');
                     field_ = '#ltekpi'+g+' '+'.inlinesparkline'
                     field2_ = '#ltekpi'+g+' '+'.info_spk'
                     if (prop == 'DIAGNOSTIC'){
@@ -274,7 +287,7 @@ function infoWindowSparklineShow(type,passIn){
                     $(field_)
                         .sparkline(
                             $.map(datak,function(kpi) { return kpi[prop]; }),
-                            {width: '150px', height: '30px', disableTooltips: true}
+                            {width: '225px', height: '40px', fillColor: '#F5F5F5', lineColor: '#113B51', lineWidth: 2, disableTooltips: true}
                         );
                     //Closures (check variable scope)
                     (function(field__,field2__,prop_){
@@ -328,7 +341,7 @@ function legend(leg_type) {
     
     legendTable['TMo_Verified_Map'] = [["#FFFFFF"],['Coverage'],'None'];
     
-    legendTable['DC_sev'] = [["green", "YellowGreen", "yellow", "orange", "red"],['DC Sev 0', 'DC Sev 1', 'DC Sev 2', 'DC Sev 3','DC Sev 4'],'None'];
+    legendTable['DC_sev'] = [["green", "YellowGreen", "yellow", "orange", "red"],[' <= 10 Drops', '> 10 Drops ~ <= 20 Drops', '> 20 Drops ~ <= 30 Drops', '> 30 Drops ~ <= 40 Drops','> 40 Drops'],'None'];
 
     if (!leg_type){
         for(var k = 0;k<legendTable['other'][0].length;k++){
