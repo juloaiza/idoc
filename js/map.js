@@ -4,7 +4,7 @@ var maptiler;
 var map;
 var cachedGeoJson;
 var colorValues = ["#0099FF"/*0*/, "green"/*1*/, "yellow"/*2*/, "orange"/*3*/, "red"/*4*/];
-var mkt_loc = {Portland:[45.523062, -122.676482], Seattle:[47.6097, -122.331], Spokane:[47.658780, -117.426047], Phoenix:[33.448377, -112.074037]};
+var mkt_loc = {Portland:[45.523062, -122.676482], Seattle:[47.6097, -122.331], Spokane:[47.658780, -117.426047], Phoenix:[33.448377, -112.074037], Dallas:[32.7767, -96.7970]};
 var cluster = $.getJSON("/webcontent/layers/Cluster.json");  //Add layers with JQUERY and using in options
 var subcluster = $.getJSON("/webcontent/layers/SubCluster.json");  //Add layers and using in options
 var features = null;
@@ -51,8 +51,12 @@ var kpiname = {'diagnostic':'Diagnostic',
             'soft_handover_failure_rate': 'Soft HO Fail Rate (%)',
             'voice_traffic_sev': 'High Voice Traffic (#)',
             'voice_drops_raw_sev': 'Voice Drops Severity (#)',
-            }
+            };
 
+var secProperty = {"UMTS":[{"layer":"P1","stack":1,"size":1,"color":"blue"},{"layer":"P2","stack":2,"size":0.8,"color":"blue"},{"layer":"U1","stack":3,"size":0.6,"color":"orange"},
+{"layer":"U2","stack":4,"size":0.4,"color":"orange"}],"LTE":[{"layer":"D1","stack":1,"size":1,"color":"purple"},{"layer":"L1","stack":2,"size":0.8,"color":"orange"},
+{"layer":"B1","stack":3,"size":0.6,"color":"blue"}],"GSM":[{"layer":"gsm","stack":1,"size":1,"color":"blue"}]};
+            
 //Humorous Loading Text
 loadingText();
 var loadTime = 0;
@@ -109,24 +113,33 @@ function initialize() {
     navmenu();
  //   sites();
  //   sectors(mkt);
+ 
+//        google.maps.event.addListener(map, 'click', function() {
+//            alert('Map was clicked!');
+//        });
+        
     google.maps.event.addListener(map, "rightclick",function(event){showContextMenu(event.latLng);});
     elevator = new google.maps.ElevationService();
     google.maps.event.addListener(map, 'idle', showBans);
     google.maps.event.addListener(map, 'tilesloaded',function(){
         document.getElementById('thingCover').style.visibility='hidden';
     });
+    
     google.maps.event.addListener(map, 'idle', secDraw);
+    
     document.getElementById("mktSea").addEventListener("click", infoWindowSparklineShow('market','Seattle'));
     document.getElementById("mktPdx").addEventListener("click", infoWindowSparklineShow('market','Portland'));
     document.getElementById("mktSpo").addEventListener("click", infoWindowSparklineShow('market','Spokane'));
     document.getElementById("mktPhx").addEventListener("click", infoWindowSparklineShow('market','Phoenix'));
+    document.getElementById("mktDal").addEventListener("click", infoWindowSparklineShow('market','Dallas'));
     
     for (i=0;i<5;i++){
         document.getElementById("MKPI_"+i).addEventListener("click", (function(k){
             return function() {
             style_=Arrkpi[k];
-            query_ = 0;
+            query_ = 1;
             changeSectorStyle(secSQL.toString(),sectorPolygons,style_,CurrentDate,query_)
+            //if (style_ === 'VOICE_DROPS_RAW_SEV') {legend('DC_sev')};
             };
         })(i)); 
     }
@@ -135,13 +148,13 @@ function initialize() {
         document.getElementById("Par_"+i).addEventListener("click", (function(k){
             return function() {
             style_=$("#Par_"+k).html();
-            query_ = 1;
+            query_ = 2;
             changeSectorStyle(secSQL.toString(),sectorPolygons,style_,CurrentDate,query_)
             };
         })(i)); 
     }    
     
-    legend('DC_sev');
+  //  legend('DC_sev');
     /*/////////////////////////////
   var goldStar = {
     path: 'M-90,100 A10,10,0,0,1,-100,110 L-100,100 A0,0,0,0,0,-100,100 z',
@@ -343,6 +356,18 @@ function legend(leg_type) {
     
     legendTable['DC_sev'] = [["green", "YellowGreen", "yellow", "orange", "red"],[' <= 10 Drops', '> 10 Drops ~ <= 20 Drops', '> 20 Drops ~ <= 30 Drops', '> 30 Drops ~ <= 40 Drops','> 40 Drops'],'None'];
 
+    
+    legendTable['TMo_EchoLocate_Drop'] = [['rgb(0,255,0)','red','#FFFFFF'],[' <= 0.9 %', '> 0.9 %','Untested'],'None']; //blank leg_type    
+    legendTable['TMo_EchoLocate_AccessFailure'] = [['rgb(0,255,0)','red','#FFFFFF'],[' <=3 %', '> 3 %','Untested'],'None']; //blank leg_type    
+    legendTable['TMo_EchoLocate_AudioIssue'] = [['rgb(0,255,0)','red','#FFFFFF'],[' <= 3 %', '> 3 %','Untested'],'None']; //blank leg_type    
+    legendTable['TMo_EchoLocate_SRVCC'] = [['rgb(0,255,0)','red','#FFFFFF'],[' <= 2.76', '> 2.76','Untested'],'None']; //blank leg_type        
+
+    legendTable['LTE'] = [["Purple", "Orange", "Blue"],['LTE-700', 'LTE-2100', 'LTE-1900'],'None'];   
+    legendTable['UMTS'] = [["Orange", "Blue"],['UMTS-2100', 'UMTS-1900'],'None'];      
+    legendTable['GSM'] = [["Blue"],['GSM-1900'],'None'];  
+    
+    
+    
     if (!leg_type){
         for(var k = 0;k<legendTable['other'][0].length;k++){
             innerHtml+='<div style="height:25px;"><div class="legend-color-box" style="background-color:'+legendTable['other'][0][k]+';"></div><span style="line-height: 23px;">'+legendTable['other'][1][k]+'</span></div>';
@@ -410,8 +435,8 @@ function showFeature(layer, nkpi){
 }
 //Puts the navigation menus, search and right-side tray buttons on the map.
 function navmenu() {
-    map.controls[google.maps.ControlPosition.TOP_LEFT].push(document.getElementById("nav-menu"));
-    map.controls[google.maps.ControlPosition.TOP_RIGHT].push(document.getElementById("nav-sear")); 
+  //  map.controls[google.maps.ControlPosition.TOP_LEFT].push(document.getElementById("nav-menu"));
+  //  map.controls[google.maps.ControlPosition.TOP_RIGHT].push(document.getElementById("nav-sear")); 
     map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(document.getElementById("nav-dpicker"));
     map.controls[google.maps.ControlPosition.RIGHT_CENTER].push(document.getElementById("btnsl"));
   // Problem with TOP_CENTER so all TOP_LEFT
@@ -887,6 +912,7 @@ function secDraw() {
     var NE = bounds.getNorthEast();
     var SW = bounds.getSouthWest();
     var zoom=  map.getZoom() ;
+    
     if (!$.isEmptyObject(secPolyTemp)) {
         for (i=0; i<secPolyTemp.length; i++) 
         {                           
@@ -898,58 +924,39 @@ function secDraw() {
         sectorPolygons = [];
         secSQL = [];
     }
+    map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].clear();    
     if (zoom > 10) {
-        var scale = 1
-        if (zoom == 11) {
-            scale = 6;
-        } else if (zoom >= 12 && zoom <= 14 ) {
-            scale = 4;
-        } else if (zoom >= 15 && zoom <= 15 )  {
-            scale = 2;
-        }
-        $.getJSON("php/sector.php?TECH=UMTS&N="+NE.lat()+"&E="+NE.lng()+"&S="+SW.lat()+"&W="+SW.lng(), function(data) {
+        var start = performance.now();
+        
+        var tech = $('input:radio[name=opttech]:checked').val();
+        
+        $.getJSON("php/sector.php?TECH="+tech+"&N="+NE.lat()+"&E="+NE.lng()+"&S="+SW.lat()+"&W="+SW.lng(), function(data) {
             for (var i=0; i< data['sector'].length; i++) {
                 var centerPoint = new google.maps.LatLng(data['sector'][i]['Lat'], data['sector'][i]['Log']);
                 var cellname = data['sector'][i]['lncel_name'];
-                var layer = cellname.substr(0,1)+cellname.substr(cellname.length-1);
-                //console.log (layer);
-                if (layer == 'P1') {
-                    size = 1;
-                    stack_= 1;
-                } else if (layer == 'P2' )  {
-                    size = 0.8;
-                    stack_= 2;
-                } else if (layer == 'U1' )  {
-                    size = 0.6;
-                    stack_= 3;
-                } else if (layer == 'U2' )  {
-                    size = 0.4;
-                    stack_= 4;
-                } else  {
-                    size = 0.2;
-                    stack_= 5;
+                var layer = data['sector'][i]['layer'];
+                var layerProperty = $.grep(secProperty[tech], function(e){ return e.layer === layer; });
+                var size;
+                //console.log(layer);
+                if (!jQuery.isEmptyObject(layerProperty)) { //More Layer definied
+                    var arcPts = circleMath(centerPoint,data['sector'][i].azimuth, 75, layerProperty[0].size);
+                    var secPoly = new google.maps.Polygon({
+                        paths: arcPts
+                    });
+                    secPolyTemp.push(secPoly);
+                    sectorPolygons.push([secPoly, cellname]);
+                    secSQL.push("'"+cellname+"'");
+                   //console.log(arcPts);
+                    google.maps.event.addListener(secPoly, 'click', infoWindowSparklineShow('sector',[i,data]));
                 }
-                var arcPts = circleMath(centerPoint,data['sector'][i].azimuth, 75,scale*size);
-                var secPoly = new google.maps.Polygon({
-                    paths: arcPts,
-                    strokeColor:'#585555',
-                    strokeOpacity:0,
-                    strokeWeight: 0.6,
-                    fillColor: "#F57D2F",
-                    fillOpacity:0,
-                    zIndex: stack_, //stack order
-                    map: map
-                });
-                secPolyTemp.push(secPoly);
-                sectorPolygons.push([secPoly, cellname]);
-                secSQL.push("'"+cellname+"'");
-                //console.log(Object.keys(sectorPolygons[i]));
-                google.maps.event.addListener(secPoly, 'click', infoWindowSparklineShow('sector',[i,data]));                
             }
             //Verify style
             //style_ = 'VOICE_DROPS_RAW_SEV'
-            changeSectorStyle(secSQL.toString(),sectorPolygons,style_,CurrentDate,query_)
+            changeSectorStyle(secSQL.toString(),sectorPolygons,style_,CurrentDate,query_, tech)
         });
+        var end = performance.now();
+        var time = end - start;
+       console.log('Execution time: ' + time + ' ms.');
         
     }
 }
@@ -1009,7 +1016,114 @@ function btnpicker(step_) {
     //$('#dpicker').data("DateTimePicker").date('2012-08-08');
 }
 
+//populates the sectors onto the map using GeoJSON
+function secDraw_GeoJSON() {
+    console.log('GeoJSON');
+    var bounds = map.getBounds();
+    var NE = bounds.getNorthEast();
+    var SW = bounds.getSouthWest();
+    var zoom=  map.getZoom() ;
+ /*   if (!$.isEmptyObject(secPolyTemp)) {
+        for (i=0; i<secPolyTemp.length; i++) 
+        {                           
+            secPolyTemp[i].setMap(null); //or line[i].setVisible(false);
+         // google.maps.event.removeListener(listener[i]);
+          //  mapLabelTemp[i].setMap(null);
+        }
+        secPolyTemp = [];
+        sectorPolygons = [];
+        secSQL = [];
+    }
+*/    
+    
+    map.data.setMap(null);
+    map.data = new google.maps.Data({map:map}); 
+    map.data.setMap(map);    
+    
+    if (zoom > 10) {
+        var scale = 1
+        if (zoom == 11) {
+            scale = 6;
+        } else if (zoom >= 12 && zoom <= 14 ) {
+            scale = 4;
+        } else if (zoom >= 15 && zoom <= 15 )  {
+            scale = 2;
+        }
+        
+        var start = performance.now();
+        
+        $.getJSON("php/sector_geoJSON.php?TECH=UMTS&N="+NE.lat()+"&E="+NE.lng()+"&S="+SW.lat()+"&W="+SW.lng(), function(data) {
+            for (var i=0; i< data['features'].length; i++) {
+                var centerPoint = new google.maps.LatLng(data['features'][i]['properties']['lat'], data['features'][i]['properties']['log']);
+                var cellname = data['features'][i]['properties']['lncel_name'];
+                var layer = cellname.substr(0,1)+cellname.substr(cellname.length-1);
+                //console.log (layer);
+                if (layer == 'P1') {
+                    size = 1;
+                    stack_= 1;
+                } else if (layer == 'P2' )  {
+                    size = 0.8;
+                    stack_= 2;
+                } else if (layer == 'U1' )  {
+                    size = 0.6;
+                    stack_= 3;
+                } else if (layer == 'U2' )  {
+                    size = 0.4;
+                    stack_= 4;
+                } else  {
+                    size = 0.2;
+                    stack_= 5;
+                }
+                
+             
+              data['features'][i]['geometry'] = circleMath_geoJSON(centerPoint,data['features'][i]['properties'].azimuth, 75,scale*size);
+             //  data['features'][i]['geometry'] = circleMath_geoJSON(centerPoint,data['features'][i]['properties'].azimuth, 75,scale*size);
 
+              /*  var arcPts = circleMath(centerPoint,data['features'][i]['properties'].azimuth, 75,scale*size);
+                var secPoly = new google.maps.Polygon({
+                    paths: arcPts,
+                    strokeColor:'#585555',
+                    strokeOpacity:1,
+                    strokeWeight: 0.6,
+                    fillColor: "#F57D2F",
+                    fillOpacity:0,
+                    zIndex: stack_ //stack order
+                    map: map
+                }); */
+
+            }
+         
+          map.data.setStyle({
+            strokeColor:'#585555',
+            strokeOpacity:1,
+            strokeWeight: 0.6,
+            fillColor: "#F57D2F",
+            fillOpacity:1
+              
+          });          
+          map.data.addGeoJson(data);
+
+//console.log(JSON.stringify(data));
+
+//var url = 'data:text/json;charset=utf8,' + encodeURIComponent(JSON.stringify(data));
+//window.open(url, '_blank');
+//window.focus();
+        
+          
+        });
+        var end = performance.now();
+        var time = end - start;
+       console.log('Execution time: ' + time + ' ms.');
+        
+    }
+}
+
+
+function initialSector(){
+     query_ = 0;
+     secDraw();
+   
+}
 
 
 

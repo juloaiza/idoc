@@ -6,7 +6,7 @@
     $W=$_GET['W'];  
     $TECH=$_GET['TECH'];
     include("connection.php");  //get db connection
-     $query = "SELECT `siteid` AS site_name, concat(left(`CellName`,1), `siteid`) AS lnbts_name, `CellName` AS lncel_name, `lat`, `log`, `azimuth` FROM `physical_info_all` WHERE `technology` = '".$TECH."' AND `lat` BETWEEN ".$S." AND ".$N." AND `log` BETWEEN ".$W." AND ".$E." ORDER BY `CellName` ASC"; //replace emp_info with your table name
+     $query = "SELECT `siteid` AS site_name, concat(left(`CellName`,1), `siteid`) AS lnbts_name, `CellName` AS lncel_name, `lat`, `log`, `azimuth`, concat(left(`CellName`,1), right(`CellName`,1)) as layer FROM `physical_info_all` WHERE `technology` = '".$TECH."' AND `lat` BETWEEN ".$S." AND ".$N." AND `log` BETWEEN ".$W." AND ".$E." ORDER BY `layer` ASC, lncel_name"; //replace emp_info with your table name
    //echo $query;
     $result = mysqli_query($link, $query);
     $json = array();
@@ -19,7 +19,8 @@
             'lncel_name'=>$row['lncel_name'],
             'Lat'=>$row['lat'],
             'Log'=>$row['log'],
-            'azimuth'=>$row['azimuth']           
+            'azimuth'=>$row['azimuth'],
+            'layer'=> ($TECH == 'GSM' ? 'gsm' : $row['layer'])
             );
         }
     }

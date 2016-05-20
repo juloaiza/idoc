@@ -100,23 +100,375 @@ $market = $row['market'];
 </div>
 <!-- begin template -->
 <div class="navbar navbar-custom navbar-fixed-top">
-    <div class="navbar-header"><a class="navbar-brand" href="#"><img alt="Brand" src="images/iDocIcon.png" style="height:20px;margin-top:-4px;">&nbsp;<strong>IdocTool</strong></a>
-        <a class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-        </a>
-    </div>
-    <div class="navbar-collapse collapse">
-        <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
-            <li><a href="http://tpimwest.t-mobile.com/tpimportal/TPIMLogin.jsp#" target="_blank">Tpim</a></li>
-            <li><a href="#" data-toggle="modal" data-target="#smallModal">Contact</a></li>
-            <li>&nbsp;</li>
-        </ul>
-        <p class="navbar-text navbar-right"> <span class="market"><?php echo $market; ?></span> / <?php echo $user; ?> </a></p>
-    </div>
+    <div class="container-fluid">
+        <div class="navbar-header"><a class="navbar-brand" href="#"><img alt="Brand" src="images/iDocIcon.png" style="height:20px;margin-top:-4px;">&nbsp;<strong>IdocTool</strong></a>
+            <a class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </a>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="#">Home</a></li>
+                <li><a href="http://tpimwest.t-mobile.com/tpimportal/TPIMLogin.jsp#" target="_blank">Tpim</a></li>
+                <li><a href="#" data-toggle="modal" data-target="#smallModal">Contact</a></li>
+                <li>&nbsp;</li>
+            </ul>
+
+            <p class="navbar-text navbar-right"> <span class="market"><?php echo $market; ?></span> / <?php echo $user; ?> </a></p>
+        </div>
+	</div>
 </div>
+
+	<div class="container-fluid">
+        <div class='row' id='nav_sub_menu'>
+            <div class='col-md-4'>
+                <div id="nav-menu">
+                    <ul class="nav nav-pills">
+                        <li role="presentation"  >
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false" id="nav_sub_menu_font">
+                                Market <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#" id="mktSea">Seattle</a></li>
+                                <li><a href="#" id="mktSpo">Spokane</a></li>
+                                <li><a href="#" id="mktPdx">Portland</a></li>
+                                <li><a href="#" id="mktPhx">Phoenix</a></li>
+                                <li><a href="#" id="mktDal">Dallas</a></li>                               
+                            </ul>
+                        </li>
+                        <li role="presentation" class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false" id="nav_sub_menu_font">
+                                Area <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li>
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="optionsRadios" id="radio1" value="option1" onclick="showFeature(cluster,'KPI_1');" > <!--Please check map.js check Global Scope-->
+                                            Leakage (%)
+                                        </label>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="optionsRadios" id="radio2" value="option2" onclick="showFeature(cluster,'KPI_2');" >
+                                            LTE Drops (#)
+                                        </label>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="optionsRadios" id="radio3" value="option3" onclick="clearMap();" >
+                                            None
+                                        </label>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                        <li role="presentation" class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false" id="nav_sub_menu_font">
+                                Site <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li>
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="optionsBTS" id="radio1" value="option5" onclick="sites('KPI_1');">
+                                            Leakage (%)
+                                        </label>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="optionsBTS" id="radio2" value="option6" onclick="sites('KPI_2');">
+                                            LTE Drops (#)
+                                        </label>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="optionsBTS" id="radio3" value="option7" onclick="sites('No');">
+                                            None
+                                        </label>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                        <li role="presentation" class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false" id="nav_sub_menu_font">
+                                Sector <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="#" id="def_" onclick="initialSector();">Default</a></li>
+                                <li class ="divider"></li>
+                                <li class="dropdown-submenu">
+                                    <a tabindex="-1" href="#">Parameter</a>
+                                    <ul class="dropdown-menu message-dropdown">
+                                        <li><a href="#" id="Par_0">PtxPrimaryCPICH</a></li>
+                                        <li><a href="#" id="Par_1">PriScrCode</a></li>
+                                        <li><a href="#" id="Par_2">RtFmcsIdentifier</a></li>
+                                        <li><a href="#" id="Par_3">LAC</a></li>
+                                    </ul>
+                                </li>                    
+                                <li class ="divider"></li>
+                                <li class="dropdown-submenu">
+                                    <a tabindex="-1" href="#">Kpi</a>
+                                    <ul class="dropdown-menu message-dropdown">
+                                        <li><a href="#" id="MKPI_0">FeedBack</a></li>
+                                        <li><a href="#" id="MKPI_1">Voice Drops Raw Severity</a></li>
+                                        <li><a href="#" id="MKPI_2">Poor EcNo Severity</a></li>
+                                        <li><a href="#" id="MKPI_3">High TX Power Usage Severity</a></li>
+                                        <li><a href="#" id="MKPI_4">Poor RTWP Severity</a></li>
+                                    </ul>
+                                </li>
+                             
+                                
+                            </ul>
+                        </li>            
+                        <li role="presentation" class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false" id="nav_sub_menu_font" >
+                                Maps <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu" role="menu">
+
+                                <li class="dropdown-submenu">
+                                    <a tabindex="-1" href="#">TrueCall</a>
+                                    <ul class="dropdown-menu message-dropdown">  
+                                        <li>
+                                            <div class="radio">
+                                                <label>
+                                                    <input type="radio" name="optionsMaps" id="radio1" value="option1" onclick="tiledLayer('rsrp','http://serfopt/webcontent/maps/'+$('.market').html().toLowerCase()+'/rsrp/{z}/{x}/{y}.png',0,0.5);" >
+                                                    RSRP
+                                                </label>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="radio">
+                                                <label>
+                                                    <input type="radio" name="optionsMaps" id="radio2" value="option2" onclick="tiledLayer('rsrq','http://serfopt/webcontent/maps/'+$('.market').html().toLowerCase()+'/rsrq/{z}/{x}/{y}.png',0,0.5);">
+                                                    RSRQ
+                                                </label>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="radio">
+                                                <label>
+                                                    <input type="radio" name="optionsMaps" id="radio3" value="option3" onclick="tiledLayer('pci','http://serfopt/webcontent/maps/'+$('.market').html().toLowerCase()+'/pci/{z}/{x}/{y}.png',0,0.5);">
+                                                    PCI
+                                                </label>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="radio">
+                                                <label>
+                                                    <input type="radio" name="optionsMaps" id="radio4" value="option4" onclick="tiledLayer('traffic','http://serfopt/webcontent/maps/'+$('.market').html().toLowerCase()+'/traffic/{z}/{x}/{y}.png',0,0.5);">
+                                                    Traffic
+                                                </label>
+                                            </div>
+                                        </li>
+                                    </ul>    
+                                </li>                            
+
+                                <li class="dropdown-submenu">
+                                    <a tabindex="-1" href="#">TrueCall LSR</a>
+                                    <ul class="dropdown-menu message-dropdown">                    
+                                        <li>
+                                            <div class="radio">
+                                                <label>
+                                                    <input type="radio" name="optionsMaps" id="radio7" value="option7" onclick="geosrv('rsrp');">
+                                                    RSRP
+                                                </label>
+                                            </div>
+                                        </li>                    
+                                        
+                                        
+                                        <li>
+                                            <div class="radio">
+                                                <label>
+                                                    <input type="radio" name="optionsMaps" id="radio8" value="option8" onclick="geosrv('rsrq');">
+                                                    RSRQ
+                                                </label>
+                                            </div>
+                                        </li>
+                                    </ul>    
+                                </li>
+                                
+                                <li class="dropdown-submenu">
+                                    <a tabindex="-1" href="#">RootMetrics (Coverage)</a>
+                                    <ul class="dropdown-menu message-dropdown">
+                                        <li>
+                                            <div class="radio">
+                                                <label>
+                                                    <input type="radio" name="optionsMaps" id="radio9" value="option9" onclick="tiledLayer('RootMetrics_Map','http://png4.tilesgridv2.rootmetrics.com/tilesgrid/api/v2/tile/{z}/{x}/{y}/png/sig/1',0,0.8);">
+                                                    AT&T
+                                                </label>
+                                            </div>
+                                        </li>
+
+                                        <li>
+                                            <div class="radio">
+                                                <label>
+                                                    <input type="radio" name="optionsMaps" id="radio10" value="option10" onclick="tiledLayer('RootMetrics_Map','http://png1.tilesgridv2.rootmetrics.com/tilesgrid/api/v2/tile/{z}/{x}/{y}/png/sig/2',0,0.8);">
+                                                    Sprint
+                                                </label>
+                                            </div>
+                                        </li>                            
+
+                                        <li>
+                                            <div class="radio">
+                                                <label>
+                                                    <input type="radio" name="optionsMaps" id="radio11" value="option11" onclick="tiledLayer('RootMetrics_Map','http://png4.tilesgridv2.rootmetrics.com/tilesgrid/api/v2/tile/{z}/{x}/{y}/png/sig/3',0,0.8);">
+                                                    T-Mobile
+                                                </label>
+                                            </div>
+                                        </li>                            
+
+                                        <li>
+                                            <div class="radio">
+                                                <label>
+                                                    <input type="radio" name="optionsMaps" id="radio12" value="option12" onclick="tiledLayer('RootMetrics_Map','http://png4.tilesgridv2.rootmetrics.com/tilesgrid/api/v2/tile/{z}/{x}/{y}/png/sig/4',0,0.8);">
+                                                    Verizon
+                                                </label>
+                                            </div>
+                                        </li>                            
+                                    </ul>
+                                </li>                      
+                                
+
+                                <li class="dropdown-submenu">
+                                    <a tabindex="-1" href="#">Echo Locate </a>
+                                    <ul class="dropdown-menu message-dropdown">
+                                        <li>
+                                            <div class="radio">
+                                                <label>
+                                                    <input type="radio" name="optionsMaps" id="radio13" value="option9" onclick="tiledLayer('TMo_EchoLocate_Drop','http://prdasngis048:8080/rest/Spatial/MapTilingService/EchoLocate_Drop/{z}/{x}:{y}/tile.png',1,0.8);">
+                                                    Drops
+                                                </label>
+                                            </div>
+                                        </li>
+
+                                        <li>
+                                            <div class="radio">
+                                                <label>
+                                                    <input type="radio" name="optionsMaps" id="radio14" value="option10" onclick="tiledLayer('TMo_EchoLocate_AccessFailure','http://prdasngis048:8080/rest/Spatial/MapTilingService/EchoLocate_AccessFailure/{z}/{x}:{y}/tile.png',1,0.8);">
+                                                    Access Failures
+                                                </label>
+                                            </div>
+                                        </li>                            
+
+                                        <li>
+                                            <div class="radio">
+                                                <label>
+                                                    <input type="radio" name="optionsMaps" id="radio15" value="option11" onclick="tiledLayer('TMo_EchoLocate_AudioIssue','http://prdasngis048:8080/rest/Spatial/MapTilingService/EchoLocate_AudioIssue/{z}/{x}:{y}/tile.png',1,0.8);">
+                                                    Audio Issues
+                                                </label>
+                                            </div>
+                                        </li>                            
+
+                                        <li>
+                                            <div class="radio">
+                                                <label>
+                                                    <input type="radio" name="optionsMaps" id="radio16" value="option12" onclick="tiledLayer('TMo_EchoLocate_SRVCC','http://prdasngis048:8080/rest/Spatial/MapTilingService/EchoLocate_SRVCC_Ratio/{z}/{x}:{y}/tile.png',1,0.8);">
+                                                    SRVCC ratio
+                                                </label>
+                                            </div>
+                                        </li>                            
+                                    </ul>
+                                </li>                                  
+                                
+                                
+                                
+                          
+                                
+                                
+                                <li>
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="optionsMaps" id="radio5" value="option5" onclick="tiledLayer('TMo_TechLTE_Map','http://maps.t-mobile.com/TMo_TechLTE_Map/{z}/{x}:{y}/tile.png',1,0.5);">
+                                            PCC
+                                        </label>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="optionsMaps" id="radio6" value="option6" onclick="tiledLayer('TMo_Verified_Map','http://maps.t-mobile.com/TMo_Verified_Map/{z}/{x}:{y}/tile.png',1,0.8);">
+                                            Verified coverage
+                                        </label>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="optionsMaps" id="radio0" value="option0" onclick="cleanlayer();" >
+                                            None
+                                        </label>
+                                    </div>
+                                </li>
+                                <li class="divider"></li>
+                                <li>
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox" name="checkMaps" id="check0" value="" onclick="lowBandAndSR('srs');" >
+                                            SRs
+                                        </label>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox" name="checkMaps1" id="check1" value="" onclick="showBans();" >
+                                            BANs
+                                        </label>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox" name="checkMaps2" id="check2" value="" onclick="lowBandAndSR('L700');" >
+                                            L700
+                                        </label>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>    
+            </div>
+            
+            <div class="col-md-4" style="text-align:center;" id="select_tech">
+                <label class="radio-inline">
+                  <input type="radio" name="opttech" value="LTE" onclick="secDraw();" checked><b>LTE</b>
+                </label>
+                <label class="radio-inline">
+                  <input type="radio" name="opttech" value="UMTS" onclick="secDraw();"><b>UMTS</b>
+                </label>
+                <label class="radio-inline">
+                  <input type="radio" name="opttech" value="GSM" onclick="secDraw();"><b>GSM</b>
+                </label>        
+            </div>
+            
+            <div class="col-md-4">
+                <div id="nav-sear">
+                    <div class="input-group">
+                        <input class="form-control" placeholder="Site, Address, Zip" type="text" id="seartxt" >
+                            <span class="input-group-btn">
+                               <!-- <span class="glyphicon glyphicon-search"></span> -->
+                                <button type="button" class="btn btn-default" onclick="moveCenter()" id="searbtn">
+                                    <span class="glyphicon glyphicon-search"></span>
+                                </button></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+	</div>
+
 <div class="modal fade" id="smallModal" tabindex="-1" role="dialog" aria-labelledby="smallModal" aria-hidden="true">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
@@ -134,322 +486,10 @@ $market = $row['market'];
         </div>
     </div>
 </div>
+
 <div id="test">
     <div id="map-canvas"></div>
-    <div id="nav-menu">
-        <ul class="nav nav-pills">
-            <li role="presentation"  >
-                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">
-                    Market <span class="caret"></span>
-                </a>
-                <ul class="dropdown-menu">
-                    <li><a href="#" id="mktSea">Seattle</a></li>
-                    <li><a href="#" id="mktSpo">Spokane</a></li>
-                    <li><a href="#" id="mktPdx">Portland</a></li>
-                    <li><a href="#" id="mktPhx">Phoenix</a></li>
-                </ul>
-            </li>
-            <li role="presentation" class="dropdown">
-                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">
-                    Cluster <span class="caret"></span>
-                </a>
-                <ul class="dropdown-menu" role="menu">
-                    <li>
-                        <div class="radio">
-                            <label>
-                                <input type="radio" name="optionsRadios" id="radio1" value="option1" onclick="showFeature(cluster,'KPI_1');" > <!--Please check map.js check Global Scope-->
-                                Leakage (%)
-                            </label>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="radio">
-                            <label>
-                                <input type="radio" name="optionsRadios" id="radio2" value="option2" onclick="showFeature(cluster,'KPI_2');" >
-                                LTE Drops (#)
-                            </label>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="radio">
-                            <label>
-                                <input type="radio" name="optionsRadios" id="radio3" value="option3" onclick="clearMap();" >
-                                None
-                            </label>
-                        </div>
-                    </li>
-                </ul>
-            </li>
-            <li role="presentation" class="dropdown">
-                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">
-                    Subcluster <span class="caret"></span>
-                </a>
-                <ul class="dropdown-menu" role="menu">
-                    <li>
-                        <div class="radio">
-                            <label>
-                                <input type="radio" name="optionsRadios" id="radio4" value="option4" onclick="showFeature(subcluster,'KPI_1');" >
-                                Leakage (%)
-                            </label>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="radio">
-                            <label>
-                                <input type="radio" name="optionsRadios" id="radio5" value="option5" onclick="showFeature(subcluster,'KPI_2');">
-                                LTE Drops (#)
-                            </label>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="radio">
-                            <label>
-                                <input type="radio" name="optionsRadios" id="radio6" value="option6" onclick="clearMap();" >
-                                None
-                            </label>
-                        </div>
-                    </li>
-                </ul>
-            </li>
-            <li role="presentation" class="dropdown">
-                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">
-                    Site <span class="caret"></span>
-                </a>
-                <ul class="dropdown-menu" role="menu">
-                    <li>
-                        <div class="radio">
-                            <label>
-                                <input type="radio" name="optionsBTS" id="radio1" value="option5" onclick="sites('KPI_1');">
-                                Leakage (%)
-                            </label>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="radio">
-                            <label>
-                                <input type="radio" name="optionsBTS" id="radio2" value="option6" onclick="sites('KPI_2');">
-                                LTE Drops (#)
-                            </label>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="radio">
-                            <label>
-                                <input type="radio" name="optionsBTS" id="radio3" value="option7" onclick="sites('No');">
-                                None
-                            </label>
-                        </div>
-                    </li>
-                </ul>
-            </li>
-            <li role="presentation" class="dropdown">
-                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">
-                    Sector <span class="caret"></span>
-                </a>
-                <ul class="dropdown-menu" role="menu">
-                    <li><a href="#" id="def_">Default</a></li>
-                    <li class ="divider"></li>
-                    <li class="dropdown-submenu">
-                        <a tabindex="-1" href="#">Parameter</a>
-                        <ul class="dropdown-menu message-dropdown">
-                            <li><a href="#" id="Par_0">PtxPrimaryCPICH</a></li>
-                            <li><a href="#" id="Par_1">PriScrCode</a></li>
-                            <li><a href="#" id="Par_2">RtFmcsIdentifier</a></li>
-                            <li><a href="#" id="Par_3">LAC</a></li>
-                        </ul>
-                    </li>                    
-                    <li class ="divider"></li>
-                    <li class="dropdown-submenu">
-                        <a tabindex="-1" href="#">Kpi</a>
-                        <ul class="dropdown-menu message-dropdown">
-                            <li><a href="#" id="MKPI_0">FeedBack</a></li>
-                            <li><a href="#" id="MKPI_1">Voice Drops Raw Severity</a></li>
-                            <li><a href="#" id="MKPI_2">Poor EcNo Severity</a></li>
-                            <li><a href="#" id="MKPI_3">High TX Power Usage Severity</a></li>
-                            <li><a href="#" id="MKPI_4">Poor RTWP Severity</a></li>
-                        </ul>
-                    </li>
-                 
-                    
-                </ul>
-            </li>            
-            <li role="presentation" class="dropdown">
-                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">
-                    Maps <span class="caret"></span>
-                </a>
-                <ul class="dropdown-menu" role="menu">
 
-                    <li class="dropdown-submenu">
-                        <a tabindex="-1" href="#">TrueCall</a>
-                        <ul class="dropdown-menu message-dropdown">  
-                            <li>
-                                <div class="radio">
-                                    <label>
-                                        <input type="radio" name="optionsMaps" id="radio1" value="option1" onclick="tiledLayer('rsrp','http://serfopt/webcontent/maps/'+$('.market').html().toLowerCase()+'/rsrp/{z}/{x}/{y}.png',0,0.5);" >
-                                        RSRP
-                                    </label>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="radio">
-                                    <label>
-                                        <input type="radio" name="optionsMaps" id="radio2" value="option2" onclick="tiledLayer('rsrq','http://serfopt/webcontent/maps/'+$('.market').html().toLowerCase()+'/rsrq/{z}/{x}/{y}.png',0,0.5);">
-                                        RSRQ
-                                    </label>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="radio">
-                                    <label>
-                                        <input type="radio" name="optionsMaps" id="radio3" value="option3" onclick="tiledLayer('pci','http://serfopt/webcontent/maps/'+$('.market').html().toLowerCase()+'/pci/{z}/{x}/{y}.png',0,0.5);">
-                                        PCI
-                                    </label>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="radio">
-                                    <label>
-                                        <input type="radio" name="optionsMaps" id="radio4" value="option4" onclick="tiledLayer('traffic','http://serfopt/webcontent/maps/'+$('.market').html().toLowerCase()+'/traffic/{z}/{x}/{y}.png',0,0.5);">
-                                        Traffic
-                                    </label>
-                                </div>
-                            </li>
-                        </ul>    
-                    </li>                            
-
-                    <li class="dropdown-submenu">
-                        <a tabindex="-1" href="#">TrueCall LSR</a>
-                        <ul class="dropdown-menu message-dropdown">                    
-                            <li>
-                                <div class="radio">
-                                    <label>
-                                        <input type="radio" name="optionsMaps" id="radio7" value="option7" onclick="geosrv('rsrp');">
-                                        RSRP
-                                    </label>
-                                </div>
-                            </li>                    
-                            
-                            
-                            <li>
-                                <div class="radio">
-                                    <label>
-                                        <input type="radio" name="optionsMaps" id="radio8" value="option8" onclick="geosrv('rsrq');">
-                                        RSRQ
-                                    </label>
-                                </div>
-                            </li>
-                        </ul>    
-                    </li>
-                    
-                    <li class="dropdown-submenu">
-                        <a tabindex="-1" href="#">RootMetrics (Coverage)</a>
-                        <ul class="dropdown-menu message-dropdown">
-                            <li>
-                                <div class="radio">
-                                    <label>
-                                        <input type="radio" name="optionsMaps" id="radio9" value="option9" onclick="tiledLayer('RootMetrics_Map','http://png4.tilesgridv2.rootmetrics.com/tilesgrid/api/v2/tile/{z}/{x}/{y}/png/sig/1',0,0.8);">
-                                        AT&T
-                                    </label>
-                                </div>
-                            </li>
-
-                            <li>
-                                <div class="radio">
-                                    <label>
-                                        <input type="radio" name="optionsMaps" id="radio10" value="option10" onclick="tiledLayer('RootMetrics_Map','http://png1.tilesgridv2.rootmetrics.com/tilesgrid/api/v2/tile/{z}/{x}/{y}/png/sig/2',0,0.8);">
-                                        Sprint
-                                    </label>
-                                </div>
-                            </li>                            
-
-                            <li>
-                                <div class="radio">
-                                    <label>
-                                        <input type="radio" name="optionsMaps" id="radio11" value="option11" onclick="tiledLayer('RootMetrics_Map','http://png4.tilesgridv2.rootmetrics.com/tilesgrid/api/v2/tile/{z}/{x}/{y}/png/sig/3',0,0.8);">
-                                        T-Mobile
-                                    </label>
-                                </div>
-                            </li>                            
-
-                            <li>
-                                <div class="radio">
-                                    <label>
-                                        <input type="radio" name="optionsMaps" id="radio12" value="option12" onclick="tiledLayer('RootMetrics_Map','http://png4.tilesgridv2.rootmetrics.com/tilesgrid/api/v2/tile/{z}/{x}/{y}/png/sig/4',0,0.8);">
-                                        Verizon
-                                    </label>
-                                </div>
-                            </li>                            
-                        </ul>
-                    </li>                      
-                    
-
-              
-                    
-                    
-                    <li>
-                        <div class="radio">
-                            <label>
-                                <input type="radio" name="optionsMaps" id="radio5" value="option5" onclick="tiledLayer('TMo_TechLTE_Map','http://maps.t-mobile.com/TMo_TechLTE_Map/{z}/{x}:{y}/tile.png',1,0.5);">
-                                PCC
-                            </label>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="radio">
-                            <label>
-                                <input type="radio" name="optionsMaps" id="radio6" value="option6" onclick="tiledLayer('TMo_Verified_Map','http://maps.t-mobile.com/TMo_Verified_Map/{z}/{x}:{y}/tile.png',1,0.8);">
-                                Verified coverage
-                            </label>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="radio">
-                            <label>
-                                <input type="radio" name="optionsMaps" id="radio0" value="option0" onclick="cleanlayer();" >
-                                None
-                            </label>
-                        </div>
-                    </li>
-                    <li class="divider"></li>
-                    <li>
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" name="checkMaps" id="check0" value="" onclick="lowBandAndSR('srs');" >
-                                SRs
-                            </label>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" name="checkMaps1" id="check1" value="" onclick="showBans();" >
-                                BANs
-                            </label>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" name="checkMaps2" id="check2" value="" onclick="lowBandAndSR('L700');" >
-                                L700
-                            </label>
-                        </div>
-                    </li>
-                </ul>
-            </li>
-        </ul>
-    </div>
-    
-    <div id="nav-sear">
-        <div class="input-group">
-            <input class="form-control" placeholder="Site, Address, Zip" type="text" id="seartxt" >
-                <span class="input-group-btn">
-                   <!-- <span class="glyphicon glyphicon-search"></span> -->
-                    <button type="button" class="btn btn-default" onclick="moveCenter()" id="searbtn">
-                        <span class="glyphicon glyphicon-search"></span>
-                    </button></span>
-        </div>
-    </div>
 
     <div id="nav-dpicker">
         <div class="input-group">
