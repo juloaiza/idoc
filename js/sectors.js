@@ -61,7 +61,7 @@ function changeSectorStyle(sec,sectorObj,styleColor, date_, queryT_, tech_){
 
         if (queryT_ === 0) {legend(tech_);}
         if (queryT_ === 1) {legend('DC_sev');}    
-console.log(tech_);
+
         for(var j=0;j<sectorPolygons.length;j++){
             if (queryT_ === 0) {
                 var layer = data[sectorPolygons[j][1]];

@@ -1,0 +1,281 @@
+html, body {
+    height: 100%;
+    overflow: hidden;
+
+}
+#map {
+    top:50px;
+    height: 95%;
+    z-index: 0;
+}
+
+.navbar-brand { /*change font to nav bar*/
+    font-size:1.8em;
+}
+
+
+#searbtn {
+    background-color: #E20074;
+    color:white;
+}
+#searbtn:hover {
+    background-color: #A10053;
+    color:white;    
+} 
+
+
+
+
+.offcanvas {
+    height: 100%;
+    background-color: #3C3C3C;
+    overflow: hidden;
+    padding-top: 40px;
+    color:white;
+    display: block; 
+    padding-left:0px; 
+    padding-right:0px;    
+    position: fixed;
+    z-index: 1;
+    
+}
+
+
+.offcanvas-left {
+    width: 0px;
+    top: 0px;
+    left: 0px;
+}
+
+.offcanvas-right {
+    width: 0px;
+    top: 0px;
+    right: 0px;
+}
+
+
+
+/* Small devices (tablets, 768px and up) */
+@media (max-width: 767px) { 
+
+    .overlay-sidebar {
+        width:100%;
+        height: 100%; 
+        position:fixed;
+        z-index: 1;
+    }    
+
+
+    .offcanvas-left, .offcanvas-right {
+        height: 40%;
+        width: 100%;
+        position:static;
+
+    }
+    
+    #seartxt {
+        width:inherit;
+    }
+    
+    
+    
+ }
+ 
+ 
+
+ 
+ .sidenav {
+    width: 200px; 
+
+    height: 100%;
+    overflow-x: hidden; 
+
+
+
+ }
+
+.sidenav a {
+
+
+
+}
+
+
+.sidenav-heading  {
+    text-align:center;
+    /*background-color:#727171;*/
+
+}    
+    
+.closebtn {
+    display: block;
+    position: absolute;
+    right: 0px;
+    color:white;
+    font-size:18px;
+    width:24px;
+    height:24px;
+    background-color:#E20074;
+    text-align:center;
+    top:50px; 
+    padding-top: 2px;
+}
+
+.closebtn:hover {
+    background-color: #A10053; 
+    color:white; 
+}
+
+.sidenav-heading-title h4 {
+        padding-top: 10px;
+        height:40px;
+}
+
+
+.icon-bar-left {
+    width: 50px;
+    text-align: center;
+    background-color: #464646;
+    top: 120px;
+    left: 0px;
+   
+    position: fixed;
+    z-index: 1;
+
+    opacity: 0.8; 
+
+   
+}
+
+
+.icon-bar-right {
+    width: 50px;
+    text-align: center;
+    background-color: #464646;
+    top: 120px;
+    right: 0px;
+   
+    position: fixed;
+    z-index: 1;
+
+    opacity: 0.8; 
+
+   
+}
+
+.icon-bar a {
+    padding: 16px;
+    display: block;
+
+    color: white;
+    font-size: 16px;
+}
+
+.icon-bar a:hover {
+    background-color: #E20074;
+}
+
+.icon-active {
+    background-color: #141414;
+}
+
+
+
+
+
+#nav-sear{
+    display:block;
+    text-align:center;
+}
+
+
+
+#legend-container {
+    font-family: Arial, sans-serif;
+    background-color: #3C3C3C;
+    color: white;
+    padding: 10px;
+    margin: 10px;
+    /*border: 1px solid #000; */
+    border-radius: 10px;
+  
+    opacity: 1;
+    filter: alpha(opacity=80);  
+    
+    
+}
+#legend-container h3 {
+    margin-top: 0;
+    text-align: center;
+}
+.legend-color-box {
+    height:20px;
+    width:20px;
+    border-radius:3px;
+    float:left;
+    border:1px solid black;
+    margin-right:6px;        	
+}
+
+
+.infoCell {
+ /*   margin:-60px 0px 0px 0px;
+    text-align:right;*/
+}
+
+.infoSite {
+    margin:-30px 0px 0px 0px;
+    float:right;
+}
+
+
+#nav-dpicker {
+    margin-left: 41.55%;
+    margin-bottom: 10px;
+    height:36px;
+    width: 170px;
+    opacity: 1;
+    filter: alpha(opacity=90); /* For IE8 and earlier */
+
+}
+
+
+.TrueCallinfo {
+
+    width:250px;
+
+}
+
+
+.has-sub a{
+    color:white;   
+}
+
+.has-sub ul{ 
+   list-style-type: none;
+}
+
+.nav>li>a:focus, .nav>li>a:hover{
+    background-color: #E20074;
+}
+
+
+
+.sub-menu{
+    
+    display:none;
+}
+
+.winfo{
+    width: 800px;
+    height:250px;
+
+}
+
+
+#ui-kpis{
+
+    overflow-y: scroll;
+    height:90%;
+    
+}

@@ -58,9 +58,9 @@ var secProperty = {"UMTS":[{"layer":"P1","stack":1,"size":1,"color":"blue"},{"la
 {"layer":"B1","stack":3,"size":0.6,"color":"blue"}],"GSM":[{"layer":"gsm","stack":1,"size":1,"color":"blue"}]};
             
 //Humorous Loading Text
-loadingText();
+//loadingText();
 var loadTime = 0;
-setInterval(loadingText, 1500);
+//setInterval(loadingText, 1500);
 function loadingText(){
     var loadingText = document.getElementById('loadingText');
     loadTime+=1;
@@ -108,21 +108,15 @@ function initialize() {
         },
         streetViewControl: true
     };
-    map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+    map = new google.maps.Map(document.getElementById("map"), mapOptions);
     map.setMapTypeId(google.maps.MapTypeId.TERRAIN);
     navmenu();
- //   sites();
- //   sectors(mkt);
- 
-//        google.maps.event.addListener(map, 'click', function() {
-//            alert('Map was clicked!');
-//        });
         
     google.maps.event.addListener(map, "rightclick",function(event){showContextMenu(event.latLng);});
     elevator = new google.maps.ElevationService();
-    google.maps.event.addListener(map, 'idle', showBans);
+    google.maps.event.addListener(map, 'idle', showBans); 
     google.maps.event.addListener(map, 'tilesloaded',function(){
-        document.getElementById('thingCover').style.visibility='hidden';
+        //document.getElementById('thingCover').style.visibility='hidden';
     });
     
     google.maps.event.addListener(map, 'idle', secDraw);
@@ -139,7 +133,6 @@ function initialize() {
             style_=Arrkpi[k];
             query_ = 1;
             changeSectorStyle(secSQL.toString(),sectorPolygons,style_,CurrentDate,query_)
-            //if (style_ === 'VOICE_DROPS_RAW_SEV') {legend('DC_sev')};
             };
         })(i)); 
     }
@@ -147,34 +140,18 @@ function initialize() {
     for (i=0;i<4;i++){
         document.getElementById("Par_"+i).addEventListener("click", (function(k){
             return function() {
-            style_=$("#Par_"+k).html();
+            style_=$("#Par_"+k).val();
             query_ = 2;
             changeSectorStyle(secSQL.toString(),sectorPolygons,style_,CurrentDate,query_)
+           
             };
         })(i)); 
     }    
-    
-  //  legend('DC_sev');
-    /*/////////////////////////////
-  var goldStar = {
-    path: 'M-90,100 A10,10,0,0,1,-100,110 L-100,100 A0,0,0,0,0,-100,100 z',
-    fillColor: 'purple',
-    fillOpacity: 1,
-    scale: 1,
-    strokeColor: 'red',
-    strokeWeight: 1
-  };
-
-  var marker = new google.maps.Marker({
-    position: latlng,
-    icon: goldStar,
-    map: map
-  });
-
-  ////////////////*/
 }
+
 //onload event listener
 google.maps.event.addDomListener(window, 'load', initialize);
+
 //Sites Layer
 function sites(nkpi) {
     map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].clear();
@@ -243,10 +220,38 @@ function infoWindowSparklineShow(type,passIn){
         }
         if(type=='sector'){
             map.controls[google.maps.ControlPosition.TOP_CENTER].clear();
-            $.get("php/phyconf.php?lncel="+passIn[1]['sector'][passIn[0]]['lncel_name'],function(phyconf){
-                content = '<div class="winfo">' + passIn[1]['sector'][passIn[0]]['site_name']  +'<br/>Cell: ' + passIn[1]['sector'][passIn[0]]['lncel_name'] + phyconf +'</div>';
-                infowindow.setContent(content);
-            });
+            $('#info').html( '<img src="images/spin.gif" height="40" width="40" style="position:absolute;top:0;left:0;right:0;bottom:0;margin:auto;">' );
+            $('#alarms').html( '<img src="images/spin.gif" height="40" width="40" style="position:absolute;top:0;left:0;right:0;bottom:0;margin:auto;">' );
+            $('#tt').html( '<img src="images/spin.gif" height="40" width="40" style="position:absolute;top:0;left:0;right:0;bottom:0;margin:auto;">' ); 
+            $('#wo').html( '<img src="images/spin.gif" height="40" width="40" style="position:absolute;top:0;left:0;right:0;bottom:0;margin:auto;">' );            
+            $.get("php/phyconf.php?lncel="+passIn[1]['sector'][passIn[0]]['lncel_name'],(function(phyconf){
+                return function(phyconf) {
+                    content ='     <div class="winfo"> \
+                                      <!-- Nav tabs --> \
+                                      <ul class="nav nav-tabs" role="tablist"> \
+                                        <li role="presentation" class="active"><a href="#info" aria-controls="info" role="tab" data-toggle="tab">Info</a></li> \
+                                        <li role="presentation"><a href="#alarms" aria-controls="alarms" role="tab" data-toggle="tab">Alarms</a></li> \
+                                        <li role="presentation"><a href="#tt" aria-controls="tt" role="tab" data-toggle="tab">TT</a></li> \
+                                        <li role="presentation"><a href="#wo" aria-controls="wo" role="tab" data-toggle="tab">WO</a></li> \
+                                      </ul>\
+                                      <!-- Tab panes --> \
+                                      <div class="tab-content"> \
+                                        <div role="tabpanel" class="tab-pane active" id="info">...</div> \
+                                        <div role="tabpanel" class="tab-pane" id="alarms">...</div> \
+                                        <div role="tabpanel" class="tab-pane" id="tt">...</div> \
+                                        <div role="tabpanel" class="tab-pane" id="wo">...</div> \
+                                      </div>\
+                                    </div>';    
+                    infowindow.setContent(content);
+                    $('#info').html('<b style="padding-left:20px;">'+passIn[1]['sector'][passIn[0]]['site_name']  +'-' + passIn[1]['sector'][passIn[0]]['lncel_name'] +'</b><br><div class="col-xs-8"><table class="table table-condensed table-striped"> <tbody>'+ phyconf + '</tbody> </table></div>');
+                    
+                    
+                    $.get("php/alarm.php?SiteID="+passIn[1]['sector'][passIn[0]]['site_name'],function(data) {     /*get function take the content of test.html
+                     put in variable 'data' inside the callback function*/
+                        $('#alarms').html(data);
+                    });                
+                };
+            })()); 
             infowindow.setPosition(event.latLng);
             infowindow.open(map);
             $('#ltedropLine'+passIn[0]).sparkline();
@@ -255,22 +260,9 @@ function infoWindowSparklineShow(type,passIn){
              put in variable 'data' inside the callback function*/
                 $('#iframett').html(data);
             });
-            $('#iframe_alarm').html('<br><br><span class="blink_txt">Loading...</span>');
-            $.get("php/alarm.php?SiteID="+passIn[1]['sector'][passIn[0]]['site_name'],function(data) {     /*get function take the content of test.html
-             put in variable 'data' inside the callback function*/
-                $('#iframe_alarm').html(data);
-            });
-            jSONURL = "php/kpi_.php?lncel="+passIn[1]['sector'][passIn[0]]['lncel_name'];
-            //addShowNeighborsButton(passIn);
-            for(var k=0;k<sectorPolygons.length;k++){
-              //  changeSectorFormat(k,1.5,'#FFFFFF')
-            }
-            for(var j=0;j<sectorPolygons.length;j++){
-                if(sectorPolygons[j][1]==sectorPolygons[passIn[0]][1]){
-                 //   changeSectorFormat(j,4,'#FF0000')
 
-                }
-            }
+            jSONURL = "php/kpi_.php?lncel="+passIn[1]['sector'][passIn[0]]['lncel_name'];
+
         }
         if (type == 'cluster'){
             content = '<div style="line-height:1.35;overflow:hidden;white-space:nowrap;"> Cluster = '+
@@ -295,12 +287,12 @@ function infoWindowSparklineShow(type,passIn){
                     field_ = '#ltekpi'+g+' '+'.inlinesparkline'
                     field2_ = '#ltekpi'+g+' '+'.info_spk'
                     if (prop == 'DIAGNOSTIC'){
-                        ltekpif.append('<div id="fdbk" class="well">'+ feedback_(umtsfdbk[datak[datak.length-1].DIAGNOSTIC]) +'</div>');
+                        ltekpif.append('<div id="fdbk" class="well" style="background-color:transparent">'+ feedback_(umtsfdbk[datak[datak.length-1].DIAGNOSTIC]) +'</div>');
                     }
                     $(field_)
                         .sparkline(
                             $.map(datak,function(kpi) { return kpi[prop]; }),
-                            {width: '225px', height: '40px', fillColor: '#F5F5F5', lineColor: '#113B51', lineWidth: 2, disableTooltips: true}
+                            {width: '350px', height: '40px', fillColor: '#F5F5F5', lineColor: '#113B51', lineWidth: 2, disableTooltips: true}
                         );
                     //Closures (check variable scope)
                     (function(field__,field2__,prop_){
@@ -343,7 +335,7 @@ function feedback_(str_){
 //get the legend container, create a legend, add a legend renderer fn, define css on general.css
 function legend(leg_type) {
     var legendDiv = document.createElement('div');
-    var innerHtml = '<div id="legend-container" style="z-index: 0; position: absolute; bottom: 14px; right: 0;"><h3>Legend</h3><div id="legend">';
+    var innerHtml = '<div id="legend-container" style="z-index: 0; position: absolute; bottom: 14px; right: 0;"><h4>Legend</h4><div id="legend">';
     var legendTable = [];
     legendTable['rsrq'] = [['green','orange','red'],['0db to -10db','-10db to -16db','-16db to -30db'],'dB'];
     legendTable['rsrp'] = [['#0099FF','green','yellow','orange','red'],['-45dbm to -91dbm','-91dbm to -97dbm','-97dbm to -114dbm','-114dbm to -120dbm','-120dbm to -130dbm'],'dBm'];
@@ -365,7 +357,8 @@ function legend(leg_type) {
     legendTable['LTE'] = [["Purple", "Orange", "Blue"],['LTE-700', 'LTE-2100', 'LTE-1900'],'None'];   
     legendTable['UMTS'] = [["Orange", "Blue"],['UMTS-2100', 'UMTS-1900'],'None'];      
     legendTable['GSM'] = [["Blue"],['GSM-1900'],'None'];  
-    
+  
+    legendTable['pci'] = [["White"],['0'],'None'];     
     
     
     if (!leg_type){
@@ -438,7 +431,7 @@ function navmenu() {
   //  map.controls[google.maps.ControlPosition.TOP_LEFT].push(document.getElementById("nav-menu"));
   //  map.controls[google.maps.ControlPosition.TOP_RIGHT].push(document.getElementById("nav-sear")); 
     map.controls[google.maps.ControlPosition.BOTTOM_LEFT].push(document.getElementById("nav-dpicker"));
-    map.controls[google.maps.ControlPosition.RIGHT_CENTER].push(document.getElementById("btnsl"));
+  //  map.controls[google.maps.ControlPosition.RIGHT_CENTER].push(document.getElementById("btnsl"));
   // Problem with TOP_CENTER so all TOP_LEFT
 }
 //Centers the viewport on a market
@@ -912,13 +905,11 @@ function secDraw() {
     var NE = bounds.getNorthEast();
     var SW = bounds.getSouthWest();
     var zoom=  map.getZoom() ;
-    
+
     if (!$.isEmptyObject(secPolyTemp)) {
         for (i=0; i<secPolyTemp.length; i++) 
         {                           
-            secPolyTemp[i].setMap(null); //or line[i].setVisible(false);
-         // google.maps.event.removeListener(listener[i]);
-          //  mapLabelTemp[i].setMap(null);
+            secPolyTemp[i].setMap(null);
         }
         secPolyTemp = [];
         sectorPolygons = [];
@@ -929,6 +920,7 @@ function secDraw() {
         var start = performance.now();
         
         var tech = $('input:radio[name=opttech]:checked').val();
+        $('#nav-tech').html(tech)
         
         $.getJSON("php/sector.php?TECH="+tech+"&N="+NE.lat()+"&E="+NE.lng()+"&S="+SW.lat()+"&W="+SW.lng(), function(data) {
             for (var i=0; i< data['sector'].length; i++) {
@@ -956,8 +948,8 @@ function secDraw() {
         });
         var end = performance.now();
         var time = end - start;
-       console.log('Execution time: ' + time + ' ms.');
-        
+       //console.log('Execution time: ' + time + ' ms.');
+
     }
 }
 
