@@ -1091,12 +1091,13 @@ function secDraw() {
         var start = performance.now();
         var tech = $('input:radio[name=opttech]:checked').val();
         $.getJSON("php/sector.php?TECH="+tech+"&N="+NE.lat()+"&E="+NE.lng()+"&S="+SW.lat()+"&W="+SW.lng(), function(data) {
-            var Allsector_= data['sector'];
+            var Allsector_= data['sector'].slice();
                      if (seDrawStatus == 0) {
                         seDrawStatus = 1; } else {
                         seDrawStatus = 0;
                         return;
                     }                
+            var j = 0;
             secMap = setTimeout(function(){
                 var i = 0;
                 while (i<1000 && Allsector_.length > 0) {
@@ -1120,9 +1121,10 @@ function secDraw() {
                         sectorPolygons.push([secPoly, cellname]);
                         secSQL.push("'"+cellname+"'");
                        //console.log(arcPts);
-                        google.maps.event.addListener(secPoly, 'click', infoWindowSparklineShow('sector',[i,data]));
+                        google.maps.event.addListener(secPoly, 'click', infoWindowSparklineShow('sector',[j,data]));
                     }
                     i++;
+                    j++;
                 }
                 if(Allsector_.length > 0 && seDrawStatus==1) {
                      secMap = setTimeout(arguments.callee,25);
@@ -1130,7 +1132,6 @@ function secDraw() {
                     changeSectorStyle(secSQL.toString(),sectorPolygons,style_,CurrentDate,query_, tech);
                     seDrawStatus = 0;                    
                 }
-
             },25)
         });
         var end = performance.now();
