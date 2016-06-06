@@ -385,7 +385,8 @@ $market = $row['market'];
     <script type="text/javascript" src="js/markerclusterer.min.js"></script>
     <script type="text/javascript" src="js/maplabel.js"></script> 
     <script src="https://www.google.com/jsapi"></script>    
-  
+
+    
     <script type="text/javascript" src="js/chance.min.js"></script>
     <script type="text/javascript" src="js/jquery-2.1.1.min.js"></script>
     <script type="text/javascript" src="js/jquery.sparkline.js"></script>
@@ -406,7 +407,7 @@ $market = $row['market'];
     <script type="text/javascript" src="js/colors.js"></script>
     <script type="text/javascript" src="js/CSVPlotter.js"></script> 
     <script type="text/javascript" src="js/map.js"></script>     
- 
+    <script src="//cdn.jsdelivr.net/bluebird/3.4.0/bluebird.min.js"></script>
    
     <script type="text/javascript">
     

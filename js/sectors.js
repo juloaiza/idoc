@@ -72,8 +72,8 @@ function changeSectorStyle(sec,sectorObj,styleColor, date_, queryT_, tech_){
                     strokeWeight: 0.6,
                     fillColor: layerProperty[0].color,
                     fillOpacity:1,
-                    zIndex: layerProperty[0].stack, //stack orde
-                    map: map
+                    zIndex: layerProperty[0].stack //stack orde
+                   //,map: map
                 });
             } else {
                 sectorPolygons[j][0].setOptions({
@@ -81,8 +81,8 @@ function changeSectorStyle(sec,sectorObj,styleColor, date_, queryT_, tech_){
                     fillOpacity: (typeof data[sectorPolygons[j][1]] === 'undefined' ? 0:(colorPalette[data[sectorPolygons[j][1]]] === 'green' ? 0:1)),
                     strokeColor:(queryT_ === 1 ? colorPalette[data[sectorPolygons[j][1]]]:'#585555'),
                     strokeOpacity:(typeof data[sectorPolygons[j][1]] === 'undefined' ? 0.2:1),
-                    strokeWeight: (colorPalette[data[sectorPolygons[j][1]]] === 'green' ? 0.2:0.6),
-                    map: map
+                    strokeWeight: (colorPalette[data[sectorPolygons[j][1]]] === 'green' ? 0.2:0.6)
+                    //,map: map
                 });
             }
            
@@ -92,9 +92,9 @@ function changeSectorStyle(sec,sectorObj,styleColor, date_, queryT_, tech_){
                     var mapLabel = new MapLabel({
                         text: value_.toString(),
                         position:  e.latLng,
-                        map: map,
                         fontSize: 14,
                         align: 'center'
+                        //,map: map                        
                     });
                     //Removing label 
                     google.maps.event.addListenerOnce(sectorPolygons[j][0],'mouseout', function(){

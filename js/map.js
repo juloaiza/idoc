@@ -16,6 +16,7 @@ var markerL700;
 var bans = [];
 var sectorPolygons = [];
 var secPolyTemp = [];
+var secSQL = [];
 var siteicon =[]; // Creating the icon. Using sprites Google_Maps_v3 pag 110
 var neighborLines = [];
 var customPlotValue = '';
@@ -27,7 +28,6 @@ siteicon['antenna'] = doSiteIcon([[32,37],[0,0],[16,18]]);
 siteicon['green'] = doSiteIcon([[18,37],[36,0],[9,18]]);
 siteicon['orange'] = doSiteIcon([[18,37],[58,0],[9,18]]);
 siteicon['red'] = doSiteIcon([[18,37],[80,0],[9,18]]);
-var secSQL = [];
 var colorPalette = ["green"/*0*/, "YellowGreen"/*1*/, "yellow"/*2*/, "orange"/*3*/, "red"/*4*/, "Wheat"/*5*/, "Violet"/*6*/, "Turquoise"/*7*/, "#FF6347"/*8*/, "#4682B4"/*9*/, "#708090"/*10*/, "#C0C0C0"/*11*/, "#A0522D"/*12*/, "#F4A460"/*13*/, "#FA8072"/*14*/, "#BC8F8F"/*15*/];
 var umtsfdbk = ['Okay','Poor EcNo','Poor RTWP','Poor EcNo|Poor RTWP','High TX power usage','Poor EcNo|High TX power usage','Poor RTWP|High TX power usage','Poor EcNo|Poor RTWP |High TX power usage','Soft HO fail','Poor EcNo|Soft HO fail','Poor RTWP|Soft HO fail','Poor EcNo|Poor RTWP|Soft HO fail','High TX power usage|Soft HO fail','Poor EcNo|High TX power usage|Soft HO fail','Poor RTWP|High TX power usage|Soft HO fail','Poor EcNo|Poor RTWP|High TX power usage|Soft HO fail'];
 var days_= -1;
@@ -56,7 +56,17 @@ var kpiname = {'diagnostic':'Diagnostic',
 var secProperty = {"UMTS":[{"layer":"P1","stack":1,"size":1,"color":"blue"},{"layer":"P2","stack":2,"size":0.8,"color":"blue"},{"layer":"U1","stack":3,"size":0.6,"color":"orange"},
 {"layer":"U2","stack":4,"size":0.4,"color":"orange"}],"LTE":[{"layer":"D1","stack":1,"size":1,"color":"purple"},{"layer":"L1","stack":2,"size":0.8,"color":"orange"},
 {"layer":"B1","stack":3,"size":0.6,"color":"blue"}],"GSM":[{"layer":"gsm","stack":1,"size":1,"color":"blue"}]};
-            
+ 
+
+var secObj = {
+    sectorPolygons : [],
+    secPolyTemp : [],  
+    secSQL : []   
+}
+var seDrawStatus = 0;
+
+ var secMap;
+ 
 //Humorous Loading Text
 //loadingText();
 var loadTime = 0;
@@ -900,7 +910,7 @@ window.onkeyup = function(e) {
 */
 
 //populates the sectors onto the map
-function secDraw() {
+function secDraw22() {
     var bounds = map.getBounds();
     var NE = bounds.getNorthEast();
     var SW = bounds.getSouthWest();
@@ -922,6 +932,7 @@ function secDraw() {
         var tech = $('input:radio[name=opttech]:checked').val();
         $('#nav-tech').html(tech)
         
+        var j = 0;
         $.getJSON("php/sector.php?TECH="+tech+"&N="+NE.lat()+"&E="+NE.lng()+"&S="+SW.lat()+"&W="+SW.lng(), function(data) {
             for (var i=0; i< data['sector'].length; i++) {
                 var centerPoint = new google.maps.LatLng(data['sector'][i]['Lat'], data['sector'][i]['Log']);
@@ -933,18 +944,38 @@ function secDraw() {
                 if (!jQuery.isEmptyObject(layerProperty)) { //More Layer definied
                     var arcPts = circleMath(centerPoint,data['sector'][i].azimuth, 75, layerProperty[0].size);
                     var secPoly = new google.maps.Polygon({
-                        paths: arcPts
+                        paths: arcPts,
+                        strokeOpacity:0,
+                        fillOpacity:0
                     });
                     secPolyTemp.push(secPoly);
                     sectorPolygons.push([secPoly, cellname]);
                     secSQL.push("'"+cellname+"'");
                    //console.log(arcPts);
                     google.maps.event.addListener(secPoly, 'click', infoWindowSparklineShow('sector',[i,data]));
+                    
                 }
             }
+
+            //Show Sectors
+     (function SectorLoop (i, data) {
+              //  console.log(i);
+               // console.log(data);
+                setTimeout(function () {   
+                    while (i%500 != 0 && i>-1) {   
+                        data[i][0].setOptions({
+                    
+                            map: map
+                        });
+                        --i
+                    }
+                    if (--i>-1) {SectorLoop(i,data)};      
+                }, 1);
+            })(sectorPolygons.length-1,sectorPolygons);
+            
             //Verify style
-            //style_ = 'VOICE_DROPS_RAW_SEV'
-            changeSectorStyle(secSQL.toString(),sectorPolygons,style_,CurrentDate,query_, tech)
+            changeSectorStyle(secSQL.toString(),sectorPolygons,style_,CurrentDate,query_, tech);    
+      
         });
         var end = performance.now();
         var time = end - start;
@@ -952,6 +983,314 @@ function secDraw() {
 
     }
 }
+
+
+function myLoop (i, j,data) {           //  create a loop function
+    setTimeout(function () {   
+        while ( i%100 != 0 && i>=j) {   
+            data[i][0].setOptions({
+                map: map
+            });
+            --i
+        }
+        if (--i>=j) {myLoop(i,j,data)};      
+    }, 1);
+}
+
+
+//populates the sectors onto the map
+function secDraw999() {
+    var bounds = map.getBounds();
+    var NE = bounds.getNorthEast();
+    var SW = bounds.getSouthWest();
+    var zoom=  map.getZoom() ;
+    if (!$.isEmptyObject(secPolyTemp)) {
+        for (i=0; i<secPolyTemp.length; i++) 
+        {                           
+            secPolyTemp[i].setMap(null); //or line[i].setVisible(false);
+        }
+        secPolyTemp = [];
+        sectorPolygons = [];
+        secSQL = [];
+    }
+    map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].clear();    
+    if (zoom > 10) {
+        var start = performance.now();
+        var tech = $('input:radio[name=opttech]:checked').val();
+        $.getJSON("php/sector.php?TECH="+tech+"&N="+NE.lat()+"&E="+NE.lng()+"&S="+SW.lat()+"&W="+SW.lng(), function(data) {
+            var Allsector_= data['sector'];
+                   
+                secMap = function(Allsector_) {
+                return new Promise(function (resolve, reject) {
+                    setTimeout(function(){
+                        var i = 0;
+                        while (i<10 && Allsector_.length > 0) {
+                            var sector_ = Allsector_.shift(); 
+                            console.log(Allsector_.length)
+                            var centerPoint = new google.maps.LatLng(sector_['Lat'], sector_['Log']);
+                            var cellname = sector_['lncel_name'];
+                            var layer = sector_['layer'];
+                            var layerProperty = $.grep(secProperty[tech], function(e){ return e.layer === layer; });
+                            var size;
+                            //console.log(layer);
+                            if (!jQuery.isEmptyObject(layerProperty)) { //More Layer definied
+                                var arcPts = circleMath(centerPoint,sector_.azimuth, 75, layerProperty[0].size);
+                                var secPoly = new google.maps.Polygon({
+                                    paths: arcPts
+                                    ,strokeWeight: 0.1
+                                    ,fillOpacity:0.1
+                                    ,map:map
+                                });
+                                secPolyTemp.push(secPoly);
+                                sectorPolygons.push([secPoly, cellname]);
+                                secSQL.push("'"+cellname+"'");
+                               //console.log(arcPts);
+                                google.maps.event.addListener(secPoly, 'click', infoWindowSparklineShow('sector',[i,data]));
+                            }
+                            i++;
+                        }
+                        if(Allsector_.length > 0) {
+                            setTimeout(arguments.callee,25);
+                        }                
+                },25);
+                 resolve("done");
+            });
+        };
+      //  console.log(secMap);
+        secMap(Allsector_).then(function(contents){
+            Promise.reject('new_update');
+            //changeSectorStyle(secSQL.toString(),sectorPolygons,style_,CurrentDate,query_, tech);
+        })
+        });
+        var end = performance.now();
+        var time = end - start;
+       console.log('Execution time: ' + time + ' ms.');
+    }
+}
+
+
+
+//populates the sectors onto the map
+function secDraw() {
+    var bounds = map.getBounds();
+    var NE = bounds.getNorthEast();
+    var SW = bounds.getSouthWest();
+    var zoom=  map.getZoom() ;
+    if (!$.isEmptyObject(secPolyTemp)) {
+        for (i=0; i<secPolyTemp.length; i++) 
+        {                           
+            secPolyTemp[i].setMap(null); //or line[i].setVisible(false);
+        }
+        secPolyTemp = [];
+        sectorPolygons = [];
+        secSQL = [];
+        clearTimeout(secMap);
+    }
+    map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].clear();    
+    if (zoom > 10) {
+        var start = performance.now();
+        var tech = $('input:radio[name=opttech]:checked').val();
+        $.getJSON("php/sector.php?TECH="+tech+"&N="+NE.lat()+"&E="+NE.lng()+"&S="+SW.lat()+"&W="+SW.lng(), function(data) {
+            var Allsector_= data['sector'];
+                     if (seDrawStatus == 0) {
+                        seDrawStatus = 1; } else {
+                        seDrawStatus = 0;
+                        return;
+                    }                
+            secMap = setTimeout(function(){
+                var i = 0;
+                while (i<1000 && Allsector_.length > 0) {
+                    var sector_ = Allsector_.shift(); 
+                    //console.log(sector_)
+                    var centerPoint = new google.maps.LatLng(sector_['Lat'], sector_['Log']);
+                    var cellname = sector_['lncel_name'];
+                    var layer = sector_['layer'];
+                    var layerProperty = $.grep(secProperty[tech], function(e){ return e.layer === layer; });
+                    var size;
+                    //console.log(layer);
+                    if (!jQuery.isEmptyObject(layerProperty)) { //More Layer definied
+                        var arcPts = circleMath(centerPoint,sector_.azimuth, 75, layerProperty[0].size);
+                        var secPoly = new google.maps.Polygon({
+                            paths: arcPts
+                            ,strokeWeight: 0.1
+                            ,fillOpacity:0.1
+                            ,map:map
+                        });
+                        secPolyTemp.push(secPoly);
+                        sectorPolygons.push([secPoly, cellname]);
+                        secSQL.push("'"+cellname+"'");
+                       //console.log(arcPts);
+                        google.maps.event.addListener(secPoly, 'click', infoWindowSparklineShow('sector',[i,data]));
+                    }
+                    i++;
+                }
+                if(Allsector_.length > 0 && seDrawStatus==1) {
+                     secMap = setTimeout(arguments.callee,25);
+                }else{
+                    changeSectorStyle(secSQL.toString(),sectorPolygons,style_,CurrentDate,query_, tech);
+                    seDrawStatus = 0;                    
+                }
+
+            },25)
+        });
+        var end = performance.now();
+        var time = end - start;
+       console.log('Execution time: ' + time + ' ms.');
+    }
+}
+
+
+//populates the sectors onto the map
+function secDraw55() {
+    var bounds = map.getBounds();
+    var NE = bounds.getNorthEast();
+    var SW = bounds.getSouthWest();
+    var zoom=  map.getZoom() ;
+    
+    if (!$.isEmptyObject(secPolyTemp)) {
+        for (i=0; i<secPolyTemp.length; i++) 
+        {                           
+            secPolyTemp[i].setMap(null); //or line[i].setVisible(false);
+         // google.maps.event.removeListener(listener[i]);
+          //  mapLabelTemp[i].setMap(null);
+        }
+        secPolyTemp = [];
+        sectorPolygons = [];
+        secSQL = [];
+    }
+    map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].clear();    
+    if (zoom > 10) {
+        var start = performance.now();
+        
+        var tech = $('input:radio[name=opttech]:checked').val();
+        
+        $.getJSON("php/sector.php?TECH="+tech+"&N="+NE.lat()+"&E="+NE.lng()+"&S="+SW.lat()+"&W="+SW.lng(), function(data) {
+               console.log(data['sector'].shift());
+            data['sector'].forEach(function(sector_) {
+
+                var centerPoint = new google.maps.LatLng(sector_['Lat'], sector_['Log']);
+                var cellname = sector_['lncel_name'];
+                var layer = sector_['layer'];
+                var layerProperty = $.grep(secProperty[tech], function(e){ return e.layer === layer; });
+                var size;
+                //console.log(layer);
+                if (!jQuery.isEmptyObject(layerProperty)) { //More Layer definied
+                    var arcPts = circleMath(centerPoint,sector_.azimuth, 75, layerProperty[0].size);
+                    var secPoly = new google.maps.Polygon({
+                        paths: arcPts
+                        ,map:map
+                    });
+                    secPolyTemp.push(secPoly);
+                    sectorPolygons.push([secPoly, cellname]);
+                    secSQL.push("'"+cellname+"'");
+                   //console.log(arcPts);
+                    google.maps.event.addListener(secPoly, 'click', infoWindowSparklineShow('sector',[i,data]));
+                }
+            })
+
+            //Verify style
+            changeSectorStyle(secSQL.toString(),sectorPolygons,style_,CurrentDate,query_, tech)
+        });
+        var end = performance.now();
+        var time = end - start;
+       console.log('Execution time: ' + time + ' ms.');
+        
+    }
+}
+
+//New Version
+function secDraw333() {
+    var bounds = map.getBounds();
+    var NE = bounds.getNorthEast();
+    var SW = bounds.getSouthWest();
+    var zoom=  map.getZoom() ;
+
+    if (!$.isEmptyObject(secPolyTemp)) {
+        for (i=0; i<secPolyTemp.length; i++) 
+        {                           
+            secPolyTemp[i].setMap(null);
+        }
+        secPolyTemp = [];
+        sectorPolygons = [];
+        secSQL = [];
+    }
+    map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].clear();    
+    if (zoom > 10) {
+        var start = performance.now();
+        
+        var tech = $('input:radio[name=opttech]:checked').val();
+        $('#nav-tech').html(tech)
+        
+        var j = 0;
+        $.getJSON("php/sector.php?TECH="+tech+"&N="+NE.lat()+"&E="+NE.lng()+"&S="+SW.lat()+"&W="+SW.lng(), function(data) {
+           /* for (var i=0; i< data['sector'].length; i++) {
+
+            }*/
+
+            //Show Sectors
+            (function SectorLoop (i, data) {
+              //  console.log(i);
+               // console.log(data);
+              
+                setTimeout(function () {   
+                    while (i%100 != 0 && i>-1) {
+                        var centerPoint = new google.maps.LatLng(data['sector'][i]['Lat'], data['sector'][i]['Log']);
+                        var cellname = data['sector'][i]['lncel_name'];
+                        var layer = data['sector'][i]['layer'];
+                        var layerProperty = $.grep(secProperty[tech], function(e){ return e.layer === layer; });
+                        var size;
+                        //console.log(layer);
+                        if (!jQuery.isEmptyObject(layerProperty)) { //More Layer definied
+                            var arcPts = circleMath(centerPoint,data['sector'][i].azimuth, 75, layerProperty[0].size);
+                            var secPoly = new google.maps.Polygon({
+                                paths: arcPts,
+                                strokeOpacity:0,
+                                strokeWeight: 0.6,
+                                fillOpacity:0,
+                                map:map
+                            });
+                            secPolyTemp.push(secPoly);
+                            sectorPolygons.push([secPoly, cellname]);
+                            secSQL.push("'"+cellname+"'");
+                            google.maps.event.addListener(secPoly, 'click', infoWindowSparklineShow('sector',[i,data]));
+                            
+                        }
+                        --i
+                    }
+                    
+           //  changeSectorStyle(secSQL.toString(),sectorPolygons,style_,CurrentDate,query_, tech);                   
+                    if (--i>-1) {SectorLoop(i,data)};                  
+                    
+                }, 1);
+            })(data['sector'].length-1,data);
+            
+            //Verify style
+    
+      
+        });
+        var end = performance.now();
+        var time = end - start;
+       //console.log('Execution time: ' + time + ' ms.');
+
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function secDrawWebGL () {
     var geoJson = {
