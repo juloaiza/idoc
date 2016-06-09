@@ -2,7 +2,7 @@
     $site=$_GET['site'];
     include("connection.php");  //get db connection
     
-    $query = "SELECT `siteid` AS site_name, `lat`, `log` FROM `physical_info` WHERE  MID(`siteid`,1,7)='".$site."' GROUP BY `siteid`, `lat`, `log`"; //replace emp_info with your table name
+    $query = "SELECT `siteid` AS site_name, `lat`, `log` FROM `physical_info_all` WHERE  MID(`siteid`,1,7)='".$site."' GROUP BY `siteid`, `lat`, `log`"; //replace emp_info with your table name
     $result = mysqli_query($link, $query);
     $json = array();
     

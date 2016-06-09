@@ -16,597 +16,548 @@ $market = $row['market'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <title>IdocTool</title>
+  <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- Bootstrap core CSS -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <!-- Add custom CSS here -->
-    <link href="css/general.css" rel="stylesheet">
-    <!-- context-menu -->
-    <link  href="css/contextmenu.css" rel="stylesheet">
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCDjB5G0Fod2mUs0u9a-B4cF3xyqQa5uAs&sensor=false"></script>
-    <script type="text/javascript" src="js/markerclusterer.js"></script>
-    <script src="https://www.google.com/jsapi"></script>
-    <style type="text/css">
-        html{
-            min-height:100%;
-            position:relative
-        }
-        body{
-            height:100%
-        }
-        .thingCoverer{
-            position:absolute;
-            visibility: visible;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            right: 0;
-            z-index: 200;
-            background-color: white;
-        }
-        .overlayTitle{
-            text-align: center;
-            margin-top: 250px
-        }
-        .progressThing{
-            position:fixed;
-            bottom:0;
-            width: 100%;
-        }
-        .textPlot{
-            display:block;
-            width: 80%;
-            margin-left: auto;
-            margin-right: auto;
-            min-height:300px;
-        }
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="favicon.ico">
 
-    </style>
-</head>
-<body>
-<div class="thingCoverer" id="thingCover">
-    <div class="overlayTitle">
-        <h1 id="loadingText">Loading...</h1>
-    </div>
-    <div class="progressThing">
-        <div align="center">
-             <h3>Loading...</h3>
-             <!--<img src="images/preloader.gif">-->
+    <title>Idoc</title>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" 
+    integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+  
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug 
+    <link href="../../assets/css/ie10-viewport-bug-workaround.css" rel="stylesheet">-->
+
+    <!-- Custom styles for this template -->
+    <link href="starter-template.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#"><span><img alt="Brand" src="images/iDocIcon.png" style="height:20px;margin-top:-4px;"></span><strong> Idoc</strong></a>
+            </div>
+            <div id="navbar" class="collapse navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="#"><span class="glyphicon glyphicon-signal"></span> <span id="nav-tech"> LTE </span> </a></li> 
+                    <li><a href="#"><span class="glyphicon glyphicon-user"></span> <?php echo $user; ?>/<span class="market"><?php echo $market; ?></span> </a></li>                    
+                </ul>
+                <form class="navbar-form" id="nav-sear" role="search">  
+                    <div class="input-group" >
+                        <input class="form-control"  id="seartxt" style="width:350px;" placeholder="Site, Address, Zip" type="text">
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" onclick="moveCenter()" id="searbtn">
+                                <span class="glyphicon glyphicon-search"></span>
+                            </button>
+                        </span>
+                    </div>         
+                </form> 
+            </div><!--/.nav-collapse -->
         </div>
-        <div style="height: 64px;"></div>
-    </div>
-</div>
-<div class="thingCoverer" id="textPlotCover" style="visibility: hidden;">
-    <div style="margin-top:75px;margin-left:10px;">
-        <h1>Custom Plot:</h1>
-        <p>Paste Tab Delimited text with first row headers:</p>
-        <p>"latitude" and "longitude" for coords (required)</p>
-        <p>"color", "dimension", or "date" for manual or automatic coloring (optional, date in US format)</p>
-        <p>"info" for popup window info (optional)</p>
-    </div>
-    <label for="textToPlot"></label><textarea id="textToPlot" class="textPlot"></textarea>
-    <div align="right" style="margin-right: 10%; margin-top: 10px;">
-        <button type="button" class="btn btn-default btn-lg" onclick="plotCSV()">
-            Plot
-        </button>
-    </div>
-</div>
-<!-- begin template -->
-<div class="navbar navbar-custom navbar-fixed-top">
-    <div class="navbar-header"><a class="navbar-brand" href="#"><img alt="Brand" src="images/iDocIcon.png" style="height:20px;margin-top:-4px;">&nbsp;<strong>IdocTool</strong></a>
-        <a class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-        </a>
-    </div>
-    <div class="navbar-collapse collapse">
-        <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
-            <li><a href="http://tpimwest.t-mobile.com/tpimportal/TPIMLogin.jsp#" target="_blank">Tpim</a></li>
-            <li><a href="#" data-toggle="modal" data-target="#smallModal">Contact</a></li>
-            <li>&nbsp;</li>
-        </ul>
-        <p class="navbar-text navbar-right"> <span class="market"><?php echo $market; ?></span> / <?php echo $user; ?> </a></p>
-    </div>
-</div>
-<div class="modal fade" id="smallModal" tabindex="-1" role="dialog" aria-labelledby="smallModal" aria-hidden="true">
-    <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="myModalLabel">Julian Loaiza</h4>
-            </div>
-            <div class="modal-body">
-                <p>  <span class="glyphicon glyphicon-earphone" aria-hidden="true"></span> <strong> Phone : </strong> 571-9181126 </p>
-                <p>  <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> <strong> Email : </strong> <a href="mailto:julian.loaiza1@t-mobile.com">julian.loaiza1@t-mobile.com</a> </p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            </div>
+    </nav><!--/navbar-fixed-top -->
+
+    <div class="overlay-sidebar">
+        <div class="offcanvas offcanvas-left">
+            <ul class="nav">
+                <div class="sidenav-heading rmv-obj-left">
+                    <a href="#" class="closebtn"> <span class="glyphicon glyphicon-remove" ></span></a>            
+                    <div class="sidenav-heading-title">
+                        <h4>Layers</h4>  
+                    </div>            
+                </div>
+            </ul>    
+            <div id="layer-sidenav" class="sidenav rmv-obj-left">
+				<!-- begin sidebar nav -->
+				<ul class="nav">
+					<li class="has-sub">
+						<a href="#" onclick="cleanlayer();">
+                            Remove Layer
+						</a>
+					</li>
+ 					<li class="has-sub">
+						<a href="#">
+						    <b class="caret pull-right"></b>
+						    <span>T-mobile</span>
+						</a>
+						<ul class="sub-menu">
+						    <li><a href="#"><input type="radio" name="optionsMaps" id="radio5" value="option5" onclick="tiledLayer('TMo_Tech_Map','http://maps.t-mobile.com/TMo_TechLTE_Map/{z}/{x}:{y}/tile.png',1,0.5);"> PCC</a></li>
+						    <li><a href="#"><input type="radio" name="optionsMaps" id="radio6" value="option6" onclick="tiledLayer('TMo_Verified_Map','http://maps.t-mobile.com/TMo_Verified_Map/{z}/{x}:{y}/tile.png',1,0.8);"> Verified coverage</a></li>
+						    <li><a href="#"><input type="checkbox" name="checkMaps" id="check0" value="" onclick="lowBandAndSR('srs');" > SRs</a></li>
+						    <li><a href="#"><input type="checkbox" name="checkMaps1" id="check1" value="" onclick="showBans();" > BANs</a></li>
+						    <li><a href="#"><input type="checkbox" name="checkMaps2" id="check2" value="" onclick="lowBandAndSR('L700');" > L700</a></li>
+                            </ul>
+					</li>                   
+					<li class="has-sub">
+						<a href="#">
+						    <b class="caret pull-right"></b>
+						    <span>TrueCall</span>
+					    </a>
+						<ul class="sub-menu">
+						    <li><a href="#"><input type="radio" name="optionsMaps" id="radio1" value="option1" onclick="tiledLayer('rsrp','http://serfopt/webcontent/maps/'+$('.market').html().toLowerCase()+'/rsrp/{z}/{x}/{y}.png',0,0.5);" > RSRP</a></li>
+						    <li><a href="#"><input type="radio" name="optionsMaps" id="radio2" value="option2" onclick="tiledLayer('rsrq','http://serfopt/webcontent/maps/'+$('.market').html().toLowerCase()+'/rsrq/{z}/{x}/{y}.png',0,0.5);"> RSRQ</a></li>
+						    <li><a href="#"><input type="radio" name="optionsMaps" id="radio3" value="option3" onclick="tiledLayer('pci','http://serfopt/webcontent/maps/'+$('.market').html().toLowerCase()+'/pci/{z}/{x}/{y}.png',0,0.5);"> PCI</a></li>
+						    <li><a href="#"><input type="radio" name="optionsMaps" id="radio4" value="option4" onclick="tiledLayer('traffic','http://serfopt/webcontent/maps/'+$('.market').html().toLowerCase()+'/traffic/{z}/{x}/{y}.png',0,0.5);"> Traffic</a></li>
+                        </ul>
+					</li>
+					<li class="has-sub">
+						<a href="#">
+						    <b class="caret pull-right"></b>
+							<span>TrueCall LSR</span>
+						</a>
+						<ul class="sub-menu">
+						    <li><a href="#"><input type="radio" name="optionsMaps" id="radio7" value="option7" onclick="geosrv('rsrp');"> RSRP</a></li>
+						    <li><a href="#"><input type="radio" name="optionsMaps" id="radio8" value="option8" onclick="geosrv('rsrq');"> RSRQ</a></li>
+						</ul>
+					</li>
+					<li class="has-sub">
+						<a href="#">
+						    <b class="caret pull-right"></b>
+						    <span>RootMetrics (Coverage)</span> 
+						</a>
+						<ul class="sub-menu">
+						    <li><a href="#"><input type="radio" name="optionsMaps" id="radio9" value="option9" onclick="tiledLayer('RootMetrics_Map','http://png4.tilesgridv2.rootmetrics.com/tilesgrid/api/v2/tile/{z}/{x}/{y}/png/sig/1',0,0.8);"> AT&T</a></li>
+						    <li><a href="#"><input type="radio" name="optionsMaps" id="radio10" value="option10" onclick="tiledLayer('RootMetrics_Map','http://png1.tilesgridv2.rootmetrics.com/tilesgrid/api/v2/tile/{z}/{x}/{y}/png/sig/2',0,0.8);"> Sprint</a></li>
+						    <li><a href="#"><input type="radio" name="optionsMaps" id="radio11" value="option11" onclick="tiledLayer('RootMetrics_Map','http://png4.tilesgridv2.rootmetrics.com/tilesgrid/api/v2/tile/{z}/{x}/{y}/png/sig/3',0,0.8);"> T-mobile</a></li>
+						    <li><a href="#"><input type="radio" name="optionsMaps" id="radio12" value="option12" onclick="tiledLayer('RootMetrics_Map','http://png4.tilesgridv2.rootmetrics.com/tilesgrid/api/v2/tile/{z}/{x}/{y}/png/sig/4',0,0.8);"> Verizon</a></li>
+						</ul>
+					</li>
+					<li class="has-sub">
+						<a href="#">
+						    <b class="caret pull-right"></b>
+						    <span>Echo Locate</span>
+						</a>
+						<ul class="sub-menu">
+						    <li><a href="#"><input type="radio" name="optionsMaps" id="radio13" value="option9" onclick="tiledLayer('EchoLocate_Drop','http://prdasngis048:8080/rest/Spatial/MapTilingService/EchoLocate_Drop/{z}/{x}:{y}/tile.png',1,0.8);"> Drops</a></li>
+						    <li><a href="#"><input type="radio" name="optionsMaps" id="radio14" value="option10" onclick="tiledLayer('EchoLocate_AccessFailure','http://prdasngis048:8080/rest/Spatial/MapTilingService/EchoLocate_AccessFailure/{z}/{x}:{y}/tile.png',1,0.8);"> Access Failures</a></li>
+						    <li><a href="#"><input type="radio" name="optionsMaps" id="radio15" value="option11" onclick="tiledLayer('EchoLocate_AudioIssue','http://prdasngis048:8080/rest/Spatial/MapTilingService/EchoLocate_AudioIssue/{z}/{x}:{y}/tile.png',1,0.8);"> Audio Issues</a></li>
+						    <li><a href="#"><input type="radio" name="optionsMaps" id="radio16" value="option12" onclick="tiledLayer('EchoLocate_SRVCC','http://prdasngis048:8080/rest/Spatial/MapTilingService/EchoLocate_SRVCC_Ratio/{z}/{x}:{y}/tile.png',1,0.8);"> SRVCC ratio</a></li>
+						</ul>
+					</li>
+
+
+
+                    
+                </ul>
+				<!-- end sidebar nav -->
+
+
+            </div>          
+         
+          
+        </div><!--/.offcanvas-left -->
+
+        
+        <div class="icon-bar icon-bar-left">
+            <a href="#" data-toggle="tooltip" data-placement="right" title="Home"><i class="glyphicon glyphicon-home"></i></a> 
+            <a href="http://tpimwest.t-mobile.com/tpimportal/TPIMLogin.jsp#" target="_blank" data-toggle="tooltip" data-placement="right" title="Tpim"><i class="glyphicon glyphicon-dashboard"></i></a> 
+            <span data-toggle="modal" data-target="#smallModal"><a href="#" data-toggle="tooltip" data-placement="right" title="Contact"><i class="glyphicon glyphicon-envelope"></i></a></span>
+            <a class="icon-active layer-icon" href="#" data-toggle="tooltip" data-placement="right" title="Layers"><i class="glyphicon glyphicon-globe"></i></a>
+        </div>            
+        
+        
+        <div class="legend-left">
+
         </div>
+        
+        
+         <div class="legend-right">
+
+        </div>       
+        
+        
+        
+        <div class="modal fade" id="smallModal" tabindex="-1" role="dialog" aria-labelledby="smallModal" aria-hidden="true">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="myModalLabel">Julian Loaiza</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>  <span class="glyphicon glyphicon-earphone" aria-hidden="true"></span> <strong> Phone : </strong> 571-9181126 </p>
+                        <p>  <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> <strong> Email : </strong> <a href="mailto:julian.loaiza1@t-mobile.com">julian.loaiza1@t-mobile.com</a> </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>        
+        
+  
+        <!--/Right Canvas -->  
+        <div class="offcanvas offcanvas-right">
+             <ul class="nav">
+                <div class="sidenav-heading rmv-obj-right">
+                    <a href="#" class="closebtn"> <span class="glyphicon glyphicon-remove" ></span></a>            
+                    <div class="sidenav-heading-title">
+                        <h4>Technology</h4>  
+                    </div>            
+                </div>
+            </ul>           
+        
+
+            <div id="ui-technology" class="sidenav rmv-obj-right" style="display:none;">
+				<!-- begin sidebar nav -->
+				<ul class="nav">
+					<li class="has-sub">
+						<a href="#">
+                            <input type="radio" name="opttech" value="LTE" onclick="secDraw();" checked> LTE
+						</a>
+					</li>
+ 					<li class="has-sub">
+						<a href="#">
+                            <input type="radio" name="opttech" value="UMTS" onclick="secDraw();"> UMTS
+						</a>
+					</li>
+					<li class="has-sub">
+						<a href="#">
+                            <input type="radio" name="opttech" value="GSM" onclick="secDraw();"> GSM
+						</a>
+					</li>                    
+                </ul>
+            </div>  <!--template -->  
+
+
+            
+            <div id="ui-market" class="sidenav rmv-obj-right">
+				<!-- begin sidebar nav -->
+				<ul class="nav">
+  					<li class="has-sub">
+						<a href="#">
+						    <b class="caret pull-right"></b>
+						    <span>Central</span>
+						</a>
+						<ul class="sub-menu">
+						    <li><a href="#"><input type="radio" name="market" id="mktDal" value="Dallas"> Dallas</a></li>                              
+                         </ul>
+					</li> 
+
+                    <li class="has-sub">
+						<a href="#">
+						    <b class="caret pull-right"></b>
+						    <span>West</span>
+						</a>
+						<ul class="sub-menu">
+ 						    <li><a href="#"><input type="radio" name="market" id="mktSea" value="Seattle"> Seattle</a></li>
+						    <li><a href="#"><input type="radio" name="market" id="mktSpo" value="Spokane"> Spokane</a></li>
+						    <li><a href="#"><input type="radio" name="market" id="mktPdx" value="Portland"> Portland</a></li>
+						    <li><a href="#"><input type="radio" name="market" id="mktPhx" value="Phoenix"> Phoenix</a></li>                            
+                         </ul>
+					</li>                   
+                </ul>
+            </div>  <!--template -->              
+      
+            <div id="ui-sector" class="sidenav rmv-obj-right">
+				<!-- begin sidebar nav -->
+				<ul class="nav">
+					<li class="has-sub">
+						<a href="#" onclick="initialSector();">
+                            Default
+						</a>
+					</li>
+                    <li class="has-sub">
+						<a href="#">
+						    <b class="caret pull-right"></b>
+						    <span>Parameter</span>
+						</a>
+						<ul class="sub-menu">
+ 						    <li><a href="#"><input type="radio" name="options3G" id="Par_0" value="PtxPrimaryCPICH"> PtxPrimaryCPICH</a></li>
+						    <li><a href="#"><input type="radio" name="options3G" id="Par_1" value="PriScrCode"> PriScrCode</a></li>
+						    <li><a href="#"><input type="radio" name="options3G" id="Par_2" value="RtFmcsIdentifier"> RtFmcsIdentifier</a></li>
+						    <li><a href="#"><input type="radio" name="options3G" id="Par_3" value="LAC"> LAC</a></li>
+                         </ul>
+					</li>
+                    <li class="has-sub">
+						<a href="#">
+						    <b class="caret pull-right"></b>
+						    <span>KPI</span>
+						</a>
+						<ul class="sub-menu">
+						    <li><a href="#"><input type="radio" name="options3G" id="MKPI_0" value="FeedBack"> FeedBack</a></li>
+						    <li><a href="#"><input type="radio" name="options3G" id="MKPI_1" value="Voice_Drops_Raw"> Voice Drops Raw</a></li>
+						    <li><a href="#"><input type="radio" name="options3G" id="MKPI_2" value="Poor_EcNo"> Poor EcNo</a></li>
+						    <li><a href="#"><input type="radio" name="options3G" id="MKPI_3" value="High_TX_Pwr_Usage"> High TX Power Usage</a></li>
+						    <li><a href="#"><input type="radio" name="options3G" id="MKPI_4" value="Poor_RTWP"> Poor RTWP</a></li>
+                         </ul>
+					</li>
+                </ul>
+            </div>  <!--template -->   
+
+        <div id="ui-kpis" class="rmv-obj-right">
+        <!-- Div pending to add -->
+            <div class="col-sm-12">  
+                <h4> <div class="infoCell"></div></h4>
+         <!-- Adding sparkline -->                        
+            </div>                      
+        </div>
+
+
+      
+            
+        </div> 
+        
+        <div class="icon-bar icon-bar-right">
+            <a href="#" data-toggle="tooltip" data-placement="left" title="Technology"><i class="glyphicon glyphicon-signal"></i></a>
+            <a href="#" data-toggle="tooltip" data-placement="left" title="Market"><i class="glyphicon glyphicon-map-marker"></i></a> 
+            <a href="#" data-toggle="tooltip" data-placement="left" title="Sector"><i class="glyphicon glyphicon-tower"></i></a> 
+            <a href="#" data-toggle="tooltip" data-placement="left" title="KPIs"><i class="glyphicon glyphicon-stats"></i></a> 
+      <!--      <a href="#" data-toggle="tooltip" data-placement="left" title="Alarms"><i class="glyphicon glyphicon-bell"></i></a> 
+            <a href="#" data-toggle="tooltip" data-placement="left" title="TT"><i class="glyphicon glyphicon-fire"></i></a>
+            <a href="#" data-toggle="tooltip" data-placement="left" title="WO"><i class="glyphicon glyphicon-wrench"></i></a>           
+            <a href="#" data-toggle="tooltip" data-placement="left" title="Default"><i class="glyphicon glyphicon-refresh"></i></a> -->
+        </div>            
+        
+        
+        
+        
+        
     </div>
-</div>
-<div id="test">
-    <div id="map-canvas"></div>
-    <div id="nav-menu">
-        <ul class="nav nav-pills">
-            <li role="presentation"  >
-                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">
-                    Market <span class="caret"></span>
-                </a>
-                <ul class="dropdown-menu">
-                    <li><a href="#" id="mktSea">Seattle</a></li>
-                    <li><a href="#" id="mktSpo">Spokane</a></li>
-                    <li><a href="#" id="mktPdx">Portland</a></li>
-                    <li><a href="#" id="mktPhx">Phoenix</a></li>
-                </ul>
-            </li>
-            <li role="presentation" class="dropdown">
-                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">
-                    Cluster <span class="caret"></span>
-                </a>
-                <ul class="dropdown-menu" role="menu">
-                    <li>
-                        <div class="radio">
-                            <label>
-                                <input type="radio" name="optionsRadios" id="radio1" value="option1" onclick="showFeature(cluster,'KPI_1');" > <!--Please check map.js check Global Scope-->
-                                Leakage (%)
-                            </label>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="radio">
-                            <label>
-                                <input type="radio" name="optionsRadios" id="radio2" value="option2" onclick="showFeature(cluster,'KPI_2');" >
-                                LTE Drops (#)
-                            </label>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="radio">
-                            <label>
-                                <input type="radio" name="optionsRadios" id="radio3" value="option3" onclick="clearMap();" >
-                                None
-                            </label>
-                        </div>
-                    </li>
-                </ul>
-            </li>
-            <li role="presentation" class="dropdown">
-                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">
-                    Subcluster <span class="caret"></span>
-                </a>
-                <ul class="dropdown-menu" role="menu">
-                    <li>
-                        <div class="radio">
-                            <label>
-                                <input type="radio" name="optionsRadios" id="radio4" value="option4" onclick="showFeature(subcluster,'KPI_1');" >
-                                Leakage (%)
-                            </label>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="radio">
-                            <label>
-                                <input type="radio" name="optionsRadios" id="radio5" value="option5" onclick="showFeature(subcluster,'KPI_2');">
-                                LTE Drops (#)
-                            </label>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="radio">
-                            <label>
-                                <input type="radio" name="optionsRadios" id="radio6" value="option6" onclick="clearMap();" >
-                                None
-                            </label>
-                        </div>
-                    </li>
-                </ul>
-            </li>
-            <li role="presentation" class="dropdown">
-                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">
-                    Site <span class="caret"></span>
-                </a>
-                <ul class="dropdown-menu" role="menu">
-                    <li>
-                        <div class="radio">
-                            <label>
-                                <input type="radio" name="optionsBTS" id="radio1" value="option5" onclick="sites('KPI_1');">
-                                Leakage (%)
-                            </label>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="radio">
-                            <label>
-                                <input type="radio" name="optionsBTS" id="radio2" value="option6" onclick="sites('KPI_2');">
-                                LTE Drops (#)
-                            </label>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="radio">
-                            <label>
-                                <input type="radio" name="optionsBTS" id="radio3" value="option7" onclick="sites('No');">
-                                None
-                            </label>
-                        </div>
-                    </li>
-                </ul>
-            </li>
-            <li role="presentation" class="dropdown">
-                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">
-                    Maps <span class="caret"></span>
-                </a>
-                <ul class="dropdown-menu" role="menu">
-                    <li>
-                        <div class="radio">
-                            <label>
-                                <input type="radio" name="optionsMaps" id="radio1" value="option1" onclick="tiledLayer('rsrp','http://serfopt/webcontent/maps/'+$('.market').html().toLowerCase()+'/rsrp/{z}/{x}/{y}.png',0,0.5);" >
-                                RSRP (TrueCall)
-                            </label>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="radio">
-                            <label>
-                                <input type="radio" name="optionsMaps" id="radio2" value="option2" onclick="tiledLayer('rsrq','http://serfopt/webcontent/maps/'+$('.market').html().toLowerCase()+'/rsrq/{z}/{x}/{y}.png',0,0.5);">
-                                RSRQ (TrueCall)
-                            </label>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="radio">
-                            <label>
-                                <input type="radio" name="optionsMaps" id="radio3" value="option3" onclick="tiledLayer('pci','http://serfopt/webcontent/maps/'+$('.market').html().toLowerCase()+'/pci/{z}/{x}/{y}.png',0,0.5);">
-                                PCI (TrueCall)
-                            </label>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="radio">
-                            <label>
-                                <input type="radio" name="optionsMaps" id="radio4" value="option4" onclick="tiledLayer('traffic','http://serfopt/webcontent/maps/'+$('.market').html().toLowerCase()+'/traffic/{z}/{x}/{y}.png',0,0.5);">
-                                Traffic (TrueCall)
-                            </label>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="radio">
-                            <label>
-                                <input type="radio" name="optionsMaps" id="radio5" value="option5" onclick="tiledLayer('TMo_TechLTE_Map','http://maps.t-mobile.com/TMo_TechLTE_Map/{z}/{x}:{y}/tile.png',1,0.8);">
-                                PCC
-                            </label>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="radio">
-                            <label>
-                                <input type="radio" name="optionsMaps" id="radio6" value="option6" onclick="tiledLayer('TMo_Verified_Map','http://maps.t-mobile.com/TMo_Verified_Map/{z}/{x}:{y}/tile.png',1,0.8);">
-                                Verified coverage
-                            </label>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="radio">
-                            <label>
-                                <input type="radio" name="optionsMaps" id="radio0" value="option0" onclick="cleanlayer();" >
-                                None
-                            </label>
-                        </div>
-                    </li>
-                    <li class="divider"></li>
-                    <li>
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" name="checkMaps" id="check0" value="" onclick="lowBandAndSR('srs');" >
-                                SRs
-                            </label>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" name="checkMaps1" id="check1" value="" onclick="showBans();" >
-                                BANs
-                            </label>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox" name="checkMaps2" id="check2" value="" onclick="lowBandAndSR('L700');" >
-                                L700
-                            </label>
-                        </div>
-                    </li>
-                </ul>
-            </li>
-        </ul>
-    </div>
-    <div id="nav-sear">
+    
+    
+    <div id="map"></div>
+
+    
+    <div id="nav-dpicker">
         <div class="input-group">
-            <input class="form-control" placeholder="Site, Address, Zip" type="text" id="seartxt" >
-                <span class="input-group-btn">
-                   <!-- <span class="glyphicon glyphicon-search"></span> -->
-                    <button type="button" class="btn btn-default" onclick="moveCenter()" id="searbtn">
-                        <span class="glyphicon glyphicon-search"></span>
-                    </button></span>
+            <span class="input-group-btn">
+                <button class="btn btn-default" type="button" onclick="btnpicker('d')">  <span class="glyphicon glyphicon-step-backward" aria-hidden="true"></span></button>
+            </span>
+                        
+                <input type='text' class="form-control" id='dpicker' >
+
+            <span class="input-group-btn">
+                <button class="btn btn-default" type="button" onclick="btnpicker('u')">  <span class="glyphicon glyphicon-step-forward" aria-hidden="true"></span></button>
+            </span>                   
+                        
         </div>
-    </div>
-    <!--  <div id="legend-container"><h3>Legend</h3></div> -->
-    <div id="btnsl">
-        <button class="btn btn-primary" type="button" id="btnRight" >
-            <span class="glyphicon glyphicon-chevron-left" id="btnArrowLeft" ></span>
-        </button>
-    </div>
-</div>
-<div class="container-fluid" id="main">
-    <div class="row">
-        <div class="col-xs-10"><!--map-canvas will be postioned here--></div>
-        <div class="col-xs-2" id="rightside">
-            <h3>KPI</h3>
-            <hr>
-            <div class="infoCell">
-                <p><!--LSE01001T - 04/15/15--></p>
-            </div>
-            <div id="kpi">
-                <!-- Div pending to add -->
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="panel panel-primary">
-                            <div class="panel-heading">
-                                <h3 class="panel-title">Quality</h3>
-                            </div>
-                            <table class="table table-condensed">
-                                <tr>
-                                    <td style="text-align:right;font-weight: bold">Bad CQI</td>
-                                    <td id="ltekpi0" style="text-align:left"></td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align:right;font-weight: bold">SINR Pusch</td>
-                                    <td id="ltekpi1" style="text-align:left"></td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align:right;font-weight: bold">Ave CQI</td>
-                                    <td id="ltekpi2" style="text-align:left"></td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-               <div class="row">
-                    <div class="col-lg-12">
-                        <div class="panel panel-primary">
-                            <div class="panel-heading">
-                                <h3 class="panel-title">Coverage</h3>
-                            </div>
-                            <table class="table table-condensed">
-                                <tr>
-                                    <td style="text-align:right;font-weight: bold">UE Pwr Hdrm</td>
-                                    <td id="ltekpi6" style="text-align:left"></td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align:right;font-weight: bold">Usage MIMO</td>
-                                    <td id="ltekpi4" style="text-align:left"></td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align:right;font-weight: bold">Usage AGG2</td>
-                                    <td id="ltekpi5" style="text-align:left"></td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-               </div>
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="panel panel-primary">
-                            <div class="panel-heading">
-                                <h3 class="panel-title">Throughput</h3>
-                            </div>
-                            <table class="table table-condensed">
-                                <tr>
-                                    <td style="text-align:right;font-weight: bold">Ave PDCP DL</td>
-                                    <td id="ltekpi12" style="text-align:left"></td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align:right;font-weight: bold">Max PDCP DL</td>
-                                    <td id="ltekpi13" style="text-align:left"></td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align:right;font-weight: bold">Ave DL Latency</td>
-                                    <td id="ltekpi14" style="text-align:left"></td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="panel panel-primary">
-                            <div class="panel-heading">
-                                <h3 class="panel-title">Capacity</h3>
-                            </div>
-                            <table class="table table-condensed">
-                                <tr>
-                                    <td style="text-align:right;font-weight: bold">DL Vol(MB)</td>
-                                    <td id="ltekpi7" style="text-align:left"></td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align:right;font-weight: bold">Ave Act UE</td>
-                                    <td id="ltekpi9" style="text-align:left"></td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align:right;font-weight: bold">Max Act UE</td>
-                                    <td id="ltekpi10" style="text-align:left"></td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="panel panel-primary">
-                            <div class="panel-heading">
-                                <h3 class="panel-title">VoLTE 1</h3>
-                            </div>
-                            <table class="table table-condensed">
-                                <tr>
-                                    <td style="text-align:right;font-weight: bold">VoLTE Calls</td>
-                                    <td id="ltekpi15" style="text-align:left"></td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align:right;font-weight: bold">VoLTE Afr</td>
-                                    <td id="ltekpi17" style="text-align:left"></td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align:right;font-weight: bold">VoLTE Dcr</td>
-                                    <td id="ltekpi18" style="text-align:left"></td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="panel panel-primary">
-                            <div class="panel-heading">
-                                <h3 class="panel-title">VoLTE 2</h3>
-                            </div>
-                            <table class="table table-condensed">
-                                <tr>
-                                    <td style="text-align:right;font-weight: bold">SRVCC Att</td>
-                                    <td id="ltekpi20" style="text-align:left"></td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align:right;font-weight: bold">VoLTE Drops</td>
-                                    <td id="ltekpi19" style="text-align:left"></td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align:right;font-weight: bold">Rach/RRC Att</td>
-                                    <td id="ltekpi22" style="text-align:left"></td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row"> <!--Nesting accordion to look below map-->
-            <div class="col-xs-1">
-                <div id="accordion" class="centerElement">
-                    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseBottom" aria-expanded="false" aria-controls="collapseBottom" id="btnDown">
-                        <span class="glyphicon glyphicon-chevron-up" id="btnArrow" ></span>
-                    </button>
-                    <div class="collapse" id="collapseBottom">
-                        <div class="well" >
-                            <div role="tabpanel">
-                                <!-- Nav tabs -->
-                                <ul class="nav nav-tabs" role="tablist">
-                                    <li role="presentation" class="active"><a href="#alarm" aria-controls="alarm" role="tab" data-toggle="tab">Alarms</a></li>
-                                    <li role="presentation"><a href="#tt" aria-controls="tt" role="tab" data-toggle="tab">TT</a></li>
-                                    <li role="presentation"><a href="#elevation" aria-controls="elevation" role="tab" data-toggle="tab">Elevation</a></li>
-                                </ul>
-                                <div class="infoSite">
-                                    <p><!--LSE01001T--></p>
-                                </div>
-                                <!-- Tab panes -->
-                                <div class="tab-content">
-                                    <div role="tabpanel" class="tab-pane active" id="alarm">
-                                        <div class="iframe" id="iframe_alarm" ></div>
-                                    </div>
-                                    <div role="tabpanel" class="tab-pane" id="tt">
-                                        <div class="iframe" id="iframett" ></div>
-                                    </div>
-                                    <div role="tabpanel" class="tab-pane" id="elevation">
-                                        <div class="iframe" id="elevation_chart"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- end template -->
-<!-- JavaScript -->
-<script type="text/javascript" src="js/jquery-2.1.1.min.js"></script>
-<script type="text/javascript" src="js/jquery.sparkline.js"></script>
-<script type="text/javascript" src="js/bootstrap.js"></script>
-<script type="text/javascript" src="js/GeoJSON.js"></script>
-<script type="text/javascript" src="js/map.js"></script>
-<script type="text/javascript" src="js/v3_epoly.js"></script>
-<script type="text/javascript" src="js/sectors.js"></script>
-<script type="text/javascript" src="js/contextmenu.js"></script>
-<script type="text/javascript" src="js/elevation.js"></script>
-<script type="text/javascript" src="js/neighbors.js"></script>
-<script type="text/javascript" src="js/temporaryStorage.js"></script>
-<script type="text/javascript" src="js/colors.js"></script>
-<script type="text/javascript" src="js/CSVPlotter.js"></script>
-<script type="text/javascript">//Local JS
-    var collapseBottom = $('#collapseBottom');
-    var btnArrow =  $('#btnArrow');
-    collapseBottom.on('show.bs.collapse', function () {
-        btnArrow.removeClass();
-        btnArrow.toggleClass("glyphicon glyphicon-chevron-down");
-    });
-    collapseBottom.on('hide.bs.collapse', function () {
-        btnArrow.removeClass();
-        btnArrow.toggleClass("glyphicon glyphicon-chevron-up");
-        //   $("#accordion").css("height","2.6%");
-    });
-    $('#btnRight').click(function () {
-        var mapCanvas = $("#map-canvas");
-        var width = mapCanvas.width();
-        var parentWidth = mapCanvas.offsetParent().width();
-        var widthper = 100*width/parentWidth;
-        var btnArrowLeft = $('#btnArrowLeft');
-        var accordion = $( "#accordion" );
-        if (widthper==100) {
-            mapCanvas.animate({ "width": "82.6333%" }, "slow" );
-            accordion.animate({ "width": "82.6333%" }, "slow" );
-            btnArrowLeft.removeClass();
-            btnArrowLeft.toggleClass("glyphicon glyphicon-chevron-right");
-        } else {
-            mapCanvas.animate({ "width": "100%" }, "slow" );
-            accordion.animate({ "width": "100%" }, "slow" );
-            btnArrowLeft.removeClass();
-            btnArrowLeft.toggleClass("glyphicon glyphicon-chevron-left");
-        }
-        $.sparkline_display_visible();
-    });
-    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-        var str = $(e.target).html(); // The 'event.target' part is jQuery object, not a string so this way you wrapped.
-        var n = str.search("KPI");
-        if (n > -1) {
-            // actually render any undrawn sparklines that are now visible in the DOM
-            $.sparkline_display_visible();
-        }
-    });
-    function blinker() {
-        var blinkTxt = $('.blink_txt');
-        blinkTxt.fadeOut(500);
-        blinkTxt.fadeIn(500);
-    }
-    setInterval(blinker, 1000);
-    $(document).ready(function(){
-        $('#seartxt').keypress(function(e){
-            if(e.keyCode==13){
-                $('#searbtn').click();
-                return false; // Avoid Refresh page after run function. This line kill everything
-            }
+    </div>        
+    
+    
+
+
+    
+
+    
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>  
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug 
+    <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>-->
+  
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCDjB5G0Fod2mUs0u9a-B4cF3xyqQa5uAs&sensor=false"></script>
+    <script type="text/javascript" src="js/markerclusterer.min.js"></script>
+    <script type="text/javascript" src="js/maplabel.js"></script> 
+    <script src="https://www.google.com/jsapi"></script>    
+
+    
+    <script type="text/javascript" src="js/chance.min.js"></script>
+    <script type="text/javascript" src="js/jquery.sparkline.js"></script>
+    <script type="text/javascript" src="js/GeoJSON.js"></script>
+    <script type="text/javascript" src="js/moment.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap-datetimepicker.js"></script>
+    <script type="text/javascript" src="js/goog.long.js"></script>
+    <script type="text/javascript" src="js/require.js"></script>
+    <script type="text/javascript" src="js/proj.js"></script>
+
+    <script type="text/javascript" src="js/v3_epoly.js"></script>
+    <script type="text/javascript" src="js/sectors.js"></script>
+    <script type="text/javascript" src="js/contextmenu.js"></script>
+    <script type="text/javascript" src="js/elevation.js"></script>
+    <script type="text/javascript" src="js/neighbors.js"></script>
+    <script type="text/javascript" src="js/temporaryStorage.js"></script>
+    <script type="text/javascript" src="js/colors.js"></script>
+    <script type="text/javascript" src="js/CSVPlotter.js"></script> 
+    <script type="text/javascript" src="js/kpi.js"></script>     
+    <script type="text/javascript" src="js/map.js"></script>     
+    <script src="//cdn.jsdelivr.net/bluebird/3.4.0/bluebird.min.js"></script>
+   
+    <script type="text/javascript">
+    
+        $(".rmv-obj-left > .closebtn").click(function(){
+            $(".icon-bar-left").animate({left: '0px'});
+            if ($(".legend-left").css( "left" ) == '200px' ) {$(".legend-left").animate({'left': '0px', 'bottom':'60px','top': 'auto'});}           
+            $(".offcanvas-left").animate({width: '0px'});
+            $(".rmv-obj-left").css({'display':'none'}); 
+
         });
-    });
-    $(window).ready(function(){
-        $("#test").css("display","block");
-    });
-</script>
-</body>
+
+
+        $(".layer-icon").click(function(){
+            $(".icon-bar-left").animate({left: '200px'});
+            if ($(".legend-left").css( "left" ) == '0px' ) {$(".legend-left").animate({'left': '200px', 'bottom':'60px','top': 'auto'});}                
+            $(".offcanvas-left").animate({width: '200px'});
+            $(".rmv-obj-left").css({'display':'block'}); 
+        }); 
+
+        $(".rmv-obj-right > .closebtn").click(function(){
+            $(".icon-bar-right").animate({right: '0px'});
+            $(".offcanvas-right").animate({width: '0px'});
+            if ($(".legend-right").css( "right" ) == '200px' || $(".legend-right").css( "right" ) == '400px' ) {$(".legend-right").animate({'right': '0px', 'bottom':'60px','top': 'auto'});}  
+            $(".rmv-obj-right").css({'display':'none'}); 
+
+        });
+
+//old way fucntion per icon clean this part X rmv-obj-X
+        $(".home2_old").click(function(){
+            $(".icon-bar-right").animate({right: '200px'});
+            $(".offcanvas-right").animate({width: '200px'});
+         //   $(".offcanvas-right").css({'padding-left': '8px', 'padding-right': '5px'});
+            $(".rmv-obj-right").css({'display':'block'}); 
+        }); 
+
+
+       
+    </script>
+
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('#seartxt').keypress(function(e){
+                if(e.keyCode==13){
+                    $('#searbtn').click();
+                    return false; // Avoid Refresh page after run function. This line kill everything
+                }
+            });
+        });  
+    </script>
+    
+    
+    
+    <script type="text/javascript">  <!-- DatePicker -->
+        $('#dpicker').datetimepicker({
+                        defaultDate: moment().add(-1, 'days'),
+                        format: 'MM/DD/YY',
+                        maxDate: moment()
+                    });   
+        $("#dpicker").on("dp.change", function (e) {
+            var new_day = moment($('#dpicker').data("DateTimePicker").date().format('YYYY-MM-DD'));
+            days_ = new_day.diff(old_day,'days');
+            CurrentDate = $('#dpicker').data("DateTimePicker").date().format('YYYY-MM-DD');
+            //Verify style
+            changeSectorStyle(secSQL.toString(),sectorPolygons,style_,CurrentDate,query_)    
+        });                
+
+    </script>    
+
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>   
+
+    <script type="text/javascript"> <!--offcanvas subment-->
+        $(".nav > .has-sub > a").click(function() {
+            var e = $(this).next(".sub-menu")
+              , a = ".sidebar .nav > li.has-sub > .sub-menu";
+              
+            ($(a).not(e).slideUp(250, function() {
+                $(this).closest("li").removeClass("expand")
+            }),
+            
+            $(e).slideToggle(250, function() {
+                var e = $(this).closest("li");
+                $(e).hasClass("expand") ? $(e).removeClass("expand") : $(e).addClass("expand")
+            }));
+        });
+        //Open sub-menu
+        $(".nav > .has-sub .sub-menu li.has-sub > a").click(function() {
+            var e = $(this).next(".sub-menu");
+            $(e).slideToggle(250)
+        });
+    </script>
+ 
+
+    <script type="text/javascript"> <!--icon-bar-->
+        $(".icon-bar-right > a").click(function() {
+
+            $(".icon-bar-right").animate({right: '200px'});
+            $(".offcanvas-right").animate({width: '200px'});
+            $(".rmv-obj-right").css({'display':'none'});                        
+            if ($(".legend-right").css( "right" ) == '0px' ) {$(".legend-right").animate({'right': '200px', 'bottom':'60px','top': 'auto'});}  
+            
+            $(".icon-bar-right > a").removeClass("icon-active")
+            var e = $(this);
+            var iconHtml = e[0]['outerHTML'];
+            $(e).addClass("icon-active");
+
+            $(".sidenav-heading").css({'display':'block'});     
+            switch(true) {
+                case (iconHtml.indexOf("Technology")>0):
+                    $(".rmv-obj-right > .sidenav-heading-title > h4").html("Technology");
+                    $("#ui-technology").css({'display':'block'}); 
+                    if ($(".legend-right").css( "right" ) == '400px' ) {$(".legend-right").animate({'right': '200px', 'bottom':'60px','top': 'auto'});}                      
+                    
+                    break;
+                case (iconHtml.indexOf("Market")>0):
+                    $(".rmv-obj-right > .sidenav-heading-title > h4").html("Market");
+                    $("#ui-market").css({'display':'block'});
+                    if ($(".legend-right").css( "right" ) == '400px' ) {$(".legend-right").animate({'right': '200px', 'bottom':'60px','top': 'auto'});}                     
+                    break;
+                case (iconHtml.indexOf("Sector")>0):
+                    $(".rmv-obj-right > .sidenav-heading-title > h4").html("Sector");
+                    $("#ui-sector").css({'display':'block'});
+                    if ($(".legend-right").css( "right" ) == '400px' ) {$(".legend-right").animate({'right': '200px', 'bottom':'60px','top': 'auto'});}                     
+                    break;              
+                case (iconHtml.indexOf("KPIs")>0):
+                    $(".rmv-obj-right > .sidenav-heading-title > h4").html("KPIs");
+                    $("#ui-kpis").css({'display':'block'}); 
+                    $(".icon-bar-right").animate({right: '400px'});
+                    $(".offcanvas-right").animate({width: '400px'});
+                    if ($(".legend-right").css( "right" ) == '0px' || $(".legend-right").css( "right" ) == '200px' ) {$(".legend-right").animate({'right': '400px', 'bottom':'60px','top': 'auto'});}                      
+                    $.sparkline_display_visible();
+                     
+                    break;                    
+                case (iconHtml.indexOf("Alarms")>0):
+                    $(".rmv-obj-right > .sidenav-heading-title > h4").html("Alarms");
+                    break;                    
+                case (iconHtml.indexOf("TT")>0):
+                    $(".rmv-obj-right > .sidenav-heading-title > h4").html("TT");
+                    break;                    
+                case (iconHtml.indexOf("WO")>0):
+                    $(".rmv-obj-right > .sidenav-heading-title > h4").html("WO");
+                    break;  
+                case (iconHtml.indexOf("Default")>0):
+                    console.log(8);
+                    break;  
+
+            }
+            
+            
+        });
+    </script>
+
+    <script type="text/javascript">           
+        $(function() {
+            $( ".legend-left" ).draggable();
+            $( ".legend-right" ).draggable();
+        });
+    </script>
+     
+  </body>
 </html>

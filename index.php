@@ -4,7 +4,8 @@ require_once("php/login.php");
 <!doctype html>
 <html>
 <head>
-    <title>IdocTool</title>
+    <title>Idoc</title>
+    <link rel="icon" href="favicon.ico">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -24,7 +25,7 @@ require_once("php/login.php");
             height:100%; /*required to expand picture on the page */
         }
         #bodyContainer {
-            background-image:url("images/background.jpg");
+            background-image:url("images/old_book.jpg");
             width:100%;
             height:100%;
             background-size:cover; /*only one picture */
@@ -57,9 +58,20 @@ require_once("php/login.php");
         .html5placeholder {
             color: #aaa;
         }
+        
+        
+        .btn {
+            background-color: #E20074;
+            color:white;
+        }
+        .btn:hover {
+            background-color: #A10053;
+            color:white;
+        } 
+        
     </style>
 </head><body>
-<div class="navbar navbar-custom navbar-fixed-top">
+<div class="navbar navbar-inverse navbar-fixed-top">
     <div class="container">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -68,7 +80,7 @@ require_once("php/login.php");
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#"><img alt="Brand" src="images/iDocIcon.png" style="height:20px;margin-top:-4px;">&nbsp;<strong>IdocTool</strong></a>
+            <a class="navbar-brand" href="#"><img alt="Brand" src="images/iDocIcon.png" style="height:20px;margin-top:-4px;">&nbsp;<strong>Idoc</strong></a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <form class="navbar-form navbar-right" method="POST">
@@ -80,7 +92,7 @@ require_once("php/login.php");
                     <!--<label class="white" for="loginpassword">Password</label>-->
                     <input type="password" name="loginpassword" class="form-control" placeholder="Password" value="<?php echo addslashes($_POST['loginpassword']); ?>" />
                 </div>
-                <input type="submit" name="submit" class="btn btn-success" value="Log In" />
+                <input type="submit" name="submit" class="btn" value="Log In" />
                 <!--<button type="submit" class="btn btn-success">Sign in</button> -->
             </form>
         </div><!--/.navbar-collapse -->
@@ -90,7 +102,7 @@ require_once("php/login.php");
     <div class="row" id="topRow"> <!--2-->
         <div class="col-md-4 col-md-offset-5 center"> <!--3--> <!--col-md-offset-? help to move the column horizontal-->
             <div class="signform">
-                <h1 class="bold center white">DocTool</h1>
+                <h1 class="bold center white">Idoc</h1>
                 <!--      <p class="center white"></p> -->
                 <p class="lead center white">First Time? Sign up Below! </p>
                 <?php
@@ -123,7 +135,7 @@ require_once("php/login.php");
                             <option value="Phoenix">Phoenix</option>
                         </select>
                     </div>
-                    <input type="submit" name="submit" class="btn btn-success btn-lg" value="Sign Up" />
+                    <input type="submit" name="submit" class="btn btn-lg" value="Sign Up" />
                 </form>
             </div>
         </div>
