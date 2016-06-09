@@ -148,6 +148,7 @@ html, body {
 }
 
 
+
 .icon-bar-right {
     width: 50px;
     text-align: center;
@@ -195,7 +196,7 @@ html, body {
     background-color: #3C3C3C;
     color: white;
     padding: 10px;
-    margin: 10px;
+    font-size:12px;
     /*border: 1px solid #000; */
     border-radius: 10px;
   
@@ -204,7 +205,7 @@ html, body {
     
     
 }
-#legend-container h3 {
+#legend-container h4 {
     margin-top: 0;
     text-align: center;
 }
@@ -214,9 +215,37 @@ html, body {
     border-radius:3px;
     float:left;
     border:1px solid black;
-    margin-right:6px;        	
+    margin-right:6px;
 }
 
+
+.legend-left {
+
+    bottom: 60px;
+    left: 0px;
+    position: fixed;
+    z-index: 1;
+    margin-left: 10px;    
+}
+
+.legend-left h4 {
+    margin-top: 0;
+    text-align: center;
+}
+
+.legend-right {
+
+    bottom: 60px;
+    right: 0px;
+    position: fixed;
+    z-index: 1;
+    margin-right: 10px;    
+}
+
+.legend-right h4 {
+    margin-top: 0;
+    text-align: center;
+}
 
 .infoCell {
  /*   margin:-60px 0px 0px 0px;

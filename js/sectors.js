@@ -60,7 +60,7 @@ function changeSectorStyle(sec,sectorObj,styleColor, date_, queryT_, tech_){
         }
 
         if (queryT_ === 0) {legend(tech_);}
-        if (queryT_ === 1) {legend('DC_sev');}    
+        if (queryT_ === 1) {legend( $('input:radio[name=options3G]:checked').val());}    
 
         for(var j=0;j<sectorPolygons.length;j++){
             if (queryT_ === 0) {

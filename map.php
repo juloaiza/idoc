@@ -102,7 +102,7 @@ $market = $row['market'];
 						    <span>T-mobile</span>
 						</a>
 						<ul class="sub-menu">
-						    <li><a href="#"><input type="radio" name="optionsMaps" id="radio5" value="option5" onclick="tiledLayer('TMo_TechLTE_Map','http://maps.t-mobile.com/TMo_TechLTE_Map/{z}/{x}:{y}/tile.png',1,0.5);"> PCC</a></li>
+						    <li><a href="#"><input type="radio" name="optionsMaps" id="radio5" value="option5" onclick="tiledLayer('TMo_Tech_Map','http://maps.t-mobile.com/TMo_TechLTE_Map/{z}/{x}:{y}/tile.png',1,0.5);"> PCC</a></li>
 						    <li><a href="#"><input type="radio" name="optionsMaps" id="radio6" value="option6" onclick="tiledLayer('TMo_Verified_Map','http://maps.t-mobile.com/TMo_Verified_Map/{z}/{x}:{y}/tile.png',1,0.8);"> Verified coverage</a></li>
 						    <li><a href="#"><input type="checkbox" name="checkMaps" id="check0" value="" onclick="lowBandAndSR('srs');" > SRs</a></li>
 						    <li><a href="#"><input type="checkbox" name="checkMaps1" id="check1" value="" onclick="showBans();" > BANs</a></li>
@@ -149,10 +149,10 @@ $market = $row['market'];
 						    <span>Echo Locate</span>
 						</a>
 						<ul class="sub-menu">
-						    <li><a href="#"><input type="radio" name="optionsMaps" id="radio13" value="option9" onclick="tiledLayer('TMo_EchoLocate_Drop','http://prdasngis048:8080/rest/Spatial/MapTilingService/EchoLocate_Drop/{z}/{x}:{y}/tile.png',1,0.8);"> Drops</a></li>
-						    <li><a href="#"><input type="radio" name="optionsMaps" id="radio14" value="option10" onclick="tiledLayer('TMo_EchoLocate_AccessFailure','http://prdasngis048:8080/rest/Spatial/MapTilingService/EchoLocate_AccessFailure/{z}/{x}:{y}/tile.png',1,0.8);"> Access Failures</a></li>
-						    <li><a href="#"><input type="radio" name="optionsMaps" id="radio15" value="option11" onclick="tiledLayer('TMo_EchoLocate_AudioIssue','http://prdasngis048:8080/rest/Spatial/MapTilingService/EchoLocate_AudioIssue/{z}/{x}:{y}/tile.png',1,0.8);"> Audio Issues</a></li>
-						    <li><a href="#"><input type="radio" name="optionsMaps" id="radio16" value="option12" onclick="tiledLayer('TMo_EchoLocate_SRVCC','http://prdasngis048:8080/rest/Spatial/MapTilingService/EchoLocate_SRVCC_Ratio/{z}/{x}:{y}/tile.png',1,0.8);"> SRVCC ratio</a></li>
+						    <li><a href="#"><input type="radio" name="optionsMaps" id="radio13" value="option9" onclick="tiledLayer('EchoLocate_Drop','http://prdasngis048:8080/rest/Spatial/MapTilingService/EchoLocate_Drop/{z}/{x}:{y}/tile.png',1,0.8);"> Drops</a></li>
+						    <li><a href="#"><input type="radio" name="optionsMaps" id="radio14" value="option10" onclick="tiledLayer('EchoLocate_AccessFailure','http://prdasngis048:8080/rest/Spatial/MapTilingService/EchoLocate_AccessFailure/{z}/{x}:{y}/tile.png',1,0.8);"> Access Failures</a></li>
+						    <li><a href="#"><input type="radio" name="optionsMaps" id="radio15" value="option11" onclick="tiledLayer('EchoLocate_AudioIssue','http://prdasngis048:8080/rest/Spatial/MapTilingService/EchoLocate_AudioIssue/{z}/{x}:{y}/tile.png',1,0.8);"> Audio Issues</a></li>
+						    <li><a href="#"><input type="radio" name="optionsMaps" id="radio16" value="option12" onclick="tiledLayer('EchoLocate_SRVCC','http://prdasngis048:8080/rest/Spatial/MapTilingService/EchoLocate_SRVCC_Ratio/{z}/{x}:{y}/tile.png',1,0.8);"> SRVCC ratio</a></li>
 						</ul>
 					</li>
 
@@ -175,6 +175,17 @@ $market = $row['market'];
             <span data-toggle="modal" data-target="#smallModal"><a href="#" data-toggle="tooltip" data-placement="right" title="Contact"><i class="glyphicon glyphicon-envelope"></i></a></span>
             <a class="icon-active layer-icon" href="#" data-toggle="tooltip" data-placement="right" title="Layers"><i class="glyphicon glyphicon-globe"></i></a>
         </div>            
+        
+        
+        <div class="legend-left">
+
+        </div>
+        
+        
+         <div class="legend-right">
+
+        </div>       
+        
         
         
         <div class="modal fade" id="smallModal" tabindex="-1" role="dialog" aria-labelledby="smallModal" aria-hidden="true">
@@ -286,40 +297,21 @@ $market = $row['market'];
 						</a>
 						<ul class="sub-menu">
 						    <li><a href="#"><input type="radio" name="options3G" id="MKPI_0" value="FeedBack"> FeedBack</a></li>
-						    <li><a href="#"><input type="radio" name="options3G" id="MKPI_1" value="Voice Drops Raw"> Voice Drops Raw</a></li>
-						    <li><a href="#"><input type="radio" name="options3G" id="MKPI_2" value="Poor EcNo"> Poor EcNo</a></li>
-						    <li><a href="#"><input type="radio" name="options3G" id="MKPI_3" value="High TX Power Usage"> High TX Power Usage</a></li>
-						    <li><a href="#"><input type="radio" name="options3G" id="MKPI_4" value="Poor RTWP"> Poor RTWP</a></li>
+						    <li><a href="#"><input type="radio" name="options3G" id="MKPI_1" value="Voice_Drops_Raw"> Voice Drops Raw</a></li>
+						    <li><a href="#"><input type="radio" name="options3G" id="MKPI_2" value="Poor_EcNo"> Poor EcNo</a></li>
+						    <li><a href="#"><input type="radio" name="options3G" id="MKPI_3" value="High_TX_Pwr_Usage"> High TX Power Usage</a></li>
+						    <li><a href="#"><input type="radio" name="options3G" id="MKPI_4" value="Poor_RTWP"> Poor RTWP</a></li>
                          </ul>
 					</li>
                 </ul>
             </div>  <!--template -->   
 
         <div id="ui-kpis" class="rmv-obj-right">
-
-
-                <!-- Div pending to add -->
-
-  
-                    <div class="col-sm-12">  
-                        <h4> <div class="infoCell"></div></h4>
-                        <p> <div id="ltekpi11" style="text-align:left"></div> </p>                    
-                        <p> <div id="ltekpi0" style="text-align:left"></div> </p>
-                        <p> <div id="ltekpi1" style="text-align:left"></div> </p>
-                        <p> <div id="ltekpi2" style="text-align:left"></div> </p>
-                        <p> <div id="ltekpi3" style="text-align:left"></div> </p>
-                        <p> <div id="ltekpi4" style="text-align:left"></div> </p>
-                        <p> <div id="ltekpi5" style="text-align:left"></div> </p>
-                        <p> <div id="ltekpi6" style="text-align:left"></div> </p>
-                        <p> <div id="ltekpi7" style="text-align:left"></div> </p>
-                        <p> <div id="ltekpi8" style="text-align:left"></div> </p>
-                        <p> <div id="ltekpi9" style="text-align:left"></div> </p>                        
-                        <p> <div id="ltekpi10" style="text-align:left"></div> </p>                           
-                    </div>                      
-                        
-
-               
-
+        <!-- Div pending to add -->
+            <div class="col-sm-12">  
+                <h4> <div class="infoCell"></div></h4>
+         <!-- Adding sparkline -->                        
+            </div>                      
         </div>
 
 
@@ -374,13 +366,11 @@ $market = $row['market'];
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
-    integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>    
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>  
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug 
     <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>-->
-    
   
-
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCDjB5G0Fod2mUs0u9a-B4cF3xyqQa5uAs&sensor=false"></script>
     <script type="text/javascript" src="js/markerclusterer.min.js"></script>
     <script type="text/javascript" src="js/maplabel.js"></script> 
@@ -388,9 +378,7 @@ $market = $row['market'];
 
     
     <script type="text/javascript" src="js/chance.min.js"></script>
-    <script type="text/javascript" src="js/jquery-2.1.1.min.js"></script>
     <script type="text/javascript" src="js/jquery.sparkline.js"></script>
-    <script type="text/javascript" src="js/bootstrap.js"></script>
     <script type="text/javascript" src="js/GeoJSON.js"></script>
     <script type="text/javascript" src="js/moment.min.js"></script>
     <script type="text/javascript" src="js/bootstrap-datetimepicker.js"></script>
@@ -406,6 +394,7 @@ $market = $row['market'];
     <script type="text/javascript" src="js/temporaryStorage.js"></script>
     <script type="text/javascript" src="js/colors.js"></script>
     <script type="text/javascript" src="js/CSVPlotter.js"></script> 
+    <script type="text/javascript" src="js/kpi.js"></script>     
     <script type="text/javascript" src="js/map.js"></script>     
     <script src="//cdn.jsdelivr.net/bluebird/3.4.0/bluebird.min.js"></script>
    
@@ -413,8 +402,8 @@ $market = $row['market'];
     
         $(".rmv-obj-left > .closebtn").click(function(){
             $(".icon-bar-left").animate({left: '0px'});
+            if ($(".legend-left").css( "left" ) == '200px' ) {$(".legend-left").animate({'left': '0px', 'bottom':'60px','top': 'auto'});}           
             $(".offcanvas-left").animate({width: '0px'});
-       //     $(".offcanvas-left").css({'padding-left': '0px', 'padding-right': '0px'});
             $(".rmv-obj-left").css({'display':'none'}); 
 
         });
@@ -422,20 +411,20 @@ $market = $row['market'];
 
         $(".layer-icon").click(function(){
             $(".icon-bar-left").animate({left: '200px'});
+            if ($(".legend-left").css( "left" ) == '0px' ) {$(".legend-left").animate({'left': '200px', 'bottom':'60px','top': 'auto'});}                
             $(".offcanvas-left").animate({width: '200px'});
-           // $(".offcanvas-left").css({'padding-left': '0px', 'padding-right': '0px'});
             $(".rmv-obj-left").css({'display':'block'}); 
         }); 
 
         $(".rmv-obj-right > .closebtn").click(function(){
             $(".icon-bar-right").animate({right: '0px'});
             $(".offcanvas-right").animate({width: '0px'});
-       //     $(".offcanvas-right").css({'padding-left': '0px', 'padding-right': '0px'});
+            if ($(".legend-right").css( "right" ) == '200px' || $(".legend-right").css( "right" ) == '400px' ) {$(".legend-right").animate({'right': '0px', 'bottom':'60px','top': 'auto'});}  
             $(".rmv-obj-right").css({'display':'none'}); 
 
         });
 
-//old way fucntion per icon
+//old way fucntion per icon clean this part X rmv-obj-X
         $(".home2_old").click(function(){
             $(".icon-bar-right").animate({right: '200px'});
             $(".offcanvas-right").animate({width: '200px'});
@@ -443,7 +432,8 @@ $market = $row['market'];
             $(".rmv-obj-right").css({'display':'block'}); 
         }); 
 
-        
+
+       
     </script>
 
     <script type="text/javascript">
@@ -509,6 +499,7 @@ $market = $row['market'];
             $(".icon-bar-right").animate({right: '200px'});
             $(".offcanvas-right").animate({width: '200px'});
             $(".rmv-obj-right").css({'display':'none'});                        
+            if ($(".legend-right").css( "right" ) == '0px' ) {$(".legend-right").animate({'right': '200px', 'bottom':'60px','top': 'auto'});}  
             
             $(".icon-bar-right > a").removeClass("icon-active")
             var e = $(this);
@@ -519,21 +510,26 @@ $market = $row['market'];
             switch(true) {
                 case (iconHtml.indexOf("Technology")>0):
                     $(".rmv-obj-right > .sidenav-heading-title > h4").html("Technology");
-                    $("#ui-technology").css({'display':'block'});                       
+                    $("#ui-technology").css({'display':'block'}); 
+                    if ($(".legend-right").css( "right" ) == '400px' ) {$(".legend-right").animate({'right': '200px', 'bottom':'60px','top': 'auto'});}                      
+                    
                     break;
                 case (iconHtml.indexOf("Market")>0):
                     $(".rmv-obj-right > .sidenav-heading-title > h4").html("Market");
-                    $("#ui-market").css({'display':'block'});                      
+                    $("#ui-market").css({'display':'block'});
+                    if ($(".legend-right").css( "right" ) == '400px' ) {$(".legend-right").animate({'right': '200px', 'bottom':'60px','top': 'auto'});}                     
                     break;
                 case (iconHtml.indexOf("Sector")>0):
                     $(".rmv-obj-right > .sidenav-heading-title > h4").html("Sector");
-                    $("#ui-sector").css({'display':'block'});                      
+                    $("#ui-sector").css({'display':'block'});
+                    if ($(".legend-right").css( "right" ) == '400px' ) {$(".legend-right").animate({'right': '200px', 'bottom':'60px','top': 'auto'});}                     
                     break;              
                 case (iconHtml.indexOf("KPIs")>0):
                     $(".rmv-obj-right > .sidenav-heading-title > h4").html("KPIs");
                     $("#ui-kpis").css({'display':'block'}); 
                     $(".icon-bar-right").animate({right: '400px'});
                     $(".offcanvas-right").animate({width: '400px'});
+                    if ($(".legend-right").css( "right" ) == '0px' || $(".legend-right").css( "right" ) == '200px' ) {$(".legend-right").animate({'right': '400px', 'bottom':'60px','top': 'auto'});}                      
                     $.sparkline_display_visible();
                      
                     break;                    
@@ -556,8 +552,12 @@ $market = $row['market'];
         });
     </script>
 
-
-
- 
+    <script type="text/javascript">           
+        $(function() {
+            $( ".legend-left" ).draggable();
+            $( ".legend-right" ).draggable();
+        });
+    </script>
+     
   </body>
 </html>
