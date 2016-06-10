@@ -10,7 +10,7 @@
 
         $field = array("Azimuth", "Antenna Type", "Height", "MechTilt","ElectTilt"); 
         for ($i = 3; $i <= 7; $i++) {
-           echo '<tr> <td>'.$field[$i-3].'</td> <td> '.$row[$i].'</tr> </td>';
+           echo '<tr> <td>'.$field[$i-3].'</td> <td> '.$row[$i].'</td> </tr>';
         }        
 
      //   mysqli_close($db_name);
@@ -28,7 +28,7 @@
 
         $field = array("Frequency", "BW", "Mimo Type", "AAV"); 
         for ($i = 0; $i <= 3; $i++) {
-           echo '<tr> <td>'.$field[$i].'</td> <td> '.$row[$i].'</tr> </td>';
+           echo '<tr> <td>'.$field[$i].'</td> <td> '.$row[$i].'</td> </tr>';
         }        
 
         mysqli_close($db_name);

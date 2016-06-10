@@ -255,23 +255,32 @@ function infoWindowSparklineShow(type,passIn,tech){
                                       </div>\
                                     </div>';    
                     infowindow.setContent(content);
-                    $('#info').html('<b style="padding-left:20px;">'+passIn[1]['sector'][passIn[0]]['site_name']  +'-' + passIn[1]['sector'][passIn[0]]['lncel_name'] +'</b><br><div class="col-xs-8"><table class="table table-condensed table-striped"> <tbody>'+ phyconf + '</tbody> </table></div>');
+                    $('#info').html('<table class="table table-condensed table-striped"> <tbody> <tr> <td>Sector</td> <td><b>'+ passIn[1]['sector'][passIn[0]]['lncel_name'] +'</b></td> </tr><tr>'+ phyconf + '</tbody> </table>');
                     
                     
                     $.get("php/alarm.php?SiteID="+passIn[1]['sector'][passIn[0]]['site_name'],function(data) {     /*get function take the content of test.html
                      put in variable 'data' inside the callback function*/
                         $('#alarms').html(data);
-                    });                
+                    });     
+
+                    $.get("php/tt.php?SiteID="+passIn[1]['sector'][passIn[0]]['site_name'],function(data) {     /*get function take the content of test.html
+                     put in variable 'data' inside the callback function*/
+                        $('#tt').html(data);
+                    });
+
+                    $.get("php/wo.php?SiteID="+passIn[1]['sector'][passIn[0]]['site_name'],function(data) {     /*get function take the content of test.html
+                     put in variable 'data' inside the callback function*/
+                        $('#wo').html(data);                      
+                    });                    
+
+                    
                 };
             })()); 
             infowindow.setPosition(event.latLng);
             infowindow.open(map);
             $('#ltedropLine'+passIn[0]).sparkline();
-            $('#iframett').html('<br><br><span class="blink_txt">Loading...</span>');
-            $.get("php/tt.php?SiteID="+passIn[1]['sector'][passIn[0]]['site_name'],function(data) {     /*get function take the content of test.html
-             put in variable 'data' inside the callback function*/
-                $('#iframett').html(data);
-            });
+            
+
 
             jSONURL = "php/kpi_.php?TECH="+tech+"&lncel="+passIn[1]['sector'][passIn[0]]['lncel_name']; 
         }
