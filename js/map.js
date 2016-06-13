@@ -230,33 +230,40 @@ function infoWindowSparklineShow(type,passIn,tech){
             jSONURL='php/kpi.php?lncel='+passIn[1]['features'][passIn[0]]['properties']['Site']
         }
         if(type=='sector'){
-            map.controls[google.maps.ControlPosition.TOP_CENTER].clear();
-            $('#info').html( '<img src="images/spin.gif" height="40" width="40" style="position:absolute;top:0;left:0;right:0;bottom:0;margin:auto;">' );
-            $('#alarms').html( '<img src="images/spin.gif" height="40" width="40" style="position:absolute;top:0;left:0;right:0;bottom:0;margin:auto;">' );
-            $('#tt').html( '<img src="images/spin.gif" height="40" width="40" style="position:absolute;top:0;left:0;right:0;bottom:0;margin:auto;">' ); 
-            $('#wo').html( '<img src="images/spin.gif" height="40" width="40" style="position:absolute;top:0;left:0;right:0;bottom:0;margin:auto;">' );            
+            //map.controls[google.maps.ControlPosition.TOP_CENTER].clear();
+            content ='     <div class="winfo"> \
+                              <!-- Nav tabs --> \
+                              <ul class="nav nav-tabs" role="tablist"> \
+                                <li role="presentation" class="active"><a href="#info" aria-controls="info" role="tab" data-toggle="tab">Info</a></li> \
+                                <li role="presentation"><a href="#parameters" aria-controls="parameters" role="tab" data-toggle="tab">Parameters</a></li> \
+                                <li role="presentation"><a href="#alarms" aria-controls="alarms" role="tab" data-toggle="tab">Alarms</a></li> \
+                                <li role="presentation"><a href="#tt" aria-controls="tt" role="tab" data-toggle="tab">TT</a></li> \
+                                <li role="presentation"><a href="#wo" aria-controls="wo" role="tab" data-toggle="tab">WO</a></li> \
+                              </ul>\
+                              <!-- Tab panes --> \
+                              <div class="tab-content"> \
+                                <div role="tabpanel" class="tab-pane active" id="info"><img src="images/spin.gif" height="40" width="40" style="position:absolute;top:0;left:0;right:0;bottom:0;margin:auto;"></div> \
+                                <div role="tabpanel" class="tab-pane" id="parameters"><img src="images/spin.gif" height="40" width="40" style="position:absolute;top:0;left:0;right:0;bottom:0;margin:auto;"></div> \
+                                <div role="tabpanel" class="tab-pane" id="alarms"><img src="images/spin.gif" height="40" width="40" style="position:absolute;top:0;left:0;right:0;bottom:0;margin:auto;"></div> \
+                                <div role="tabpanel" class="tab-pane" id="tt"><img src="images/spin.gif" height="40" width="40" style="position:absolute;top:0;left:0;right:0;bottom:0;margin:auto;"></div> \
+                                <div role="tabpanel" class="tab-pane" id="wo"><img src="images/spin.gif" height="40" width="40" style="position:absolute;top:0;left:0;right:0;bottom:0;margin:auto;"></div> \
+                              </div>\
+                            </div>';    
+            infowindow.setContent(content);            
+          //  $('#info').html( '<img src="images/spin.gif" height="40" width="40" style="position:absolute;top:0;left:0;right:0;bottom:0;margin:auto;">' );
+          //  $('#alarms').html( '<img src="images/spin.gif" height="40" width="40" style="position:absolute;top:0;left:0;right:0;bottom:0;margin:auto;">' );
+         //   $('#tt').html( '<img src="images/spin.gif" height="40" width="40" style="position:absolute;top:0;left:0;right:0;bottom:0;margin:auto;">' ); 
+         //   $('#wo').html( '<img src="images/spin.gif" height="40" width="40" style="position:absolute;top:0;left:0;right:0;bottom:0;margin:auto;">' );            
         
            $.get("php/phyconf.php?lncel="+passIn[1]['sector'][passIn[0]]['lncel_name'],(function(phyconf){
                 return function(phyconf) {
-                    content ='     <div class="winfo"> \
-                                      <!-- Nav tabs --> \
-                                      <ul class="nav nav-tabs" role="tablist"> \
-                                        <li role="presentation" class="active"><a href="#info" aria-controls="info" role="tab" data-toggle="tab">Info</a></li> \
-                                        <li role="presentation"><a href="#alarms" aria-controls="alarms" role="tab" data-toggle="tab">Alarms</a></li> \
-                                        <li role="presentation"><a href="#tt" aria-controls="tt" role="tab" data-toggle="tab">TT</a></li> \
-                                        <li role="presentation"><a href="#wo" aria-controls="wo" role="tab" data-toggle="tab">WO</a></li> \
-                                      </ul>\
-                                      <!-- Tab panes --> \
-                                      <div class="tab-content"> \
-                                        <div role="tabpanel" class="tab-pane active" id="info">...</div> \
-                                        <div role="tabpanel" class="tab-pane" id="alarms">...</div> \
-                                        <div role="tabpanel" class="tab-pane" id="tt">...</div> \
-                                        <div role="tabpanel" class="tab-pane" id="wo">...</div> \
-                                      </div>\
-                                    </div>';    
-                    infowindow.setContent(content);
-                    $('#info').html('<table class="table table-condensed table-striped"> <tbody> <tr> <td>Sector</td> <td><b>'+ passIn[1]['sector'][passIn[0]]['lncel_name'] +'</b></td> </tr><tr>'+ phyconf + '</tbody> </table>');
+
+                    $('#info').html('<table class="table table-condensed table-striped"> <tbody>' + phyconf + '</tbody> </table>');
                     
+                    $.get("php/parameters.php?lncel="+passIn[1]['sector'][passIn[0]]['lncel_name'],function(data) {     /*get function take the content of test.html
+                     put in variable 'data' inside the callback function*/
+                        $('#parameters').html('<table class="table table-condensed table-striped"> <tbody> '+ data + '</tbody> </table>');
+                    });  
                     
                     $.get("php/alarm.php?SiteID="+passIn[1]['sector'][passIn[0]]['site_name'],function(data) {     /*get function take the content of test.html
                      put in variable 'data' inside the callback function*/
@@ -1049,6 +1056,7 @@ function secDraw() {
                             paths: arcPts
                             ,strokeWeight: 0.1
                             ,fillOpacity:0.1
+                            ,zIndex: layerProperty[0].stack
                             ,map:map
                         });
                         secPolyTemp.push(secPoly);

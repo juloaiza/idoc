@@ -71,8 +71,8 @@ function changeSectorStyle(sec,sectorObj,styleColor, date_, queryT_, tech_){
                     strokeOpacity:1,
                     strokeWeight: 0.6,
                     fillColor: layerProperty[0].color,
-                    fillOpacity:1,
-                    zIndex: layerProperty[0].stack //stack orde
+                    fillOpacity:1
+                    //zIndex: layerProperty[0].stack //stack orde
                    //,map: map
                 });
             } else {
@@ -86,22 +86,22 @@ function changeSectorStyle(sec,sectorObj,styleColor, date_, queryT_, tech_){
                 });
             }
            
-            //Adding label                
+            //Adding label 
             (function(j,value_) {
                 google.maps.event.addListener(sectorPolygons[j][0],'mouseover',function(e){
                     var mapLabel = new MapLabel({
                         text: value_.toString(),
                         position:  e.latLng,
-                        fontSize: 14,
-                        align: 'center'
-                        //,map: map                        
+                        fontSize: 10,
+                        align: 'center',
+                        map: map                        
                     });
                     //Removing label 
                     google.maps.event.addListenerOnce(sectorPolygons[j][0],'mouseout', function(){
                         mapLabel.setMap(null);
                     });
                 });
-            })(j,data[sectorPolygons[j][1]]);            
+            })(j,sectorPolygons[j][1]+"-"+data[sectorPolygons[j][1]]);            
         }
     });    
 }
