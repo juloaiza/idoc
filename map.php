@@ -134,6 +134,18 @@ $market = $row['market'];
 					<li class="has-sub">
 						<a href="#">
 						    <b class="caret pull-right"></b>
+							<span>LTE Coverage (MyAccount)</span>
+						</a>
+						<ul class="sub-menu">
+						    <li><a href="#"><input type="radio" name="optionsMaps" id="radio17" value="option7" onclick="geosrv('LAll');"> All Band</a></li>
+						    <li><a href="#"><input type="radio" name="optionsMaps" id="radio18" value="option7" onclick="geosrv('L2100');"> 2100 Band</a></li>
+						    <li><a href="#"><input type="radio" name="optionsMaps" id="radio19" value="option7" onclick="geosrv('L1900');"> 1900 Band</a></li>
+						    <li><a href="#"><input type="radio" name="optionsMaps" id="radio20" value="option7" onclick="geosrv('L700');"> 700 Band</a></li>                            
+						</ul>
+					</li>                    
+					<li class="has-sub">
+						<a href="#">
+						    <b class="caret pull-right"></b>
 						    <span>RootMetrics (Coverage)</span> 
 						</a>
 						<ul class="sub-menu">
@@ -323,7 +335,7 @@ $market = $row['market'];
             <a href="#" data-toggle="tooltip" data-placement="left" title="Technology"><i class="glyphicon glyphicon-signal"></i></a>
             <a href="#" data-toggle="tooltip" data-placement="left" title="Market"><i class="glyphicon glyphicon-map-marker"></i></a> 
             <a href="#" data-toggle="tooltip" data-placement="left" title="Sector"><i class="glyphicon glyphicon-tower"></i></a> 
-            <a href="#" data-toggle="tooltip" data-placement="left" title="KPIs"><i class="glyphicon glyphicon-stats"></i></a> 
+            <a href="#" data-toggle="tooltip" data-placement="left" title="KPIs" id="icon-kpi"><i class="glyphicon glyphicon-stats"></i></a> 
       <!--      <a href="#" data-toggle="tooltip" data-placement="left" title="Alarms"><i class="glyphicon glyphicon-bell"></i></a> 
             <a href="#" data-toggle="tooltip" data-placement="left" title="TT"><i class="glyphicon glyphicon-fire"></i></a>
             <a href="#" data-toggle="tooltip" data-placement="left" title="WO"><i class="glyphicon glyphicon-wrench"></i></a>           
@@ -501,7 +513,7 @@ $market = $row['market'];
             $(".rmv-obj-right").css({'display':'none'});                        
             if ($(".legend-right").css( "right" ) == '0px' ) {$(".legend-right").animate({'right': '200px', 'bottom':'60px','top': 'auto'});}  
             
-            $(".icon-bar-right > a").removeClass("icon-active")
+            $(".icon-bar-right > a").removeClass("icon-active");
             var e = $(this);
             var iconHtml = e[0]['outerHTML'];
             $(e).addClass("icon-active");

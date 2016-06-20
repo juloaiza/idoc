@@ -250,10 +250,6 @@ function infoWindowSparklineShow(type,passIn,tech){
                               </div>\
                             </div>';    
             infowindow.setContent(content);            
-          //  $('#info').html( '<img src="images/spin.gif" height="40" width="40" style="position:absolute;top:0;left:0;right:0;bottom:0;margin:auto;">' );
-          //  $('#alarms').html( '<img src="images/spin.gif" height="40" width="40" style="position:absolute;top:0;left:0;right:0;bottom:0;margin:auto;">' );
-         //   $('#tt').html( '<img src="images/spin.gif" height="40" width="40" style="position:absolute;top:0;left:0;right:0;bottom:0;margin:auto;">' ); 
-         //   $('#wo').html( '<img src="images/spin.gif" height="40" width="40" style="position:absolute;top:0;left:0;right:0;bottom:0;margin:auto;">' );            
         
            $.get("php/phyconf.php?lncel="+passIn[1]['sector'][passIn[0]]['lncel_name'],(function(phyconf){
                 return function(phyconf) {
@@ -286,9 +282,6 @@ function infoWindowSparklineShow(type,passIn,tech){
             infowindow.setPosition(event.latLng);
             infowindow.open(map);
             $('#ltedropLine'+passIn[0]).sparkline();
-            
-
-
             jSONURL = "php/kpi_.php?TECH="+tech+"&lncel="+passIn[1]['sector'][passIn[0]]['lncel_name']; 
         }
         if (type == 'cluster'){
@@ -306,6 +299,9 @@ function infoWindowSparklineShow(type,passIn,tech){
         }
         
         $('#ui-kpis > .col-sm-12').html('<h5> <div class="infoCell"></div></h5>');
+        
+        $('#ui-kpis > .col-sm-12').append('<img src="images/spin_big.gif" height="40" width="40" style="position:absolute;top:500px;left:0;right:0;bottom:0;margin:auto; display: block;" >');
+        
         $.getJSON(jSONURL,function(datak) {
             var g=0;
             kpiName[tech].forEach(function(kpiObj){
@@ -355,6 +351,18 @@ function infoWindowSparklineShow(type,passIn,tech){
             $('.infoCell').html('<p>&nbsp;<span style="float: left">'+cellLastsp+'</span><span style="float: right">Upd:'+dateLastsp+'</span></p>');
             if(type == 'sector'){$('.infoSite').html('<p>'+cellLastsp.substr(0,cellLastsp.length - 2)+'</p>');}
         });
+            
+            $(".icon-bar-right > a").removeClass("icon-active");
+            $('#icon-kpi').addClass("icon-active");
+            $(".rmv-obj-right").css({'display':'none'});          
+            $("#ui-kpis").css({'display':'block'}); 
+            $(".icon-bar-right").animate({right: '400px'});
+            $(".offcanvas-right").animate({width: '400px'});
+            if ($(".legend-right").css( "right" ) == '0px' || $(".legend-right").css( "right" ) == '200px' ) {$(".legend-right").animate({'right': '400px', 'bottom':'60px','top': 'auto'});}                      
+            $(".rmv-obj-right > .sidenav-heading-title > h4").html("KPIs");
+            $(".sidenav-heading").css({'display':'block'});  
+            
+        
     }
 }
 //Diagnostic
@@ -386,7 +394,12 @@ function legend(leg_type) {
     legendTable['EchoLocate_Drop'] = [['rgb(0,255,0)','red','#FFFFFF'],[' <= 0.9 %', '> 0.9 %','Untested'],'None','left']; //blank leg_type    
     legendTable['EchoLocate_AccessFailure'] = [['rgb(0,255,0)','red','#FFFFFF'],[' <=3 %', '> 3 %','Untested'],'None','left']; //blank leg_type    
     legendTable['EchoLocate_AudioIssue'] = [['rgb(0,255,0)','red','#FFFFFF'],[' <= 3 %', '> 3 %','Untested'],'None','left']; //blank leg_type    
-    legendTable['EchoLocate_SRVCC'] = [['rgb(0,255,0)','red','#FFFFFF'],[' <= 2.76', '> 2.76','Untested'],'None','left']; //blank leg_type        
+    legendTable['EchoLocate_SRVCC'] = [['rgb(0,255,0)','red','#FFFFFF'],[' <= 2.76', '> 2.76','Untested'],'None','left']; //blank leg_type
+    legendTable['LAll'] = [['#0099FF','green','yellow','orange','red'],['-45dbm to -91dbm','-91dbm to -97dbm','-97dbm to -114dbm','-114dbm to -120dbm','-120dbm to -130dbm'],'dBm','left'];
+    legendTable['L2100'] = [['#0099FF','green','yellow','orange','red'],['-45dbm to -91dbm','-91dbm to -97dbm','-97dbm to -114dbm','-114dbm to -120dbm','-120dbm to -130dbm'],'dBm','left'];    
+    legendTable['L1900'] = [['#0099FF','green','yellow','orange','red'],['-45dbm to -91dbm','-91dbm to -97dbm','-97dbm to -114dbm','-114dbm to -120dbm','-120dbm to -130dbm'],'dBm','left'];
+    legendTable['L700'] = [['#0099FF','green','yellow','orange','red'],['-45dbm to -91dbm','-91dbm to -97dbm','-97dbm to -114dbm','-114dbm to -120dbm','-120dbm to -130dbm'],'dBm','left'];
+    
 
     legendTable['LTE'] = [["Purple", "Orange", "Blue"],['BAND-700', 'BAND-2100', 'BAND-1900'],'None','right'];   
     legendTable['UMTS'] = [["Orange", "Blue"],['BAND-2100', 'BAND-1900'],'None','right'];      
@@ -639,6 +652,19 @@ function tiledLayer(maptype,url,offset,opacity) {
 function geosrv(maptype){
     cleanlayer(); //Clean Layer
     legend(maptype);
+    
+    var geoWorkspace, geoLayer, geoStyle;
+   
+    if (maptype.charAt(0) == 'L') {
+        geoWorkspace = 'myaccount'; 
+        geoLayer = maptype;             
+        geoStyle = 'rsrp';        
+    }  else {
+        geoWorkspace = 'truecall'; 
+        geoLayer = 'seattle'; 
+        geoStyle = maptype;        
+    }
+    
     //Define custom WMS layer for census output areas in WGS84
     var geoserverLayer =
      new google.maps.ImageMapType(
@@ -662,13 +688,13 @@ function geosrv(maptype){
         var bbox = gBl.lng() + "," + gBl.lat() + "," + gTr.lng() + "," + gTr.lat();
  
         //base WMS URL
-        var url = "http://10.2.4.212:8080/geoserver/truecall/wms?";
+        var url = "http://10.2.4.212:8080/geoserver/" + geoWorkspace + "/wms?";
  
         url += "&service=WMS";           //WMS service
         url += "&version=1.1.0";         //WMS version 
         url += "&request=GetMap";        //WMS operation
-        url += "&layers=truecall:seattle"; //WMS layers to draw
-        url += "&styles=truecall:" + maptype;   //use default style
+        url += "&layers=" + geoWorkspace +":" + geoLayer; //WMS layers to draw
+        url += "&styles=" + geoWorkspace +":" + geoStyle;   //use default style
         url += "&format=image/png";      //image format
         url += "&TRANSPARENT=TRUE";      //only draw areas where we have data
         url += "&srs=EPSG:4326";         //projection WGS84
@@ -692,17 +718,17 @@ function geosrv(maptype){
     // GIS info
        GISListener = map.addListener('click', function(e) {
        
-        var ajaxUrl = "http://10.2.4.212:8080/geoserver/truecall/wms?";
+        var ajaxUrl = "http://10.2.4.212:8080/geoserver/" + geoWorkspace + "/wms?";
         ajaxUrl += "&service=WMS";           //WMS service
         ajaxUrl += "&version=1.1.0";         //WMS version 
         ajaxUrl += "&request=GetFeatureInfo";        //WMS operation
-        ajaxUrl += "&layers=truecall:seattle"; //WMS layers to draw
-        ajaxUrl += "&styles=truecall:" + maptype;   //use default style
+        ajaxUrl += "&layers=" + geoWorkspace +":" + geoLayer;; //WMS layers to draw
+        ajaxUrl += "&styles=" + geoWorkspace +":" + geoStyle;   //use default style
         ajaxUrl += "&srs=EPSG:4326";         //projection WGS84
         ajaxUrl += "&bbox=" + (e.latLng.lng()-1/100000) + "," + (e.latLng.lat()-1/100000) + "," + e.latLng.lng() + "," + e.latLng.lat();         //set bounding box for tile
         ajaxUrl += "&width=256";             //tile size used by google
         ajaxUrl += "&height=256";       
-        ajaxUrl += "&query_layers=truecall:seattle";   
+        ajaxUrl += "&query_layers=" + geoWorkspace +":" + geoLayer;;   
         ajaxUrl += "&X=50&Y=50";
         ajaxUrl += "&info_format=text/javascript"; 
         ajaxUrl += "&format_options=callback:processJSON"; 
