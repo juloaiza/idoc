@@ -13,6 +13,7 @@ var markers = []; // Used to group clusters check MarkerClusterer  also used to 
 var siteDots = [];  // Used to modify polyg on the fly
 var markerCluster; //Required to removed it when is required http://stackoverflow.com/questions/8229827/update-markercluster-after-removing-markers-from-array
 var markerL700;
+var markerNSD;
 var bans = [];
 var sectorPolygons = [];
 var secPolyTemp = [];
@@ -147,7 +148,7 @@ function initialize() {
         })(i)); 
     }
     
-    for (i=0;i<4;i++){
+    for (i=0;i<6;i++){
         document.getElementById("Par_"+i).addEventListener("click", (function(k){
             return function() {
             style_=$("#Par_"+k).val();
@@ -383,9 +384,12 @@ function legend(leg_type) {
     var legendTable = [];
     
     var  innerHtml = '<div id="legend-container"><h4>'+leg_type+'</h4><div id="legend">';
+
+    legendTable['L700_Asset'] = [['#55ff00','#ffff00','#808080','orange','red'],['-45dbm to -91dbm','-91dbm to -97dbm','-97dbm to -114dbm','-114dbm to -120dbm','-120dbm to -130dbm'],'dBm','left'];
     
     legendTable['rsrq'] = [['green','orange','red'],['0db to -10db','-10db to -16db','-16db to -30db'],'dB','left'];
-    legendTable['rsrp'] = [['#0099FF','green','yellow','orange','red'],['-45dbm to -91dbm','-91dbm to -97dbm','-97dbm to -114dbm','-114dbm to -120dbm','-120dbm to -130dbm'],'dBm','left'];
+    //legendTable['rsrp'] = [['#0099FF','green','yellow','orange','red'],['-45dbm to -91dbm','-91dbm to -97dbm','-97dbm to -114dbm','-114dbm to -120dbm','-120dbm to -130dbm'],'dBm','left'];
+    legendTable['rsrp'] = [['#55ff00','#ffff00','#808080','orange','red'],['-45dbm to -91dbm','-91dbm to -97dbm','-97dbm to -114dbm','-114dbm to -120dbm','-120dbm to -130dbm'],'dBm','left'];
     legendTable['traffic'] = [['#0099FF','orange','red'],['Low','Medium','High'],'None','left'];
     legendTable['TMo_Tech_Map'] = [["#E20074","#FF3B9E","#FF73B9","#848484","#CECECE"],['LTE','WCDMA','UMTS','GSM','Roam'],'None','left'];
     legendTable['other'] = [['green','orange','red'],['Okay','Warning','Degraded'],'None','left']; //blank leg_type
@@ -520,8 +524,11 @@ function tiledLayer(maptype,url,offset,opacity) {
         isPng: true,
         opacity: opacity
     });
-    map.overlayMapTypes.insertAt(0, maptiler);
     
+    //map.addListener('idle', function() {
+        map.overlayMapTypes.insertAt(0, maptiler);
+    //});
+
     if (maptype == 'RootMetrics_Map'){
         // RootMetric info
         RootMetricListener = map.addListener('click', function(e) {
@@ -649,22 +656,26 @@ function tiledLayer(maptype,url,offset,opacity) {
 
 
 //Add any Geoserver layer
-function geosrv(maptype){
+function geosrv(maptype,geoWorkspace, geoLayer, geoStyle,opacity){
     cleanlayer(); //Clean Layer
     legend(maptype);
     
-    var geoWorkspace, geoLayer, geoStyle;
+    /*var geoWorkspace, geoLayer, geoStyle;
    
     if (maptype.charAt(0) == 'L') {
         geoWorkspace = 'myaccount'; 
-        geoLayer = maptype;             
+        var geoLayer = maptype;             
         geoStyle = 'rsrp';        
     }  else {
         geoWorkspace = 'truecall'; 
-        geoLayer = 'seattle'; 
-        geoStyle = maptype;        
+        //geoLayer = 'seattle'; 
+        //geoStyle = maptype;  
+
+        geoLayer = 'rsrp'; 
+        geoStyle = 'RSRP_TIF';
+        
     }
-    
+    */
     //Define custom WMS layer for census output areas in WGS84
     var geoserverLayer =
      new google.maps.ImageMapType(
@@ -688,16 +699,16 @@ function geosrv(maptype){
         var bbox = gBl.lng() + "," + gBl.lat() + "," + gTr.lng() + "," + gTr.lat();
  
         //base WMS URL
-        var url = "http://10.2.4.212:8080/geoserver/" + geoWorkspace + "/wms?";
+        var url = "http://10.2.4.212:8080/geoserver/" + geoWorkspace + "/wms?tiled=true";
  
         url += "&service=WMS";           //WMS service
         url += "&version=1.1.0";         //WMS version 
         url += "&request=GetMap";        //WMS operation
         url += "&layers=" + geoWorkspace +":" + geoLayer; //WMS layers to draw
-        url += "&styles=" + geoWorkspace +":" + geoStyle;   //use default style
-        url += "&format=image/png";      //image format
+        url += "&styles="; //+ geoWorkspace +":" + geoStyle;   //use default style
+        url += "&format=image/png8";      //image format
         url += "&TRANSPARENT=TRUE";      //only draw areas where we have data
-        url += "&srs=EPSG:4326";         //projection WGS84
+        url += "&srs=EPSG:4326";         //projection WGS84 google EPSG:3857
         url += "&bbox=" + bbox;          //set bounding box for tile
         url += "&width=256";             //tile size used by google
         url += "&height=256";
@@ -707,7 +718,7 @@ function geosrv(maptype){
       }, //getTileURL
  
       tileSize: new google.maps.Size(256, 256),
-      opacity: 0.85,
+      opacity: opacity, //add opacity 0.85
       isPng: true
      });
  
@@ -884,7 +895,7 @@ function moveCenter() {
     }).done(function(data){
         if (!$.isEmptyObject(data)) {
             var newLatLng = new google.maps.LatLng(data.site[0].Lat,data.site[0].Log);
-            map.setCenter(newLatLng);map.setZoom(18);
+            if (site.search("NSD")>-1) {map.setCenter(newLatLng);map.setZoom(13);} else {map.setCenter(newLatLng);map.setZoom(18);}
         } else {
             geolocation(site);
         }
@@ -895,10 +906,20 @@ function lowBandAndSR(type){
     var typeInfo = [];
     if (document.getElementById("check2").checked == true&&type=='L700') {
         typeInfo = ['add700','L700','12','SiteID','SiteName'];
+
+        
     }
     if (document.getElementById("check0").checked == true&&type=='srs') {
         typeInfo = ['addsrs','srs','11','Issue_Type','Technology','SR_Created_Date','Issue_Description','Mobile_Number'];
     }
+
+    if (document.getElementById("check3").checked == true&&type=='NSD') {
+        typeInfo = ['addNSD','NSD','12','SiteID','City','Total_POPs'];
+        //geosrv('L700_Asset','NSD','NSD_ALL','Default',0.85);
+       // tiledLayer('L700_Asset','http://10.2.4.212:8080/geoserver/gwc/service/gmaps?layers=NSD:NSD_L700_INDOOR&zoom={z}&x={x}&y={y}&format=image/png8',0,0.85);
+    }
+
+
     if (document.getElementById("check2").checked == false&&type=='L700') {
         markerL700.clearMarkers();
         markers=[];
@@ -907,12 +928,26 @@ function lowBandAndSR(type){
         markerCluster.clearMarkers();
         markers=[];
     }
+    
+    if (document.getElementById("check3").checked == false&&type=='NSD') {
+        markerNSD.clearMarkers();
+        markers=[];
+      //  cleanlayer(); //Clean Layer
+    }    
+    
+    
+    
+    
+    
     if (typeInfo.length!=0){
         $.getJSON('php/get_'+typeInfo[1]+'.php', function(data) {
             for (var i=0; i< data[typeInfo[1]].length;i++) {
                 var content ='';
                 if(typeInfo[1]=='L700'){content = '<div class="winfo">' + data[typeInfo[1]][i][typeInfo[3]]  +'<br/>' + data[typeInfo[1]][i][typeInfo[4]]  +'</div>';}
                 if(typeInfo[1]=='srs'){content = '<div class="winfo">' + data[typeInfo[1]][i][typeInfo[4]]  +'<br/>SR Created Date = ' + data[typeInfo[1]][i][typeInfo[5]] +'<br/>Issue Type = ' + data[typeInfo[1]][i][typeInfo[3]]  + '<br/>Issue Description = ' + data[typeInfo[1]][i][typeInfo[6]]  +'<br/>Mobile Number = ' + data[typeInfo[1]][i][typeInfo[7]]  +'</div>';}
+                if(typeInfo[1]=='NSD'){content = '<div class="winfo">' + data[typeInfo[1]][i][typeInfo[3]]  +'<br/>City: ' + data[typeInfo[1]][i][typeInfo[4]] +'<br/>Total POPs: ' + data[typeInfo[1]][i][typeInfo[5]]  +'</div>';}
+
+
                 var latLng = new google.maps.LatLng(data[typeInfo[1]][i]['Lat'], data[typeInfo[1]][i]['Log']);
                 var marker = new google.maps.Marker({
                     position: latLng,
@@ -933,6 +968,7 @@ function lowBandAndSR(type){
             var mcOptions = {gridSize: 50, maxZoom: typeInfo[2], styles: styles[0]};
             if(typeInfo[1]=='srs'){markerCluster = new MarkerClusterer(map, markers,mcOptions);}
             if(typeInfo[1]=='L700'){markerL700 = new MarkerClusterer(map, markers,mcOptions);}
+            if(typeInfo[1]=='NSD'){markerNSD = new MarkerClusterer(map, markers,mcOptions);}            
         });
     }
 }
@@ -946,6 +982,14 @@ function LowBandAndSRGetInfoWindow(marker,content){
         infowindow.open(map, marker);
     }
 }
+
+
+
+
+
+
+
+
 
 
 //populates the sectors onto the map
