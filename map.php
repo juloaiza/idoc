@@ -13,6 +13,8 @@ $result = mysqli_query($link, $query);
 $row = mysqli_fetch_array($result);
 $user = $row['name'];
 $market = $row['market'];
+
+$aws = "10.2.4.212"//"ec2-54-69-137-192.us-west-2.compute.amazonaws.com"
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -107,18 +109,38 @@ $market = $row['market'];
 						    <li><a href="#"><input type="checkbox" name="checkMaps" id="check0" value="" onclick="lowBandAndSR('srs');" > SRs</a></li>
 						    <li><a href="#"><input type="checkbox" name="checkMaps1" id="check1" value="" onclick="showBans();" > BANs</a></li>
 						    <li><a href="#"><input type="checkbox" name="checkMaps2" id="check2" value="" onclick="lowBandAndSR('L700');" > L700</a></li>
+						    <li><a href="#"><input type="checkbox" name="checkMaps3" id="check3" value="" onclick="lowBandAndSR('NSD');" > NSD</a></li>                            
                             </ul>
 					</li>                   
+					<li class="has-sub">
+						<a href="#">
+						    <b class="caret pull-right"></b>
+						    <span>Asset</span>
+					    </a>
+						<ul class="sub-menu">
+						    <li><a href="#"><input type="radio" name="optionsMaps" id="radio21" value="option21" onclick="tiledLayer('L700_Asset','http://<?php echo $aws; ?>:8080/geoserver/gwc/service/gmaps?layers=NSD:pop_m&zoom={z}&x={x}&y={y}&format=image/png8',0,0.85);"> POPs UCV L700</a></li>
+						    <li><a href="#"><input type="radio" name="optionsMaps" id="radio22" value="option22" onclick="tiledLayer('L700_Asset','http://<?php echo $aws; ?>:8080/geoserver/gwc/service/gmaps?layers=NSD:NSD_L700_INDOOR_3R&zoom={z}&x={x}&y={y}&format=image/png8',0,0.85);"> POPs+L700_3 </a></li>
+						    <li><a href="#"><input type="radio" name="optionsMaps" id="radio23" value="option23" onclick="tiledLayer('L700_Asset','http://<?php echo $aws; ?>:8080/geoserver/gwc/service/gmaps?layers=NSD:NSD_L700_INDOOR&zoom={z}&x={x}&y={y}&format=image/png8',0,0.85);"> POPs+L700_A</a></li>
+                        </ul>
+					</li>
+
 					<li class="has-sub">
 						<a href="#">
 						    <b class="caret pull-right"></b>
 						    <span>TrueCall</span>
 					    </a>
 						<ul class="sub-menu">
-						    <li><a href="#"><input type="radio" name="optionsMaps" id="radio1" value="option1" onclick="tiledLayer('rsrp','http://serfopt/webcontent/maps/'+$('.market').html().toLowerCase()+'/rsrp/{z}/{x}/{y}.png',0,0.5);" > RSRP</a></li>
+						    <li><a href="#"><input type="radio" name="optionsMaps" id="radio1" value="option1" onclick="tiledLayer('L700_Asset','http://10.2.4.212:8080/geoserver/gwc/service/gmaps?layers=truecall:rsrp&zoom={z}&x={x}&y={y}&format=image/png8',0,0.5);" > RSRP</a></li>
+
+                           <!-- <li><a href="#"><input type="radio" name="optionsMaps" id="radio1" value="option1" onclick="geosrv('rsrp','truecall','rsrp','RSRP_TIF',0.5);" > RSRP</a></li> -->
+						    <li><a href="#"><input type="radio" name="optionsMaps" id="radio2" value="option2" onclick="geosrv('rsrq','truecall','rsrq','RSRQ_TIF',0.5);"> RSRQ</a></li>
+						    <li><a href="#"><input type="radio" name="optionsMaps" id="radio3" value="option3" onclick="geosrv('pci','truecall','pci','PCI_TIF',0.5);"> PCI</a></li>
+                            <!-- <li><a href="#"><input type="radio" name="optionsMaps" id="radio1" value="option1" onclick="tiledLayer('rsrp','http://serfopt/webcontent/maps/'+$('.market').html().toLowerCase()+'/rsrp/{z}/{x}/{y}.png',0,0.5);" > RSRP</a></li>
 						    <li><a href="#"><input type="radio" name="optionsMaps" id="radio2" value="option2" onclick="tiledLayer('rsrq','http://serfopt/webcontent/maps/'+$('.market').html().toLowerCase()+'/rsrq/{z}/{x}/{y}.png',0,0.5);"> RSRQ</a></li>
-						    <li><a href="#"><input type="radio" name="optionsMaps" id="radio3" value="option3" onclick="tiledLayer('pci','http://serfopt/webcontent/maps/'+$('.market').html().toLowerCase()+'/pci/{z}/{x}/{y}.png',0,0.5);"> PCI</a></li>
+						    <li><a href="#"><input type="radio" name="optionsMaps" id="radio3" value="option3" onclick="tiledLayer('pci','http://serfopt/webcontent/maps/'+$('.market').html().toLowerCase()+'/pci/{z}/{x}/{y}.png',0,0.5);"> PCI</a></li>-->
 						    <li><a href="#"><input type="radio" name="optionsMaps" id="radio4" value="option4" onclick="tiledLayer('traffic','http://serfopt/webcontent/maps/'+$('.market').html().toLowerCase()+'/traffic/{z}/{x}/{y}.png',0,0.5);"> Traffic</a></li>
+
+
                         </ul>
 					</li>
 					<li class="has-sub">
@@ -127,8 +149,8 @@ $market = $row['market'];
 							<span>TrueCall LSR</span>
 						</a>
 						<ul class="sub-menu">
-						    <li><a href="#"><input type="radio" name="optionsMaps" id="radio7" value="option7" onclick="geosrv('rsrp');"> RSRP</a></li>
-						    <li><a href="#"><input type="radio" name="optionsMaps" id="radio8" value="option8" onclick="geosrv('rsrq');"> RSRQ</a></li>
+						    <li><a href="#"><input type="radio" name="optionsMaps" id="radio7" value="option7" onclick="geosrv('rsrp','truecall','seattle','rsrp',0.85);"> RSRP</a></li>
+						    <li><a href="#"><input type="radio" name="optionsMaps" id="radio8" value="option8" onclick="geosrv('rsrq','truecall','seattle','rsrq',0.85);"> RSRQ</a></li>
 						</ul>
 					</li>
 					<li class="has-sub">
@@ -137,10 +159,10 @@ $market = $row['market'];
 							<span>LTE Coverage (MyAccount)</span>
 						</a>
 						<ul class="sub-menu">
-						    <li><a href="#"><input type="radio" name="optionsMaps" id="radio17" value="option7" onclick="geosrv('LAll');"> All Band</a></li>
-						    <li><a href="#"><input type="radio" name="optionsMaps" id="radio18" value="option7" onclick="geosrv('L2100');"> 2100 Band</a></li>
-						    <li><a href="#"><input type="radio" name="optionsMaps" id="radio19" value="option7" onclick="geosrv('L1900');"> 1900 Band</a></li>
-						    <li><a href="#"><input type="radio" name="optionsMaps" id="radio20" value="option7" onclick="geosrv('L700');"> 700 Band</a></li>                            
+						    <li><a href="#"><input type="radio" name="optionsMaps" id="radio17" value="option7" onclick="geosrv('LAll','myaccount','LAll','rsrp',0.85);"> All Band</a></li>
+						    <li><a href="#"><input type="radio" name="optionsMaps" id="radio18" value="option7" onclick="geosrv('L2100','myaccount','L2100','rsrp',0.85);"> 2100 Band</a></li>
+						    <li><a href="#"><input type="radio" name="optionsMaps" id="radio19" value="option7" onclick="geosrv('L1900','myaccount','L1900','rsrp',0.85);"> 1900 Band</a></li>
+						    <li><a href="#"><input type="radio" name="optionsMaps" id="radio20" value="option7" onclick="geosrv('L700','myaccount','L700','rsrp',0.85);"> 700 Band</a></li>                            
 						</ul>
 					</li>                    
 					<li class="has-sub">
@@ -299,6 +321,8 @@ $market = $row['market'];
  						    <li><a href="#"><input type="radio" name="options3G" id="Par_0" value="PtxPrimaryCPICH"> PtxPrimaryCPICH</a></li>
 						    <li><a href="#"><input type="radio" name="options3G" id="Par_1" value="PriScrCode"> PriScrCode</a></li>
 						    <li><a href="#"><input type="radio" name="options3G" id="Par_2" value="RtFmcsIdentifier"> RtFmcsIdentifier</a></li>
+						    <li><a href="#"><input type="radio" name="options3G" id="Par_4" value="RtFmcgIdentifier"> RtFmcgIdentifier</a></li>  
+						    <li><a href="#"><input type="radio" name="options3G" id="Par_5" value="UARFCN"> UARFCN</a></li>                              
 						    <li><a href="#"><input type="radio" name="options3G" id="Par_3" value="LAC"> LAC</a></li>
                          </ul>
 					</li>
@@ -367,9 +391,11 @@ $market = $row['market'];
         </div>
     </div>        
     
-    
-
-
+<!--    
+  <div id="logo">
+      <img src="images/JAL.png" style="height:60px; position: fixed; bottom: 10px; right:30px;">
+  </div>
+ -->
     
 
     
