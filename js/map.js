@@ -13,6 +13,7 @@ var markers = []; // Used to group clusters check MarkerClusterer  also used to 
 var siteDots = [];  // Used to modify polyg on the fly
 var markerCluster; //Required to removed it when is required http://stackoverflow.com/questions/8229827/update-markercluster-after-removing-markers-from-array
 var markerL700;
+var markerNSD;
 var bans = [];
 var sectorPolygons = [];
 var secPolyTemp = [];
@@ -66,6 +67,10 @@ var secObj = {
 var seDrawStatus = 0;
 
  var secMap;
+ 
+ var nbr_src;
+ 
+ var newShape; 
  
 //Humorous Loading Text
 //loadingText();
@@ -147,16 +152,66 @@ function initialize() {
         })(i)); 
     }
     
-    for (i=0;i<4;i++){
+    for (i=0;i<7;i++){
         document.getElementById("Par_"+i).addEventListener("click", (function(k){
             return function() {
             style_=$("#Par_"+k).val();
             query_ = 2;
+            
+            if (k==6) { 
+                document.getElementById("channel").addEventListener("input", (function(){
+                    style_=$("#channel").val();
+                    query_ = 4;
+                    changeSectorStyle(secSQL.toString(),sectorPolygons,style_,CurrentDate,query_)
+                    
+               }));
+            }
             changeSectorStyle(secSQL.toString(),sectorPolygons,style_,CurrentDate,query_)
            
             };
         })(i)); 
     }   
+
+    
+ //http://stackoverflow.com/questions/29344977/selecting-polygon-on-google-maps-v3   
+    var drawingManager = new google.maps.drawing.DrawingManager({
+    drawingMode: google.maps.drawing.OverlayType.rectangle,
+    drawingControl: true,
+    drawingControlOptions: {
+      position: google.maps.ControlPosition.TOP_CENTER,
+      drawingModes: [ 'rectangle']
+    },
+    rectangleOptions: {
+      fillColor: '#000000',
+      fillOpacity: 0.2,
+      strokeWeight: 0.5,
+      clickable: false,
+      editable: false,
+      zIndex: 1
+    }
+    });
+    drawingManager.setMap(map);    
+    
+
+    google.maps.event.addListener(drawingManager, 'overlaycomplete', function(e) {
+        if (e.type != google.maps.drawing.OverlayType.MARKER) {
+            // Switch back to non-drawing mode after drawing a shape.
+            drawingManager.setDrawingMode(null);
+            if (newShape) {
+                clearSelection();
+            }
+            // Add an event listener that selects the newly-drawn shape when the user
+            // mouses down on it.
+            newShape = e.overlay;
+            newShape.type = e.type;
+            getFromShapeSector();
+      }
+    });    
+
+    //google.maps.event.addListener(drawingManager, 'drawingmode_changed', clearSelection());
+
+    
+    
 }
 
 //onload event listener
@@ -230,50 +285,73 @@ function infoWindowSparklineShow(type,passIn,tech){
             jSONURL='php/kpi.php?lncel='+passIn[1]['features'][passIn[0]]['properties']['Site']
         }
         if(type=='sector'){
-            map.controls[google.maps.ControlPosition.TOP_CENTER].clear();
-            $('#info').html( '<img src="images/spin.gif" height="40" width="40" style="position:absolute;top:0;left:0;right:0;bottom:0;margin:auto;">' );
-            $('#alarms').html( '<img src="images/spin.gif" height="40" width="40" style="position:absolute;top:0;left:0;right:0;bottom:0;margin:auto;">' );
-            $('#tt').html( '<img src="images/spin.gif" height="40" width="40" style="position:absolute;top:0;left:0;right:0;bottom:0;margin:auto;">' ); 
-            $('#wo').html( '<img src="images/spin.gif" height="40" width="40" style="position:absolute;top:0;left:0;right:0;bottom:0;margin:auto;">' );            
+            //map.controls[google.maps.ControlPosition.TOP_CENTER].clear();
+            content ='     <div class="winfo"> \
+                              <!-- Nav tabs --> \
+                              <ul class="nav nav-tabs" role="tablist"> \
+                                <li role="presentation" class="active"><a href="#info" aria-controls="info" role="tab" data-toggle="tab">Info</a></li> \
+                                <li role="presentation"><a href="#parameters" aria-controls="parameters" role="tab" data-toggle="tab">Parameters</a></li> \
+                                <li role="presentation"><a href="#alarms" aria-controls="alarms" role="tab" data-toggle="tab">Alarms</a></li> \
+                                <li role="presentation"><a href="#tt" aria-controls="tt" role="tab" data-toggle="tab">TT</a></li> \
+                                <li role="presentation"><a href="#wo" aria-controls="wo" role="tab" data-toggle="tab">WO</a></li> \
+                              </ul>\
+                              <!-- Tab panes --> \
+                              <div class="tab-content"> \
+                                <div role="tabpanel" class="tab-pane active" id="info"><img src="images/spin.gif" height="40" width="40" style="position:absolute;top:0;left:0;right:0;bottom:0;margin:auto;"></div> \
+                                <div role="tabpanel" class="tab-pane" id="parameters"><img src="images/spin.gif" height="40" width="40" style="position:absolute;top:0;left:0;right:0;bottom:0;margin:auto;"></div> \
+                                <div role="tabpanel" class="tab-pane" id="alarms"><img src="images/spin.gif" height="40" width="40" style="position:absolute;top:0;left:0;right:0;bottom:0;margin:auto;"></div> \
+                                <div role="tabpanel" class="tab-pane" id="tt"><img src="images/spin.gif" height="40" width="40" style="position:absolute;top:0;left:0;right:0;bottom:0;margin:auto;"></div> \
+                                <div role="tabpanel" class="tab-pane" id="wo"><img src="images/spin.gif" height="40" width="40" style="position:absolute;top:0;left:0;right:0;bottom:0;margin:auto;"></div> \
+                              </div>\
+                            </div>';    
+            infowindow.setContent(content);            
         
-           $.get("php/phyconf.php?lncel="+passIn[1]['sector'][passIn[0]]['lncel_name'],(function(phyconf){
-                return function(phyconf) {
-                    content ='     <div class="winfo"> \
-                                      <!-- Nav tabs --> \
-                                      <ul class="nav nav-tabs" role="tablist"> \
-                                        <li role="presentation" class="active"><a href="#info" aria-controls="info" role="tab" data-toggle="tab">Info</a></li> \
-                                        <li role="presentation"><a href="#alarms" aria-controls="alarms" role="tab" data-toggle="tab">Alarms</a></li> \
-                                        <li role="presentation"><a href="#tt" aria-controls="tt" role="tab" data-toggle="tab">TT</a></li> \
-                                        <li role="presentation"><a href="#wo" aria-controls="wo" role="tab" data-toggle="tab">WO</a></li> \
-                                      </ul>\
-                                      <!-- Tab panes --> \
-                                      <div class="tab-content"> \
-                                        <div role="tabpanel" class="tab-pane active" id="info">...</div> \
-                                        <div role="tabpanel" class="tab-pane" id="alarms">...</div> \
-                                        <div role="tabpanel" class="tab-pane" id="tt">...</div> \
-                                        <div role="tabpanel" class="tab-pane" id="wo">...</div> \
-                                      </div>\
-                                    </div>';    
-                    infowindow.setContent(content);
-                    $('#info').html('<b style="padding-left:20px;">'+passIn[1]['sector'][passIn[0]]['site_name']  +'-' + passIn[1]['sector'][passIn[0]]['lncel_name'] +'</b><br><div class="col-xs-8"><table class="table table-condensed table-striped"> <tbody>'+ phyconf + '</tbody> </table></div>');
-                    
-                    
-                    $.get("php/alarm.php?SiteID="+passIn[1]['sector'][passIn[0]]['site_name'],function(data) {     /*get function take the content of test.html
-                     put in variable 'data' inside the callback function*/
-                        $('#alarms').html(data);
-                    });                
-                };
-            })()); 
-            infowindow.setPosition(event.latLng);
-            infowindow.open(map);
-            $('#ltedropLine'+passIn[0]).sparkline();
-            $('#iframett').html('<br><br><span class="blink_txt">Loading...</span>');
-            $.get("php/tt.php?SiteID="+passIn[1]['sector'][passIn[0]]['site_name'],function(data) {     /*get function take the content of test.html
-             put in variable 'data' inside the callback function*/
-                $('#iframett').html(data);
-            });
+           
+            if (document.getElementById("Par_7").checked) {
+                
+                //console.log(passIn[1]['sector'][passIn[0]]['lncel_name']);
+                nbr_src=passIn[1]['sector'][passIn[0]]['lncel_name'];
+                query_ = 5;
+                changeSectorStyle(nbr_src,sectorPolygons,style_,CurrentDate,query_);                
+                
+                
+            } else {
+                $.get("php/phyconf.php?lncel="+passIn[1]['sector'][passIn[0]]['lncel_name'],(function(phyconf){
+                    return function(phyconf) {
 
-            jSONURL = "php/kpi_.php?TECH="+tech+"&lncel="+passIn[1]['sector'][passIn[0]]['lncel_name']; 
+                        $('#info').html('<table class="table table-condensed table-striped"> <tbody>' + phyconf + '</tbody> </table>');
+                        
+                        $.get("php/parameters.php?lncel="+passIn[1]['sector'][passIn[0]]['lncel_name'],function(data) {     /*get function take the content of test.html
+                         put in variable 'data' inside the callback function*/
+                            $('#parameters').html('<table class="table table-condensed table-striped"> <tbody> '+ data + '</tbody> </table>');
+                        });  
+                        
+                        $.get("php/alarm.php?SiteID="+passIn[1]['sector'][passIn[0]]['site_name'],function(data) {     /*get function take the content of test.html
+                         put in variable 'data' inside the callback function*/
+                            $('#alarms').html(data);
+                        });     
+
+                        $.get("php/tt.php?SiteID="+passIn[1]['sector'][passIn[0]]['site_name'],function(data) {     /*get function take the content of test.html
+                         put in variable 'data' inside the callback function*/
+                            $('#tt').html(data);
+                        });
+
+                        $.get("php/wo.php?SiteID="+passIn[1]['sector'][passIn[0]]['site_name'],function(data) {     /*get function take the content of test.html
+                         put in variable 'data' inside the callback function*/
+                            $('#wo').html(data);                      
+                        });                    
+
+                        
+                    };
+                })()); 
+                infowindow.setPosition(event.latLng);
+                infowindow.open(map);
+                $('#ltedropLine'+passIn[0]).sparkline();
+                jSONURL = "php/kpi_.php?TECH="+tech+"&lncel="+passIn[1]['sector'][passIn[0]]['lncel_name'];                 
+                
+            }
+           
+
         }
         if (type == 'cluster'){
             content = '<div style="line-height:1.35;overflow:hidden;white-space:nowrap;"> Cluster = '+
@@ -290,6 +368,9 @@ function infoWindowSparklineShow(type,passIn,tech){
         }
         
         $('#ui-kpis > .col-sm-12').html('<h5> <div class="infoCell"></div></h5>');
+        
+        $('#ui-kpis > .col-sm-12').append('<img src="images/spin_big.gif" height="40" width="40" style="position:absolute;top:500px;left:0;right:0;bottom:0;margin:auto; display: block;" >');
+        
         $.getJSON(jSONURL,function(datak) {
             var g=0;
             kpiName[tech].forEach(function(kpiObj){
@@ -339,6 +420,18 @@ function infoWindowSparklineShow(type,passIn,tech){
             $('.infoCell').html('<p>&nbsp;<span style="float: left">'+cellLastsp+'</span><span style="float: right">Upd:'+dateLastsp+'</span></p>');
             if(type == 'sector'){$('.infoSite').html('<p>'+cellLastsp.substr(0,cellLastsp.length - 2)+'</p>');}
         });
+            
+            $(".icon-bar-right > a").removeClass("icon-active");
+            $('#icon-kpi').addClass("icon-active");
+            $(".rmv-obj-right").css({'display':'none'});          
+            $("#ui-kpis").css({'display':'block'}); 
+            $(".icon-bar-right").animate({right: '400px'});
+            $(".offcanvas-right").animate({width: '400px'});
+            if ($(".legend-right").css( "right" ) == '0px' || $(".legend-right").css( "right" ) == '200px' ) {$(".legend-right").animate({'right': '400px', 'bottom':'60px','top': 'auto'});}                      
+            $(".rmv-obj-right > .sidenav-heading-title > h4").html("KPIs");
+            $(".sidenav-heading").css({'display':'block'});  
+            
+        
     }
 }
 //Diagnostic
@@ -359,9 +452,15 @@ function legend(leg_type) {
     var legendTable = [];
     
     var  innerHtml = '<div id="legend-container"><h4>'+leg_type+'</h4><div id="legend">';
+
+    legendTable['L700_Asset'] = [['#55ff00','#ffff00','#808080','orange','red'],['-45dbm to -91dbm','-91dbm to -97dbm','-97dbm to -114dbm','-114dbm to -120dbm','-120dbm to -130dbm'],'dBm','left'];
+    legendTable['Towers'] = [['#ff3300','#3399ff','#ff9900'],['Verizon','AT&T','Owners'],'None','left'];
+    legendTable['Status'] = [['#4CBA00','#BA6E00','#BA1100','#A9BA00','#00BA6E'],['Completed','Demo/Excavation','Land Use Issued','Predevelopment','Under Construction'],'None','left'];
+
     
     legendTable['rsrq'] = [['green','orange','red'],['0db to -10db','-10db to -16db','-16db to -30db'],'dB','left'];
-    legendTable['rsrp'] = [['#0099FF','green','yellow','orange','red'],['-45dbm to -91dbm','-91dbm to -97dbm','-97dbm to -114dbm','-114dbm to -120dbm','-120dbm to -130dbm'],'dBm','left'];
+    //legendTable['rsrp'] = [['#0099FF','green','yellow','orange','red'],['-45dbm to -91dbm','-91dbm to -97dbm','-97dbm to -114dbm','-114dbm to -120dbm','-120dbm to -130dbm'],'dBm','left'];
+    legendTable['rsrp'] = [['#55ff00','#ffff00','#808080','orange','red'],['-45dbm to -91dbm','-91dbm to -97dbm','-97dbm to -114dbm','-114dbm to -120dbm','-120dbm to -130dbm'],'dBm','left'];
     legendTable['traffic'] = [['#0099FF','orange','red'],['Low','Medium','High'],'None','left'];
     legendTable['TMo_Tech_Map'] = [["#E20074","#FF3B9E","#FF73B9","#848484","#CECECE"],['LTE','WCDMA','UMTS','GSM','Roam'],'None','left'];
     legendTable['other'] = [['green','orange','red'],['Okay','Warning','Degraded'],'None','left']; //blank leg_type
@@ -370,7 +469,12 @@ function legend(leg_type) {
     legendTable['EchoLocate_Drop'] = [['rgb(0,255,0)','red','#FFFFFF'],[' <= 0.9 %', '> 0.9 %','Untested'],'None','left']; //blank leg_type    
     legendTable['EchoLocate_AccessFailure'] = [['rgb(0,255,0)','red','#FFFFFF'],[' <=3 %', '> 3 %','Untested'],'None','left']; //blank leg_type    
     legendTable['EchoLocate_AudioIssue'] = [['rgb(0,255,0)','red','#FFFFFF'],[' <= 3 %', '> 3 %','Untested'],'None','left']; //blank leg_type    
-    legendTable['EchoLocate_SRVCC'] = [['rgb(0,255,0)','red','#FFFFFF'],[' <= 2.76', '> 2.76','Untested'],'None','left']; //blank leg_type        
+    legendTable['EchoLocate_SRVCC'] = [['rgb(0,255,0)','red','#FFFFFF'],[' <= 2.76', '> 2.76','Untested'],'None','left']; //blank leg_type
+    legendTable['LAll'] = [['#0099FF','green','yellow','orange','red'],['-45dbm to -91dbm','-91dbm to -97dbm','-97dbm to -114dbm','-114dbm to -120dbm','-120dbm to -130dbm'],'dBm','left'];
+    legendTable['L2100'] = [['#0099FF','green','yellow','orange','red'],['-45dbm to -91dbm','-91dbm to -97dbm','-97dbm to -114dbm','-114dbm to -120dbm','-120dbm to -130dbm'],'dBm','left'];    
+    legendTable['L1900'] = [['#0099FF','green','yellow','orange','red'],['-45dbm to -91dbm','-91dbm to -97dbm','-97dbm to -114dbm','-114dbm to -120dbm','-120dbm to -130dbm'],'dBm','left'];
+    legendTable['L700'] = [['#0099FF','green','yellow','orange','red'],['-45dbm to -91dbm','-91dbm to -97dbm','-97dbm to -114dbm','-114dbm to -120dbm','-120dbm to -130dbm'],'dBm','left'];
+    
 
     legendTable['LTE'] = [["Purple", "Orange", "Blue"],['BAND-700', 'BAND-2100', 'BAND-1900'],'None','right'];   
     legendTable['UMTS'] = [["Orange", "Blue"],['BAND-2100', 'BAND-1900'],'None','right'];      
@@ -380,7 +484,11 @@ function legend(leg_type) {
     legendTable['FeedBack'] = [["White"],['0'],'None','right'];   
     legendTable['Poor_EcNo'] = [["red"],['Degraded'],'None','right'];      
     legendTable['High_TX_Pwr_Usage'] = [["red"],['Degraded'],'None','right'];      
-    legendTable['Poor_RTWP'] = [["red"],['Degraded'],'None','right'];      
+    legendTable['Poor_RTWP'] = [["red"],['Degraded'],'None','right'];  
+    legendTable['SC'] = [["yellow", "red", "orange"],['Left: '+(parseInt($("#channel").val())-1), 'Center: '+($("#channel").val()), 'Right: '+(parseInt($("#channel").val())+1)],'None','right']; 
+    legendTable['NBRs'] = [["red", "blue"],['Target', 'Source'],'None','right']; 
+
+    
  // console.log(leg_type);  
     if (!leg_type){
         for(var k = 0;k<legendTable['other'][0].length;k++){
@@ -491,8 +599,11 @@ function tiledLayer(maptype,url,offset,opacity) {
         isPng: true,
         opacity: opacity
     });
-    map.overlayMapTypes.insertAt(0, maptiler);
     
+    //map.addListener('idle', function() {
+        map.overlayMapTypes.insertAt(0, maptiler);
+    //});
+
     if (maptype == 'RootMetrics_Map'){
         // RootMetric info
         RootMetricListener = map.addListener('click', function(e) {
@@ -620,9 +731,26 @@ function tiledLayer(maptype,url,offset,opacity) {
 
 
 //Add any Geoserver layer
-function geosrv(maptype){
+function geosrv(maptype,geoWorkspace, geoLayer, geoStyle,opacity){
     cleanlayer(); //Clean Layer
     legend(maptype);
+    
+    /*var geoWorkspace, geoLayer, geoStyle;
+   
+    if (maptype.charAt(0) == 'L') {
+        geoWorkspace = 'myaccount'; 
+        var geoLayer = maptype;             
+        geoStyle = 'rsrp';        
+    }  else {
+        geoWorkspace = 'truecall'; 
+        //geoLayer = 'seattle'; 
+        //geoStyle = maptype;  
+
+        geoLayer = 'rsrp'; 
+        geoStyle = 'RSRP_TIF';
+        
+    }
+    */
     //Define custom WMS layer for census output areas in WGS84
     var geoserverLayer =
      new google.maps.ImageMapType(
@@ -646,16 +774,16 @@ function geosrv(maptype){
         var bbox = gBl.lng() + "," + gBl.lat() + "," + gTr.lng() + "," + gTr.lat();
  
         //base WMS URL
-        var url = "http://10.2.4.212:8080/geoserver/truecall/wms?";
+        var url = "http://10.2.4.212:8080/geoserver/" + geoWorkspace + "/wms?tiled=true";
  
         url += "&service=WMS";           //WMS service
         url += "&version=1.1.0";         //WMS version 
         url += "&request=GetMap";        //WMS operation
-        url += "&layers=truecall:seattle"; //WMS layers to draw
-        url += "&styles=truecall:" + maptype;   //use default style
-        url += "&format=image/png";      //image format
+        url += "&layers=" + geoWorkspace +":" + geoLayer; //WMS layers to draw
+        url += "&styles="; //+ geoWorkspace +":" + geoStyle;   //use default style
+        url += "&format=image/png8";      //image format
         url += "&TRANSPARENT=TRUE";      //only draw areas where we have data
-        url += "&srs=EPSG:4326";         //projection WGS84
+        url += "&srs=EPSG:4326";         //projection WGS84 google EPSG:3857
         url += "&bbox=" + bbox;          //set bounding box for tile
         url += "&width=256";             //tile size used by google
         url += "&height=256";
@@ -665,7 +793,7 @@ function geosrv(maptype){
       }, //getTileURL
  
       tileSize: new google.maps.Size(256, 256),
-      opacity: 0.85,
+      opacity: opacity, //add opacity 0.85
       isPng: true
      });
  
@@ -676,17 +804,17 @@ function geosrv(maptype){
     // GIS info
        GISListener = map.addListener('click', function(e) {
        
-        var ajaxUrl = "http://10.2.4.212:8080/geoserver/truecall/wms?";
+        var ajaxUrl = "http://10.2.4.212:8080/geoserver/" + geoWorkspace + "/wms?";
         ajaxUrl += "&service=WMS";           //WMS service
         ajaxUrl += "&version=1.1.0";         //WMS version 
         ajaxUrl += "&request=GetFeatureInfo";        //WMS operation
-        ajaxUrl += "&layers=truecall:seattle"; //WMS layers to draw
-        ajaxUrl += "&styles=truecall:" + maptype;   //use default style
+        ajaxUrl += "&layers=" + geoWorkspace +":" + geoLayer;; //WMS layers to draw
+        ajaxUrl += "&styles=" + geoWorkspace +":" + geoStyle;   //use default style
         ajaxUrl += "&srs=EPSG:4326";         //projection WGS84
         ajaxUrl += "&bbox=" + (e.latLng.lng()-1/100000) + "," + (e.latLng.lat()-1/100000) + "," + e.latLng.lng() + "," + e.latLng.lat();         //set bounding box for tile
         ajaxUrl += "&width=256";             //tile size used by google
         ajaxUrl += "&height=256";       
-        ajaxUrl += "&query_layers=truecall:seattle";   
+        ajaxUrl += "&query_layers=" + geoWorkspace +":" + geoLayer;;   
         ajaxUrl += "&X=50&Y=50";
         ajaxUrl += "&info_format=text/javascript"; 
         ajaxUrl += "&format_options=callback:processJSON"; 
@@ -842,7 +970,7 @@ function moveCenter() {
     }).done(function(data){
         if (!$.isEmptyObject(data)) {
             var newLatLng = new google.maps.LatLng(data.site[0].Lat,data.site[0].Log);
-            map.setCenter(newLatLng);map.setZoom(18);
+            if (site.search("NSD")>-1) {map.setCenter(newLatLng);map.setZoom(13);} else {map.setCenter(newLatLng);map.setZoom(18);}
         } else {
             geolocation(site);
         }
@@ -853,10 +981,20 @@ function lowBandAndSR(type){
     var typeInfo = [];
     if (document.getElementById("check2").checked == true&&type=='L700') {
         typeInfo = ['add700','L700','12','SiteID','SiteName'];
+
+        
     }
     if (document.getElementById("check0").checked == true&&type=='srs') {
         typeInfo = ['addsrs','srs','11','Issue_Type','Technology','SR_Created_Date','Issue_Description','Mobile_Number'];
     }
+
+    if (document.getElementById("check3").checked == true&&type=='NSD') {
+        typeInfo = ['addNSD','NSD','12','SiteID','City','Total_POPs'];
+        //geosrv('L700_Asset','NSD','NSD_ALL','Default',0.85);
+       // tiledLayer('L700_Asset','http://10.2.4.212:8080/geoserver/gwc/service/gmaps?layers=NSD:NSD_L700_INDOOR&zoom={z}&x={x}&y={y}&format=image/png8',0,0.85);
+    }
+
+
     if (document.getElementById("check2").checked == false&&type=='L700') {
         markerL700.clearMarkers();
         markers=[];
@@ -865,12 +1003,26 @@ function lowBandAndSR(type){
         markerCluster.clearMarkers();
         markers=[];
     }
+    
+    if (document.getElementById("check3").checked == false&&type=='NSD') {
+        markerNSD.clearMarkers();
+        markers=[];
+      //  cleanlayer(); //Clean Layer
+    }    
+    
+    
+    
+    
+    
     if (typeInfo.length!=0){
         $.getJSON('php/get_'+typeInfo[1]+'.php', function(data) {
             for (var i=0; i< data[typeInfo[1]].length;i++) {
                 var content ='';
                 if(typeInfo[1]=='L700'){content = '<div class="winfo">' + data[typeInfo[1]][i][typeInfo[3]]  +'<br/>' + data[typeInfo[1]][i][typeInfo[4]]  +'</div>';}
                 if(typeInfo[1]=='srs'){content = '<div class="winfo">' + data[typeInfo[1]][i][typeInfo[4]]  +'<br/>SR Created Date = ' + data[typeInfo[1]][i][typeInfo[5]] +'<br/>Issue Type = ' + data[typeInfo[1]][i][typeInfo[3]]  + '<br/>Issue Description = ' + data[typeInfo[1]][i][typeInfo[6]]  +'<br/>Mobile Number = ' + data[typeInfo[1]][i][typeInfo[7]]  +'</div>';}
+                if(typeInfo[1]=='NSD'){content = '<div class="winfo">' + data[typeInfo[1]][i][typeInfo[3]]  +'<br/>City: ' + data[typeInfo[1]][i][typeInfo[4]] +'<br/>Total POPs: ' + data[typeInfo[1]][i][typeInfo[5]]  +'</div>';}
+
+
                 var latLng = new google.maps.LatLng(data[typeInfo[1]][i]['Lat'], data[typeInfo[1]][i]['Log']);
                 var marker = new google.maps.Marker({
                     position: latLng,
@@ -891,6 +1043,7 @@ function lowBandAndSR(type){
             var mcOptions = {gridSize: 50, maxZoom: typeInfo[2], styles: styles[0]};
             if(typeInfo[1]=='srs'){markerCluster = new MarkerClusterer(map, markers,mcOptions);}
             if(typeInfo[1]=='L700'){markerL700 = new MarkerClusterer(map, markers,mcOptions);}
+            if(typeInfo[1]=='NSD'){markerNSD = new MarkerClusterer(map, markers,mcOptions);}            
         });
     }
 }
@@ -904,6 +1057,14 @@ function LowBandAndSRGetInfoWindow(marker,content){
         infowindow.open(map, marker);
     }
 }
+
+
+
+
+
+
+
+
 
 
 //populates the sectors onto the map
@@ -1040,6 +1201,7 @@ function secDraw() {
                             paths: arcPts
                             ,strokeWeight: 0.1
                             ,fillOpacity:0.1
+                            ,zIndex: layerProperty[0].stack
                             ,map:map
                         });
                         secPolyTemp.push(secPoly);
@@ -1054,7 +1216,13 @@ function secDraw() {
                 if(Allsector_.length > 0 && seDrawStatus==1) {
                      secMap = setTimeout(arguments.callee,25);
                 }else{
-                    changeSectorStyle(secSQL.toString(),sectorPolygons,style_,CurrentDate,query_, tech);
+                    
+                    if (document.getElementById("Par_7").checked) {      
+                        query_ = 5;
+                        changeSectorStyle(nbr_src,sectorPolygons,style_,CurrentDate,query_, tech); 
+                    } else{
+                        changeSectorStyle(secSQL.toString(),sectorPolygons,style_,CurrentDate,query_, tech);
+                    }
                     seDrawStatus = 0;                    
                 }
             },25)
@@ -1230,6 +1398,36 @@ function initialSector(){
 }
 
 
+function getFromShapeSector(){
+    var bounds = newShape.getBounds();
+    var NE = bounds.getNorthEast();
+    var SW = bounds.getSouthWest();
+    var tech = $('input:radio[name=opttech]:checked').val();
+    var cellSelection = [];
+    $.getJSON("php/sector.php?TECH="+tech+"&N="+NE.lat()+"&E="+NE.lng()+"&S="+SW.lat()+"&W="+SW.lng(), function(data) {
+        for (var i=0; i< data['sector'].length; i++) {
+             cellSelection.push(data['sector'][i]['lncel_name']);
+        }
+        var htmlStr = cellSelection.join('&#13;&#10');
+        document.getElementById('info_sector').innerHTML = htmlStr;
+        
+    });
+    
+    $(".icon-bar-right > a").removeClass("icon-active");
+    $('#icon-sector').addClass("icon-active");
+    $(".rmv-obj-right").css({'display':'none'});          
+    $("#ui-sector").css({'display':'block'}); 
+    $(".icon-bar-right").animate({right: '200px'});
+    $(".offcanvas-right").animate({width: '200px'});
+    $(".rmv-obj-right > .sidenav-heading-title > h4").html("Sector");
+    $(".sidenav-heading").css({'display':'block'});  
+    $("#list-selection").css({'display':'block'});  
 
+}
 
+function clearSelection() {
+     newShape.setMap(null);
+     document.getElementById('info_sector').innerHTML = "";
+
+}
 
