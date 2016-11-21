@@ -68,6 +68,10 @@ var seDrawStatus = 0;
 
  var secMap;
  
+ var nbr_src;
+ 
+ var newShape; 
+ 
 //Humorous Loading Text
 //loadingText();
 var loadTime = 0;
@@ -148,16 +152,66 @@ function initialize() {
         })(i)); 
     }
     
-    for (i=0;i<6;i++){
+    for (i=0;i<7;i++){
         document.getElementById("Par_"+i).addEventListener("click", (function(k){
             return function() {
             style_=$("#Par_"+k).val();
             query_ = 2;
+            
+            if (k==6) { 
+                document.getElementById("channel").addEventListener("input", (function(){
+                    style_=$("#channel").val();
+                    query_ = 4;
+                    changeSectorStyle(secSQL.toString(),sectorPolygons,style_,CurrentDate,query_)
+                    
+               }));
+            }
             changeSectorStyle(secSQL.toString(),sectorPolygons,style_,CurrentDate,query_)
            
             };
         })(i)); 
     }   
+
+    
+ //http://stackoverflow.com/questions/29344977/selecting-polygon-on-google-maps-v3   
+    var drawingManager = new google.maps.drawing.DrawingManager({
+    drawingMode: google.maps.drawing.OverlayType.rectangle,
+    drawingControl: true,
+    drawingControlOptions: {
+      position: google.maps.ControlPosition.TOP_CENTER,
+      drawingModes: [ 'rectangle']
+    },
+    rectangleOptions: {
+      fillColor: '#000000',
+      fillOpacity: 0.2,
+      strokeWeight: 0.5,
+      clickable: false,
+      editable: false,
+      zIndex: 1
+    }
+    });
+    drawingManager.setMap(map);    
+    
+
+    google.maps.event.addListener(drawingManager, 'overlaycomplete', function(e) {
+        if (e.type != google.maps.drawing.OverlayType.MARKER) {
+            // Switch back to non-drawing mode after drawing a shape.
+            drawingManager.setDrawingMode(null);
+            if (newShape) {
+                clearSelection();
+            }
+            // Add an event listener that selects the newly-drawn shape when the user
+            // mouses down on it.
+            newShape = e.overlay;
+            newShape.type = e.type;
+            getFromShapeSector();
+      }
+    });    
+
+    //google.maps.event.addListener(drawingManager, 'drawingmode_changed', clearSelection());
+
+    
+    
 }
 
 //onload event listener
@@ -252,38 +306,52 @@ function infoWindowSparklineShow(type,passIn,tech){
                             </div>';    
             infowindow.setContent(content);            
         
-           $.get("php/phyconf.php?lncel="+passIn[1]['sector'][passIn[0]]['lncel_name'],(function(phyconf){
-                return function(phyconf) {
+           
+            if (document.getElementById("Par_7").checked) {
+                
+                //console.log(passIn[1]['sector'][passIn[0]]['lncel_name']);
+                nbr_src=passIn[1]['sector'][passIn[0]]['lncel_name'];
+                query_ = 5;
+                changeSectorStyle(nbr_src,sectorPolygons,style_,CurrentDate,query_);                
+                
+                
+            } else {
+                $.get("php/phyconf.php?lncel="+passIn[1]['sector'][passIn[0]]['lncel_name'],(function(phyconf){
+                    return function(phyconf) {
 
-                    $('#info').html('<table class="table table-condensed table-striped"> <tbody>' + phyconf + '</tbody> </table>');
-                    
-                    $.get("php/parameters.php?lncel="+passIn[1]['sector'][passIn[0]]['lncel_name'],function(data) {     /*get function take the content of test.html
-                     put in variable 'data' inside the callback function*/
-                        $('#parameters').html('<table class="table table-condensed table-striped"> <tbody> '+ data + '</tbody> </table>');
-                    });  
-                    
-                    $.get("php/alarm.php?SiteID="+passIn[1]['sector'][passIn[0]]['site_name'],function(data) {     /*get function take the content of test.html
-                     put in variable 'data' inside the callback function*/
-                        $('#alarms').html(data);
-                    });     
+                        $('#info').html('<table class="table table-condensed table-striped"> <tbody>' + phyconf + '</tbody> </table>');
+                        
+                        $.get("php/parameters.php?lncel="+passIn[1]['sector'][passIn[0]]['lncel_name'],function(data) {     /*get function take the content of test.html
+                         put in variable 'data' inside the callback function*/
+                            $('#parameters').html('<table class="table table-condensed table-striped"> <tbody> '+ data + '</tbody> </table>');
+                        });  
+                        
+                        $.get("php/alarm.php?SiteID="+passIn[1]['sector'][passIn[0]]['site_name'],function(data) {     /*get function take the content of test.html
+                         put in variable 'data' inside the callback function*/
+                            $('#alarms').html(data);
+                        });     
 
-                    $.get("php/tt.php?SiteID="+passIn[1]['sector'][passIn[0]]['site_name'],function(data) {     /*get function take the content of test.html
-                     put in variable 'data' inside the callback function*/
-                        $('#tt').html(data);
-                    });
+                        $.get("php/tt.php?SiteID="+passIn[1]['sector'][passIn[0]]['site_name'],function(data) {     /*get function take the content of test.html
+                         put in variable 'data' inside the callback function*/
+                            $('#tt').html(data);
+                        });
 
-                    $.get("php/wo.php?SiteID="+passIn[1]['sector'][passIn[0]]['site_name'],function(data) {     /*get function take the content of test.html
-                     put in variable 'data' inside the callback function*/
-                        $('#wo').html(data);                      
-                    });                    
+                        $.get("php/wo.php?SiteID="+passIn[1]['sector'][passIn[0]]['site_name'],function(data) {     /*get function take the content of test.html
+                         put in variable 'data' inside the callback function*/
+                            $('#wo').html(data);                      
+                        });                    
 
-                    
-                };
-            })()); 
-            infowindow.setPosition(event.latLng);
-            infowindow.open(map);
-            $('#ltedropLine'+passIn[0]).sparkline();
-            jSONURL = "php/kpi_.php?TECH="+tech+"&lncel="+passIn[1]['sector'][passIn[0]]['lncel_name']; 
+                        
+                    };
+                })()); 
+                infowindow.setPosition(event.latLng);
+                infowindow.open(map);
+                $('#ltedropLine'+passIn[0]).sparkline();
+                jSONURL = "php/kpi_.php?TECH="+tech+"&lncel="+passIn[1]['sector'][passIn[0]]['lncel_name'];                 
+                
+            }
+           
+
         }
         if (type == 'cluster'){
             content = '<div style="line-height:1.35;overflow:hidden;white-space:nowrap;"> Cluster = '+
@@ -386,6 +454,9 @@ function legend(leg_type) {
     var  innerHtml = '<div id="legend-container"><h4>'+leg_type+'</h4><div id="legend">';
 
     legendTable['L700_Asset'] = [['#55ff00','#ffff00','#808080','orange','red'],['-45dbm to -91dbm','-91dbm to -97dbm','-97dbm to -114dbm','-114dbm to -120dbm','-120dbm to -130dbm'],'dBm','left'];
+    legendTable['Towers'] = [['#ff3300','#3399ff','#ff9900'],['Verizon','AT&T','Owners'],'None','left'];
+    legendTable['Status'] = [['#4CBA00','#BA6E00','#BA1100','#A9BA00','#00BA6E'],['Completed','Demo/Excavation','Land Use Issued','Predevelopment','Under Construction'],'None','left'];
+
     
     legendTable['rsrq'] = [['green','orange','red'],['0db to -10db','-10db to -16db','-16db to -30db'],'dB','left'];
     //legendTable['rsrp'] = [['#0099FF','green','yellow','orange','red'],['-45dbm to -91dbm','-91dbm to -97dbm','-97dbm to -114dbm','-114dbm to -120dbm','-120dbm to -130dbm'],'dBm','left'];
@@ -413,7 +484,11 @@ function legend(leg_type) {
     legendTable['FeedBack'] = [["White"],['0'],'None','right'];   
     legendTable['Poor_EcNo'] = [["red"],['Degraded'],'None','right'];      
     legendTable['High_TX_Pwr_Usage'] = [["red"],['Degraded'],'None','right'];      
-    legendTable['Poor_RTWP'] = [["red"],['Degraded'],'None','right'];      
+    legendTable['Poor_RTWP'] = [["red"],['Degraded'],'None','right'];  
+    legendTable['SC'] = [["yellow", "red", "orange"],['Left: '+(parseInt($("#channel").val())-1), 'Center: '+($("#channel").val()), 'Right: '+(parseInt($("#channel").val())+1)],'None','right']; 
+    legendTable['NBRs'] = [["red", "blue"],['Target', 'Source'],'None','right']; 
+
+    
  // console.log(leg_type);  
     if (!leg_type){
         for(var k = 0;k<legendTable['other'][0].length;k++){
@@ -1141,7 +1216,13 @@ function secDraw() {
                 if(Allsector_.length > 0 && seDrawStatus==1) {
                      secMap = setTimeout(arguments.callee,25);
                 }else{
-                    changeSectorStyle(secSQL.toString(),sectorPolygons,style_,CurrentDate,query_, tech);
+                    
+                    if (document.getElementById("Par_7").checked) {      
+                        query_ = 5;
+                        changeSectorStyle(nbr_src,sectorPolygons,style_,CurrentDate,query_, tech); 
+                    } else{
+                        changeSectorStyle(secSQL.toString(),sectorPolygons,style_,CurrentDate,query_, tech);
+                    }
                     seDrawStatus = 0;                    
                 }
             },25)
@@ -1317,6 +1398,36 @@ function initialSector(){
 }
 
 
+function getFromShapeSector(){
+    var bounds = newShape.getBounds();
+    var NE = bounds.getNorthEast();
+    var SW = bounds.getSouthWest();
+    var tech = $('input:radio[name=opttech]:checked').val();
+    var cellSelection = [];
+    $.getJSON("php/sector.php?TECH="+tech+"&N="+NE.lat()+"&E="+NE.lng()+"&S="+SW.lat()+"&W="+SW.lng(), function(data) {
+        for (var i=0; i< data['sector'].length; i++) {
+             cellSelection.push(data['sector'][i]['lncel_name']);
+        }
+        var htmlStr = cellSelection.join('&#13;&#10');
+        document.getElementById('info_sector').innerHTML = htmlStr;
+        
+    });
+    
+    $(".icon-bar-right > a").removeClass("icon-active");
+    $('#icon-sector').addClass("icon-active");
+    $(".rmv-obj-right").css({'display':'none'});          
+    $("#ui-sector").css({'display':'block'}); 
+    $(".icon-bar-right").animate({right: '200px'});
+    $(".offcanvas-right").animate({width: '200px'});
+    $(".rmv-obj-right > .sidenav-heading-title > h4").html("Sector");
+    $(".sidenav-heading").css({'display':'block'});  
+    $("#list-selection").css({'display':'block'});  
 
+}
 
+function clearSelection() {
+     newShape.setMap(null);
+     document.getElementById('info_sector').innerHTML = "";
+
+}
 

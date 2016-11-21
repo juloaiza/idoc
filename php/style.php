@@ -7,6 +7,8 @@
     $TECH= $_POST['tech'];
     include("connection.php");  //get db connection
 
+    
+    
     switch ($i) {
         case 0:
             $query = "SELECT `CellName`, CASE WHEN ('".$TECH."' = 'GSM') THEN 'gsm' ELSE concat(left(`CellName`,1), right(`CellName`,1)) END as style FROM `physical_info_all` WHERE `CellName` in (".$secSQL.")";
@@ -20,15 +22,40 @@
         case 3:
             $query = "SELECT `CellName`, `existingelectilt` as style FROM `physical_info_all` WHERE `CellName` in (".$secSQL.")"; //replace emp_info with your table name
             break;
+        case 4:
+            $query = "SELECT `CellID` as CellName ,'yellow' as style FROM `GSMCellRef` WHERE `CellID` in (".$secSQL.") AND `BCCH` = ".($style-1)."
+                      UNION
+                      SELECT `CellID` as CellName,'red' as style FROM `GSMCellRef` WHERE `CellID` in (".$secSQL.") AND `BCCH` = ".$style."
+                      UNION
+                      SELECT `CellID` as CellName,'orange' as style FROM `GSMCellRef` WHERE `CellID` in (".$secSQL.") AND `BCCH` = ".($style+1)." ";
+            
+            break;           
+         case 5:
+            $query = "SELECT `neighbors`as CellName,'red' as style FROM `GSMCellRef` WHERE `CellID` = '".$secSQL."' LIMIT 1";
+           
+            break;            
+            
+            
     }    
     
    //echo $query;
-    $result = mysqli_query($link, $query);
-    $json = array();
+    $json = array();    
     
+    $result = mysqli_query($link, $query);
     if(mysqli_num_rows($result)){
         while($row= mysqli_fetch_assoc($result)){
-           $json[$row['CellName']] = $row['style'];   
+
+            if ($i == 5) { //Neighbors Defined
+                $nbr = explode(";", $row['CellName']);
+                foreach ($nbr as $CellName) {
+                    $json[$CellName] = "red";
+                }
+                $json[$secSQL] = "blue";                
+  
+            } else {
+                $json[$row['CellName']] = $row['style'];   
+            }
+        
         }
     }
  //   mysqli_close($db_name);

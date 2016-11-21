@@ -61,7 +61,9 @@ function changeSectorStyle(sec,sectorObj,styleColor, date_, queryT_, tech_){
 
         if (queryT_ === 0) {legend(tech_);}
         if (queryT_ === 1) {legend( $('input:radio[name=options3G]:checked').val());}    
-
+        if (queryT_ === 4) {legend( $('input:radio[name=options3G]:checked').val());}   
+        if (queryT_ === 5) {legend( $('input:radio[name=options3G]:checked').val());}         
+        
         for(var j=0;j<sectorPolygons.length;j++){
             if (queryT_ === 0) {
                 var layer = data[sectorPolygons[j][1]];
@@ -74,6 +76,26 @@ function changeSectorStyle(sec,sectorObj,styleColor, date_, queryT_, tech_){
                     fillOpacity:1
                     //zIndex: layerProperty[0].stack //stack orde
                    //,map: map
+                });
+            } else if (queryT_ === 4) {
+                //console.log(data[sectorPolygons[j][1]]);
+                sectorPolygons[j][0].setOptions({
+                    fillColor: (typeof data[sectorPolygons[j][1]] === 'undefined' ? '#585555':data[sectorPolygons[j][1]]),
+                    fillOpacity: (typeof data[sectorPolygons[j][1]] === 'undefined' ? 0:1),
+                    strokeColor:(typeof data[sectorPolygons[j][1]] === 'undefined' ? '#585555':data[sectorPolygons[j][1]]),                    
+                    strokeOpacity:(typeof data[sectorPolygons[j][1]] === 'undefined' ? 0.7:1),
+                    strokeWeight: (typeof data[sectorPolygons[j][1]] === 'undefined' ? 0.5:1)
+                    //,map: map
+                });
+            } else if (queryT_ === 5) {
+                //console.log(data[sectorPolygons[j][1]]);
+                sectorPolygons[j][0].setOptions({
+                    fillColor: (typeof data[sectorPolygons[j][1]] === 'undefined' ? '#585555':data[sectorPolygons[j][1]]),
+                    fillOpacity: (typeof data[sectorPolygons[j][1]] === 'undefined' ? 0:1),
+                    strokeColor:(typeof data[sectorPolygons[j][1]] === 'undefined' ? '#585555':data[sectorPolygons[j][1]]),                    
+                    strokeOpacity:(typeof data[sectorPolygons[j][1]] === 'undefined' ? 0.7:1),
+                    strokeWeight: (typeof data[sectorPolygons[j][1]] === 'undefined' ? 0.8:1)
+                    //,map: map
                 });
             } else {
                 sectorPolygons[j][0].setOptions({

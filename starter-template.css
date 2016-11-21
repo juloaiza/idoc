@@ -23,6 +23,14 @@ html, body {
     color:white;    
 } 
 
+#delete-button {
+    background-color: #E20074;
+    color:white;
+}
+#delete-button:hover {
+    background-color: #A10053;
+    color:white;    
+} 
 
 
 
