@@ -5,7 +5,7 @@
   
     $field = array("Sector","Technology","Azimuth", "Antenna Type", "Height","ElectTilt", "MechTilt"); 
     $sector = substr($lncel,1,9);
-    
+    echo $sector;
     $query = "SELECT * FROM (SELECT `CellName`,`technology`,`azimuth`,`antennaname`,`antennaheight_m`,`existingelectilt`,`existingmechtilt` FROM `physical_info_all` WHERE `CellName` = '".$lncel."') a UNION ALL Select * FROM (SELECT `CellName`, `technology`, `azimuth`,`antennaname`,`antennaheight_m`,`existingelectilt`,`existingmechtilt` FROM `physical_info_all` WHERE `CellName` like  '%".$sector."%' AND `CellName` NOT IN ('".$lncel."') order by `technology`,`CellName`) b";
     
     if ($result = mysqli_query($link,$query)) {  //mysql_query() check if the query was success

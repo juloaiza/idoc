@@ -109,8 +109,8 @@ $aws = "10.2.4.212"//"ec2-54-69-137-192.us-west-2.compute.amazonaws.com"
 						    <li><a href="#"><input type="checkbox" name="checkMaps" id="check0" value="" onclick="lowBandAndSR('srs');" > SRs</a></li>
 						    <li><a href="#"><input type="checkbox" name="checkMaps1" id="check1" value="" onclick="showBans();" > BANs</a></li>
 						    <li><a href="#"><input type="checkbox" name="checkMaps2" id="check2" value="" onclick="lowBandAndSR('L700');" > L700</a></li>
-						    <li><a href="#"><input type="checkbox" name="checkMaps3" id="check3" value="" onclick="lowBandAndSR('NSD');" > NSD</a></li>                            
-                            </ul>
+						    <li><a href="#"><input type="checkbox" name="checkMaps3" id="check3" value="" onclick="lowBandAndSR('NSD');" > NSD</a></li>
+                        </ul>
 					</li>                   
 					<li class="has-sub">
 						<a href="#">
@@ -124,6 +124,31 @@ $aws = "10.2.4.212"//"ec2-54-69-137-192.us-west-2.compute.amazonaws.com"
                         </ul>
 					</li>
 
+					<li class="has-sub">
+						<a href="#">
+						    <b class="caret pull-right"></b>
+						    <span>Others Towers</span>
+					    </a>
+						<ul class="sub-menu">
+						    <li><a href="#"><input type="checkbox" name="checkMaps5" id="check5" value="" onclick="tiledLayer('Towers','http://<?php echo $aws; ?>:8080/geoserver/gwc/service/gmaps?layers=miscellaneous:verizon&zoom={z}&x={x}&y={y}&format=image/png8',0,0.85);" > Verizon</a></li>
+						    <li><a href="#"><input type="checkbox" name="checkMaps6" id="check6" value="" onclick="tiledLayer('Towers','http://<?php echo $aws; ?>:8080/geoserver/gwc/service/gmaps?layers=miscellaneous:ATT&zoom={z}&x={x}&y={y}&format=image/png8',0,0.85);"  > AT&T</a></li>
+						    <li><a href="#"><input type="checkbox" name="checkMaps7" id="check7" value="" onclick="tiledLayer('Towers','http://<?php echo $aws; ?>:8080/geoserver/gwc/service/gmaps?layers=miscellaneous:owner&zoom={z}&x={x}&y={y}&format=image/png8',0,0.85);"  > Owners</a></li> 
+                        </ul>
+					</li>                    
+
+
+					<li class="has-sub">
+						<a href="#">
+						    <b class="caret pull-right"></b>
+						    <span>King County Projects</span>
+					    </a>
+						<ul class="sub-menu">
+						    <li><a href="#"><input type="checkbox" name="checkMaps4" id="check4" value="" onclick="tiledLayer('Status','http://<?php echo $aws; ?>:8080/geoserver/gwc/service/gmaps?layers=miscellaneous:downtown&zoom={z}&x={x}&y={y}&format=image/png8',0,0.85);" > Downtown Seattle</a></li>  
+                        </ul>
+					</li>                     
+
+
+                    
 					<li class="has-sub">
 						<a href="#">
 						    <b class="caret pull-right"></b>
@@ -324,7 +349,11 @@ $aws = "10.2.4.212"//"ec2-54-69-137-192.us-west-2.compute.amazonaws.com"
 						    <li><a href="#"><input type="radio" name="options3G" id="Par_4" value="RtFmcgIdentifier"> RtFmcgIdentifier</a></li>  
 						    <li><a href="#"><input type="radio" name="options3G" id="Par_5" value="UARFCN"> UARFCN</a></li>                              
 						    <li><a href="#"><input type="radio" name="options3G" id="Par_3" value="LAC"> LAC</a></li>
-                         </ul>
+						    <li><a href="#"><input type="radio" name="options3G" id="Par_6" value="SC"> BCCH/SC/PCI</a>  <input type="text" style="width:50px; position: relative; left:80px;" class="form-control" id="channel" placeholder="Val"></li>                            
+
+						    <li><a href="#"><input type="radio" name="options3G" id="Par_7" value="NBRs"> Neighbors</a> </br> <input type="text" style="width:150px; position: relative; left:10px;" class="form-control" id="relation" placeholder="NBR"></li>                            
+
+                        </ul>
 					</li>
                     <li class="has-sub">
 						<a href="#">
@@ -339,6 +368,37 @@ $aws = "10.2.4.212"//"ec2-54-69-137-192.us-west-2.compute.amazonaws.com"
 						    <li><a href="#"><input type="radio" name="options3G" id="MKPI_4" value="Poor_RTWP"> Poor RTWP</a></li>
                          </ul>
 					</li>
+                    <li class="has-sub" >
+						<a href="#">
+						    <b class="caret pull-right"></b>
+						    <span>Selection</span>
+						</a>
+						<ul class="sub-menu" id="list-selection">
+                            <div class="col-xs-14">
+                            
+                                <div>
+                                    <button class="btn btn-default" onclick="clearSelection();" id="delete-button">Delete</button>
+                                </div>                        
+                                                
+                               
+                                <div class="form-group">
+                                    <label for="info_sector">Sectors:</label>
+                                    <textarea class="form-control" rows="25" id="info_sector"></textarea>
+                                </div>                            
+                            
+                            <div>
+                            
+
+        
+                         </ul>
+					</li>                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
                 </ul>
             </div>  <!--template -->   
 
@@ -358,7 +418,7 @@ $aws = "10.2.4.212"//"ec2-54-69-137-192.us-west-2.compute.amazonaws.com"
         <div class="icon-bar icon-bar-right">
             <a href="#" data-toggle="tooltip" data-placement="left" title="Technology"><i class="glyphicon glyphicon-signal"></i></a>
             <a href="#" data-toggle="tooltip" data-placement="left" title="Market"><i class="glyphicon glyphicon-map-marker"></i></a> 
-            <a href="#" data-toggle="tooltip" data-placement="left" title="Sector"><i class="glyphicon glyphicon-tower"></i></a> 
+            <a href="#" data-toggle="tooltip" data-placement="left" title="Sector" id="icon-sector"><i class="glyphicon glyphicon-tower"></i></a> 
             <a href="#" data-toggle="tooltip" data-placement="left" title="KPIs" id="icon-kpi"><i class="glyphicon glyphicon-stats"></i></a> 
       <!--      <a href="#" data-toggle="tooltip" data-placement="left" title="Alarms"><i class="glyphicon glyphicon-bell"></i></a> 
             <a href="#" data-toggle="tooltip" data-placement="left" title="TT"><i class="glyphicon glyphicon-fire"></i></a>
@@ -409,7 +469,7 @@ $aws = "10.2.4.212"//"ec2-54-69-137-192.us-west-2.compute.amazonaws.com"
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug 
     <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>-->
   
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCDjB5G0Fod2mUs0u9a-B4cF3xyqQa5uAs&sensor=false"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCDjB5G0Fod2mUs0u9a-B4cF3xyqQa5uAs&sensor=false&libraries=drawing"></script>
     <script type="text/javascript" src="js/markerclusterer.min.js"></script>
     <script type="text/javascript" src="js/maplabel.js"></script> 
     <script src="https://www.google.com/jsapi"></script>    
