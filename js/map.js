@@ -152,11 +152,18 @@ function initialize() {
         })(i)); 
     }
     
-    for (i=0;i<7;i++){
+    for (i=0;i<8;i++){
         document.getElementById("Par_"+i).addEventListener("click", (function(k){
             return function() {
             style_=$("#Par_"+k).val();
-            query_ = 2;
+
+            if (k==7){
+                query_ = 6
+            }
+            else { 
+                query_ = 2;
+            }
+            
             
             if (k==6) { 
                 document.getElementById("channel").addEventListener("input", (function(){
@@ -307,7 +314,7 @@ function infoWindowSparklineShow(type,passIn,tech){
             infowindow.setContent(content);            
         
            
-            if (document.getElementById("Par_7").checked) {
+            if (document.getElementById("Par_10").checked) {
                 
                 //console.log(passIn[1]['sector'][passIn[0]]['lncel_name']);
                 nbr_src=passIn[1]['sector'][passIn[0]]['lncel_name'];
@@ -453,6 +460,7 @@ function legend(leg_type) {
     
     var  innerHtml = '<div id="legend-container"><h4>'+leg_type+'</h4><div id="legend">';
 
+    legendTable['Cluster'] = [['#ffffff'],[''],'','left'];
     legendTable['L700_Asset'] = [['#55ff00','#ffff00','#808080','orange','red'],['-45dbm to -91dbm','-91dbm to -97dbm','-97dbm to -114dbm','-114dbm to -120dbm','-120dbm to -130dbm'],'dBm','left'];
     legendTable['Towers'] = [['#ff3300','#3399ff','#ff9900'],['Verizon','AT&T','Owners'],'None','left'];
     legendTable['Status'] = [['#4CBA00','#BA6E00','#BA1100','#A9BA00','#00BA6E'],['Completed','Demo/Excavation','Land Use Issued','Predevelopment','Under Construction'],'None','left'];
@@ -1217,7 +1225,7 @@ function secDraw() {
                      secMap = setTimeout(arguments.callee,25);
                 }else{
                     
-                    if (document.getElementById("Par_7").checked) {      
+                    if (document.getElementById("Par_10").checked) {      
                         query_ = 5;
                         changeSectorStyle(nbr_src,sectorPolygons,style_,CurrentDate,query_, tech); 
                     } else{

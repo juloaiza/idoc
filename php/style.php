@@ -30,11 +30,14 @@
                       SELECT `CellID` as CellName,'orange' as style FROM `GSMCellRef` WHERE `CellID` in (".$secSQL.") AND `BCCH` = ".($style+1)." ";
             
             break;           
-         case 5:
+        case 5:
             $query = "SELECT `neighbors`as CellName,'red' as style FROM `GSMCellRef` WHERE `CellID` = '".$secSQL."' LIMIT 1";
            
             break;            
-            
+
+        case 6:
+            $query = "SELECT CellName, `".$style."` AS style FROM `Nokia_POC` WHERE `CellName` in (".$secSQL.")";
+            break;            
             
     }    
     

@@ -110,6 +110,7 @@ $aws = "10.2.4.212"//"ec2-54-69-137-192.us-west-2.compute.amazonaws.com"
 						    <li><a href="#"><input type="checkbox" name="checkMaps1" id="check1" value="" onclick="showBans();" > BANs</a></li>
 						    <li><a href="#"><input type="checkbox" name="checkMaps2" id="check2" value="" onclick="lowBandAndSR('L700');" > L700</a></li>
 						    <li><a href="#"><input type="checkbox" name="checkMaps3" id="check3" value="" onclick="lowBandAndSR('NSD');" > NSD</a></li>
+						    <li><a href="#"><input type="checkbox" name="checkMaps4" id="check4" value="" onclick="tiledLayer('Cluster','http://<?php echo $aws; ?>:8080/geoserver/gwc/service/gmaps?layers=cluster:SE_SubCL&zoom={z}&x={x}&y={y}&format=image/png8',0,0.85);" > SubCluster</a></li>                            
                         </ul>
 					</li>                   
 					<li class="has-sub">
@@ -343,16 +344,19 @@ $aws = "10.2.4.212"//"ec2-54-69-137-192.us-west-2.compute.amazonaws.com"
 						    <span>Parameter</span>
 						</a>
 						<ul class="sub-menu">
- 						    <li><a href="#"><input type="radio" name="options3G" id="Par_0" value="PtxPrimaryCPICH"> PtxPrimaryCPICH</a></li>
-						    <li><a href="#"><input type="radio" name="options3G" id="Par_1" value="PriScrCode"> PriScrCode</a></li>
-						    <li><a href="#"><input type="radio" name="options3G" id="Par_2" value="RtFmcsIdentifier"> RtFmcsIdentifier</a></li>
-						    <li><a href="#"><input type="radio" name="options3G" id="Par_4" value="RtFmcgIdentifier"> RtFmcgIdentifier</a></li>  
-						    <li><a href="#"><input type="radio" name="options3G" id="Par_5" value="UARFCN"> UARFCN</a></li>                              
-						    <li><a href="#"><input type="radio" name="options3G" id="Par_3" value="LAC"> LAC</a></li>
-						    <li><a href="#"><input type="radio" name="options3G" id="Par_6" value="SC"> BCCH/SC/PCI</a>  <input type="text" style="width:50px; position: relative; left:80px;" class="form-control" id="channel" placeholder="Val"></li>                            
+ 						    <li><a href="#"><input type="radio" name="options3G" id="Par_0" value="PtxPrimaryCPICH"> 3G-PtxPrimaryCPICH</a></li>
+						    <li><a href="#"><input type="radio" name="options3G" id="Par_1" value="PriScrCode"> 3G-PriScrCode</a></li>
+						    <li><a href="#"><input type="radio" name="options3G" id="Par_2" value="RtFmcsIdentifier"> 3G-RtFmcsIdentifier</a></li>
+						    <li><a href="#"><input type="radio" name="options3G" id="Par_4" value="RtFmcgIdentifier"> 3G-RtFmcgIdentifier</a></li>  
+						    <li><a href="#"><input type="radio" name="options3G" id="Par_5" value="UARFCN"> 3G-UARFCN</a></li>                              
+						    <li><a href="#"><input type="radio" name="options3G" id="Par_3" value="LAC"> 3G-LAC</a></li>
+						    <li><a href="#"><input type="radio" name="options3G" id="Par_7" value="bsTxPwrMax1x00"> 2G-bsTxPwrMax1x00</a></li>
 
-						    <li><a href="#"><input type="radio" name="options3G" id="Par_7" value="NBRs"> Neighbors</a> </br> <input type="text" style="width:150px; position: relative; left:10px;" class="form-control" id="relation" placeholder="NBR"></li>                            
+						    <li><a href="#"><input type="radio" name="options3G" id="Par_6" value="SC"> 2G-BCCH/SC/PCI</a>  <input type="text" style="width:50px; position: relative; left:80px;" class="form-control" id="channel" placeholder="Val"></li>                            
+						    <li><a href="#"><input type="radio" name="options3G" id="Par_10" value="NBRs"> 2G-Neighbors</a> </br> <input type="text" style="width:150px; position: relative; left:10px;" class="form-control" id="relation" placeholder="NBR"></li>                            
 
+                            
+                            
                         </ul>
 					</li>
                     <li class="has-sub">
