@@ -102,8 +102,8 @@ function changeSectorStyle(sec,sectorObj,styleColor, date_, queryT_, tech_){
                     fillColor: (queryT_ === 1 ? colorPalette[data[sectorPolygons[j][1]] + off]:'#' + Math.floor(Chance(data[sectorPolygons[j][1]]).random()*16777215).toString(16)),
                     fillOpacity: (typeof data[sectorPolygons[j][1]] === 'undefined' ? 0:(colorPalette[data[sectorPolygons[j][1]]] === 'green' ? 0:1)),
                     strokeColor:(queryT_ === 1 ? colorPalette[data[sectorPolygons[j][1]]]:'#585555'),
-                    strokeOpacity:(typeof data[sectorPolygons[j][1]] === 'undefined' ? 0.2:1),
-                    strokeWeight: (colorPalette[data[sectorPolygons[j][1]]] === 'green' ? 0.2:0.6)
+                    strokeOpacity:(typeof data[sectorPolygons[j][1]] === 'undefined' ? 0.8:1),
+                    strokeWeight: (colorPalette[data[sectorPolygons[j][1]]] === 'green' ? 0.5:0.6)
                     //,map: map
                 });
             }
