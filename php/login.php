@@ -94,7 +94,7 @@
            exit();
         } else {
             
-            $error = "We could not find a user with that email and password.Please try again";
+            $error = "We could not find a user with that email and password.Please try again or <a href='url'>reset here</a>";
             
         }
         

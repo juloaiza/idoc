@@ -2,7 +2,7 @@
 
     $site=$_GET['SiteID'];
     $username = 'jloaiza1';
-    $password = 'Welcome$@';
+    $password = 'Welcome#%';
     $curl =  curl_init("http://natweb.eng.t-mobile.com/sites/NetworkElements/Interfaces/NetXAlerts.aspx?Manager=&SiteID=".$site);
 
 #http://stackoverflow.com/questions/12094535/why-doesnt-curl-work-with-windows-authentication-on-iis7  

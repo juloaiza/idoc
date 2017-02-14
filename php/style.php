@@ -25,7 +25,7 @@
         case 4:
             $query = "SELECT `CellID` as CellName ,'yellow' as style FROM `GSMCellRef` WHERE `CellID` in (".$secSQL.") AND `BCCH` = ".($style-1)."
                       UNION
-                      SELECT `CellID` as CellName,'red' as style FROM `GSMCellRef` WHERE `CellID` in (".$secSQL.") AND `BCCH` = ".$style."
+                      SELECT `CellID` as CellName,'red' as style FROM `GSMCellRef` WHERE `CellID` in (".$secSQL.") AND CONCAT(`BCCH`, '_', `BSIC`) like '".$style."%'
                       UNION
                       SELECT `CellID` as CellName,'orange' as style FROM `GSMCellRef` WHERE `CellID` in (".$secSQL.") AND `BCCH` = ".($style+1)." ";
             
