@@ -460,6 +460,7 @@ function legend(leg_type) {
     
     var  innerHtml = '<div id="legend-container"><h4>'+leg_type+'</h4><div id="legend">';
 
+    legendTable['County'] = [['#ffffff'],[''],'','left'];
     legendTable['Cluster'] = [['#ffffff'],[''],'','left'];
     legendTable['L700_Asset'] = [['#55ff00','#ffff00','#808080','orange','red'],['-45dbm to -91dbm','-91dbm to -97dbm','-97dbm to -114dbm','-114dbm to -120dbm','-120dbm to -130dbm'],'dBm','left'];
     legendTable['Towers'] = [['#ff3300','#3399ff','#ff9900'],['Verizon','AT&T','Owners'],'None','left'];

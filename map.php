@@ -111,6 +111,7 @@ $aws = "10.2.4.212"//"ec2-54-69-137-192.us-west-2.compute.amazonaws.com"
 						    <li><a href="#"><input type="checkbox" name="checkMaps2" id="check2" value="" onclick="lowBandAndSR('L700');" > L700</a></li>
 						    <li><a href="#"><input type="checkbox" name="checkMaps3" id="check3" value="" onclick="lowBandAndSR('NSD');" > NSD</a></li>
 						    <li><a href="#"><input type="checkbox" name="checkMaps4" id="check4" value="" onclick="tiledLayer('Cluster','http://<?php echo $aws; ?>:8080/geoserver/gwc/service/gmaps?layers=cluster:SE_SubCL&zoom={z}&x={x}&y={y}&format=image/png8',0,0.85);" > SubCluster</a></li>                            
+						    <li><a href="#"><input type="checkbox" name="checkMaps5" id="check5" value="" onclick="tiledLayer('County','http://<?php echo $aws; ?>:8080/geoserver/gwc/service/gmaps?layers=county:us_county&zoom={z}&x={x}&y={y}&format=image/png8',0,0.85);" > County Border</a></li>  
                         </ul>
 					</li>                   
 					<li class="has-sub">
@@ -131,9 +132,9 @@ $aws = "10.2.4.212"//"ec2-54-69-137-192.us-west-2.compute.amazonaws.com"
 						    <span>Others Towers</span>
 					    </a>
 						<ul class="sub-menu">
-						    <li><a href="#"><input type="checkbox" name="checkMaps5" id="check5" value="" onclick="tiledLayer('Towers','http://<?php echo $aws; ?>:8080/geoserver/gwc/service/gmaps?layers=miscellaneous:verizon&zoom={z}&x={x}&y={y}&format=image/png8',0,0.85);" > Verizon</a></li>
-						    <li><a href="#"><input type="checkbox" name="checkMaps6" id="check6" value="" onclick="tiledLayer('Towers','http://<?php echo $aws; ?>:8080/geoserver/gwc/service/gmaps?layers=miscellaneous:ATT&zoom={z}&x={x}&y={y}&format=image/png8',0,0.85);"  > AT&T</a></li>
-						    <li><a href="#"><input type="checkbox" name="checkMaps7" id="check7" value="" onclick="tiledLayer('Towers','http://<?php echo $aws; ?>:8080/geoserver/gwc/service/gmaps?layers=miscellaneous:owner&zoom={z}&x={x}&y={y}&format=image/png8',0,0.85);"  > Owners</a></li> 
+						    <li><a href="#"><input type="checkbox" name="checkMaps6" id="check6" value="" onclick="tiledLayer('Towers','http://<?php echo $aws; ?>:8080/geoserver/gwc/service/gmaps?layers=miscellaneous:verizon&zoom={z}&x={x}&y={y}&format=image/png8',0,0.85);" > Verizon</a></li>
+						    <li><a href="#"><input type="checkbox" name="checkMaps7" id="check7" value="" onclick="tiledLayer('Towers','http://<?php echo $aws; ?>:8080/geoserver/gwc/service/gmaps?layers=miscellaneous:ATT&zoom={z}&x={x}&y={y}&format=image/png8',0,0.85);"  > AT&T</a></li>
+						    <li><a href="#"><input type="checkbox" name="checkMaps8" id="check8" value="" onclick="tiledLayer('Towers','http://<?php echo $aws; ?>:8080/geoserver/gwc/service/gmaps?layers=miscellaneous:owner&zoom={z}&x={x}&y={y}&format=image/png8',0,0.85);"  > Owners</a></li> 
                         </ul>
 					</li>                    
 
@@ -144,7 +145,7 @@ $aws = "10.2.4.212"//"ec2-54-69-137-192.us-west-2.compute.amazonaws.com"
 						    <span>King County Projects</span>
 					    </a>
 						<ul class="sub-menu">
-						    <li><a href="#"><input type="checkbox" name="checkMaps4" id="check4" value="" onclick="tiledLayer('Status','http://<?php echo $aws; ?>:8080/geoserver/gwc/service/gmaps?layers=miscellaneous:downtown&zoom={z}&x={x}&y={y}&format=image/png8',0,0.85);" > Downtown Seattle</a></li>  
+						    <li><a href="#"><input type="checkbox" name="checkMaps9" id="check9" value="" onclick="tiledLayer('Status','http://<?php echo $aws; ?>:8080/geoserver/gwc/service/gmaps?layers=miscellaneous:downtown&zoom={z}&x={x}&y={y}&format=image/png8',0,0.85);" > Downtown Seattle</a></li>  
                         </ul>
 					</li>                     
 
